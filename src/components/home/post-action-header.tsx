@@ -3,12 +3,22 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { useUser } from "@clerk/nextjs";
 
-function PostActionHeader() {
-  const [showCreatePostForm, setShowCreatePostForm] = useState(false);
+type PostActionHeaderProps = {
+  showCreatePostFormHandler: () => void;
+};
+
+function PostActionHeader({
+  showCreatePostFormHandler,
+}: PostActionHeaderProps) {
+  // const [showCreatePostForm, setShowCreatePostForm] = useState(false);
   const { user } = useUser();
-  const showCreatePostFormHandler = () => {
-    setShowCreatePostForm(!showCreatePostForm);
+  // const showCreatePostFormHandler = () => {
+  //   setShowCreatePostForm(!showCreatePostForm);
+  // };
+  const onShowCreateForm = () => {
+    showCreatePostFormHandler();
   };
+
   if (!user) return null;
   return (
     <div className="bg-white rounded-lg shadow-sm shadow-gray-300 p-4">
@@ -22,7 +32,10 @@ function PostActionHeader() {
             className="aspect-square"
           />
         </div>
-        <div className="bg-zinc-200 w-full ml-3 h-10 rounded-full px-3 cursor-pointer flex items-center">
+        <div
+          className="bg-zinc-200 w-full ml-3 h-10 rounded-full px-3 cursor-pointer flex items-center"
+          onClick={onShowCreateForm}
+        >
           what&apos;s on your mind, {user?.firstName}
         </div>
       </div>

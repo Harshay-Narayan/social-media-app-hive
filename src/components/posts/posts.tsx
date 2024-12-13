@@ -6,8 +6,8 @@ type PostsProps = { postText: string; imageUrl?: string };
 function Posts({ postText, imageUrl }: PostsProps) {
   return (
     <div className="bg-white mt-3 rounded-lg shadow-sm shadow-gray-300 p-4">
-      <div>
-        <Image src={""} width={50} height={50} alt="userProfileImage" />
+      <div className="w-8 h-8">
+        <Image src={"/globe.svg"} width={50} height={50} alt="userProfileImage" />
       </div>
       <div>{postText}</div>
       {imageUrl ? (
