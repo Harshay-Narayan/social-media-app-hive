@@ -1,7 +1,8 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React from "react";
 import { useUser } from "@clerk/nextjs";
+import Container from "../UI/container";
 
 type PostActionHeaderProps = {
   showCreatePostFormHandler: () => void;
@@ -21,7 +22,7 @@ function PostActionHeader({
 
   if (!user) return null;
   return (
-    <div className="bg-white rounded-lg shadow-sm shadow-gray-300 p-4">
+    <Container className="p-4 mb-2">
       <div className="flex items-center justify-between">
         <div className="h-10 w-10 rounded-full overflow-hidden">
           <Image
@@ -40,7 +41,7 @@ function PostActionHeader({
         </div>
       </div>
       <div className="h-[1px] w-full bg-gray-200 mt-3"></div>
-    </div>
+    </Container>
   );
 }
 

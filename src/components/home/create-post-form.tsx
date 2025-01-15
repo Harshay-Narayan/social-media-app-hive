@@ -4,19 +4,34 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { X, ImagePlus } from "lucide-react";
 import Image from "next/image";
 import CloseButton from "../UI/CloseButton";
+import createPost from "@/actions/createPost";
+import Container from "../UI/container";
+import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+import Loader from "../UI/loader";
+import UserService from "@/lib/services/userService";
+import { revalidatePath } from "next/cache";
 
 interface IFormInput {
-  post_content: string;
-  post_image?: File;
+  post_content: string | null;
+  post_image: File | null;
 }
 
 type CreatePostFormProps = {
   showCreatePostFormHandler: () => void;
 };
 
+const submitFormData = async (formData: FormData) => {
+  const { data } = await axios.post("/api/posts", formData);
+  return data;
+};
+
 function CreatePostForm({ showCreatePostFormHandler }: CreatePostFormProps) {
+  const { userProfileImageUrl, userFullName } = UserService.getUserInfo();
   const { register, handleSubmit, setValue, reset, watch } =
-    useForm<IFormInput>();
+    useForm<IFormInput>({
+      defaultValues: { post_content: null, post_image: null },
+    });
   const [imagePreview, setImagePreview] = useState<string | null>();
   const postImageInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -24,9 +39,19 @@ function CreatePostForm({ showCreatePostFormHandler }: CreatePostFormProps) {
   const postImage = watch("post_image");
   const isPostButtonDisabled = !postContent?.trim() && !postImage;
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    setImagePreview("");
-    console.log(data);
+  const { mutate, data, isPending, isError, error } = useMutation({
+    mutationFn: submitFormData,
+  });
+
+  const onSubmit: SubmitHandler<IFormInput> = (input) => {
+    setImagePreview(null);
+
+    const formData = new FormData();
+    formData.append("post_content", input.post_content || "");
+    formData.append("post_image", input.post_image || "");
+    mutate(formData, {
+      onSuccess: () => {},
+    });
     reset();
     showCreatePostFormHandler();
   };
@@ -41,7 +66,7 @@ function CreatePostForm({ showCreatePostFormHandler }: CreatePostFormProps) {
   };
 
   const handleClearSelectedImage = () => {
-    setValue("post_image", undefined);
+    setValue("post_image", null);
     setImagePreview("");
     if (postImageInputRef.current) {
       postImageInputRef.current.value = "";
@@ -49,7 +74,8 @@ function CreatePostForm({ showCreatePostFormHandler }: CreatePostFormProps) {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg w-[36rem]" role="dialog">
+    <Container role="dialog" className="w-[36rem]">
+      {/* <Loader /> */}
       <div className="flex p-2">
         <div className="ml-auto font-extrabold">Create Post</div>
         <CloseButton
@@ -61,19 +87,19 @@ function CreatePostForm({ showCreatePostFormHandler }: CreatePostFormProps) {
       </div>
       <div className="bg-gray-400 h-[1px] w-full"></div>
       <div className="p-2">
-        <div className="flex mt-4">
-          <div className="h-8 w-8">
+        <div className="flex mt-4 items-center">
+          <div className="h-10 w-10 rounded-full overflow-hidden">
             <Image
-              src={"/globe.svg"}
+              src={userProfileImageUrl ? userProfileImageUrl : "/avatar.svg"}
               alt="profile_image"
               width={100}
               height={100}
             />
           </div>
-          <div className="pl-2">Mr. Random</div>
+          <div className="pl-2 font-bold">{userFullName}</div>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} action={createPost}>
           {imagePreview ? (
             <div className="h-72 overflow-y-scroll">
               <textarea
@@ -127,7 +153,7 @@ function CreatePostForm({ showCreatePostFormHandler }: CreatePostFormProps) {
           </button>
         </form>
       </div>
-    </div>
+    </Container>
   );
 }
 

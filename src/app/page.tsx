@@ -1,9 +1,15 @@
 import Feed from "@/components/home/feed";
+import ProfileSidebar from "@/components/serverComponents/sidebar/profile-sidebar";
 
-export default function Home() {
+export default async function Home() {
   return (
-    <>
-      <Feed />
-    </>
+    <div className="mt-16">
+      <div className="fixed w-80 bg-slate-200">
+        <ProfileSidebar />
+      </div>
+      <div className="flex justify-center">
+        <Feed />
+      </div>
+    </div>
   );
 }

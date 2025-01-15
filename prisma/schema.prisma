@@ -12,3 +12,44 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  user_id          String       @id
+  username         String       @unique
+  user_avatar_url  String
+  first_name       String
+  last_name        String
+  user_email       String       @unique
+  posts            Post[]
+  sentRequests     Friendship[] @relation(name: "UserSentRequests")
+  receivedRequests Friendship[] @relation(name: "UserReceivedRequests")
+
+  @@index([username])
+}
+
+model Friendship {
+  friendship_id String          @id @default(uuid())
+  requester_id  String
+  receiver_id   String
+  status        FriendshipStaus @default(PENDING)
+  requester     User            @relation(name: "UserReceivedRequests", fields: [requester_id], references: [user_id])
+  receiver      User            @relation(name: "UserSentRequests", fields: [receiver_id], references: [user_id])
+
+  @@unique([requester_id, receiver_id])
+}
+
+enum FriendshipStaus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model Post {
+  user_id             String
+  post_id             String   @id @default(cuid())
+  post_content        String?  @db.Text
+  post_image_location String?
+  createDate          DateTime @default(now())
+  updateDate          DateTime @default(now())
+  user                User     @relation(fields: [user_id], references: [user_id])
+}
