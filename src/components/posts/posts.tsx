@@ -1,11 +1,16 @@
+"use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ThumbsUp, MessageCircle } from "lucide-react";
 import Container from "../UI/container";
 import { formatDate } from "@/lib/dateUtils";
 import Link from "next/link";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 type PostsProps = {
+  postId: string;
+  postLikeCount: number;
   username?: string;
   postText?: string | null;
   postImageUrl?: string | null;
@@ -13,7 +18,29 @@ type PostsProps = {
   fullName: string;
   createdDate: Date;
 };
+
+async function isPostLiked({ queryKey }: { queryKey: [string, string] }) {
+  const [, postId] = queryKey;
+  const response = await axios.get(`/api/posts/isliked?postId=${postId}`);
+  console.log(response.data);
+  return response.data;
+}
+
+async function likePost(postId: string) {
+  const response = await axios.post("/api/posts/like", { postId });
+  return response.data;
+}
+
+async function removePostLike(postId: string) {
+  const response = await axios.delete(
+    `/api/posts/remove-like?postId=${postId}`
+  );
+  return response.data;
+}
+
 function Posts({
+  postId,
+  postLikeCount,
   username,
   postText,
   postImageUrl,
@@ -21,6 +48,38 @@ function Posts({
   fullName,
   createdDate,
 }: PostsProps) {
+  const queryClient = useQueryClient();
+  const { data } = useQuery({
+    queryKey: ["ispostLiked", postId],
+    queryFn: isPostLiked,
+  });
+  const removePostLikeMutaion = useMutation({ mutationFn: removePostLike });
+  const postLikeMutation = useMutation({ mutationFn: likePost });
+  const [isLiked, setIsLiked] = useState<boolean | null>(null);
+  const [likeCount, setLikeCount] = useState<number>(postLikeCount);
+
+  const likeClickHandler = () => {
+    if (isLiked) {
+      removePostLikeMutaion.mutate(postId, {
+        onSuccess: () =>
+          queryClient.invalidateQueries({ queryKey: ["ispostLiked"] }),
+      });
+      setIsLiked(false);
+      setLikeCount((prev) => prev - 1);
+    } else {
+      postLikeMutation.mutate(postId, {
+        onSuccess: () =>
+          queryClient.invalidateQueries({ queryKey: ["ispostLiked"] }),
+      });
+      setIsLiked(true);
+      setLikeCount((prev) => prev + 1);
+    }
+  };
+  useEffect(() => {
+    if (data && data.isLiked) {
+      setIsLiked(data.isLiked);
+    }
+  }, [data]);
   return (
     <Container className="mb-2 p-4">
       <div className="flex p-2 gap-2">
@@ -50,9 +109,20 @@ function Posts({
           <Image src={postImageUrl} alt="post_image" height={300} width={300} />
         </div>
       ) : null}
-      <div className="h-[1px] w-full bg-gray-200 mt-3"></div>
+      {likeCount ? (
+        <div className="mt-1 flex items-center">
+          <ThumbsUp size={18} />
+          {likeCount}
+        </div>
+      ) : null}
+      <div className="h-[1px] w-full bg-gray-200 mt-1"></div>
       <div className="flex justify-evenly pt-1">
-        <div className="group flex w-fit hover:bg-zinc-300 active:text-[#0566FF] active:scale-95 cursor-pointer py-1 px-6 rounded">
+        <div
+          onClick={likeClickHandler}
+          className={`group flex w-fit hover:bg-zinc-300 active:text-[#0566FF] active:scale-95 cursor-pointer py-1 px-6 rounded ${
+            isLiked ? "text-[#0566FF]" : ""
+          }`}
+        >
           <span className="inline-block group-active:-rotate-12 transition-all">
             <ThumbsUp size={20} />
           </span>

@@ -23,6 +23,7 @@ model User {
   posts            Post[]
   sentRequests     Friendship[] @relation(name: "UserSentRequests")
   receivedRequests Friendship[] @relation(name: "UserReceivedRequests")
+  Like             Like[]
 
   @@index([username])
 }
@@ -46,6 +47,17 @@ enum FriendshipStaus {
   BLOCKED
 }
 
+model Like {
+  id        String   @id @default(cuid())
+  post_id   String
+  user_id   String
+  createdAt DateTime @default(now())
+  Post      Post     @relation(fields: [post_id], references: [post_id])
+  user      User     @relation(fields: [user_id], references: [user_id])
+
+  @@unique([post_id, user_id])
+}
+
 model Post {
   user_id             String
   post_id             String   @id @default(cuid())
@@ -54,4 +66,6 @@ model Post {
   createDate          DateTime @default(now())
   updateDate          DateTime @default(now())
   user                User     @relation(fields: [user_id], references: [user_id])
+  likes_count          Int      @default(0)
+  likes               Like[]
 }

@@ -419,3 +419,45 @@ export async function removeFriend(userId: string, targetUserId: string) {
 
   return removedFriendship;
 }
+
+// Post Like feature
+
+export async function isPostLiked(
+  postId: string,
+  userId: string
+): Promise<boolean> {
+  const postLiked = await prisma.like.findUnique({
+    where: { post_id_user_id: { post_id: postId, user_id: userId } },
+  });
+  if (postLiked) {
+    return true;
+  }
+  return false;
+}
+
+export async function likePost(postId: string, userId: string) {
+  const [postLiked] = await prisma.$transaction([
+    prisma.like.create({
+      data: { post_id: postId, user_id: userId },
+    }),
+    prisma.post.update({
+      where: { post_id: postId },
+      data: { likes_count: { increment: 1 } },
+    }),
+  ]);
+
+  return postLiked;
+}
+
+export async function removePostLike(postId: string, userId: string) {
+  const [removedLike] = await prisma.$transaction([
+    prisma.like.delete({
+      where: { post_id_user_id: { post_id: postId, user_id: userId } },
+    }),
+    prisma.post.update({
+      where: { post_id: postId },
+      data: { likes_count: { decrement: 1 } },
+    }),
+  ]);
+  return removedLike;
+}

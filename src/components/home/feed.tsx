@@ -35,6 +35,8 @@ function feed() {
         return (
           <Posts
             key={post.post_id}
+            postId={post.post_id}
+            postLikeCount={post.likes_count}
             username={post.user.username}
             postText={post.post_content}
             postImageUrl={post.post_image_url}
