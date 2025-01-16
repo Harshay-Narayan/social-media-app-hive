@@ -12,9 +12,9 @@ async function getFriendsList() {
 }
 
 async function removeFriend(targetUsername: string) {
-  const response = await axios.delete(
-    `/api/friends/remove-friend?username=${targetUsername}`
-  );
+  const response = await axios.put("/api/friends/remove-friend", {
+    username: targetUsername,
+  });
   return response.data;
 }
 function FriendsList() {

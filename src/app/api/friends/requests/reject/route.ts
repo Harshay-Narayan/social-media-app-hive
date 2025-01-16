@@ -2,7 +2,7 @@ import { getAuthInfo } from "@/lib/authUtil";
 import { getUserId, rejectFriendRequest } from "@/lib/dbUtils";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
+export async function PUT(request: NextRequest) {
   try {
     const authInfo = await getAuthInfo();
     if (!authInfo) {

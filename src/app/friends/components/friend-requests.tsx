@@ -19,7 +19,7 @@ async function acceptFriendRequest(targetUsername: string) {
 }
 
 async function rejectFriendRequest(targetUsername: string) {
-  const response = await axios.post("/api/friends/requests/reject", {
+  const response = await axios.put("/api/friends/requests/reject", {
     username: targetUsername,
   });
   return response.data;

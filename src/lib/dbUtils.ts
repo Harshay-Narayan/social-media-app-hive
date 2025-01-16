@@ -271,6 +271,30 @@ export async function isFriendRequestPending(
 }
 
 export async function sendFriendRequest(userId: string, targetUserId: string) {
+  const friendshipRecordAlreadyExists = await prisma.friendship.findFirst({
+    where: {
+      AND: [
+        {
+          OR: [
+            { requester_id: userId, receiver_id: targetUserId },
+            { requester_id: targetUserId, receiver_id: userId },
+          ],
+        },
+        { OR: [{ status: "REJECTED" }, { status: "UNFRIENDED" }] },
+      ],
+    },
+  });
+  if (friendshipRecordAlreadyExists) {
+    const friendship = await prisma.friendship.update({
+      where: { friendship_id: friendshipRecordAlreadyExists.friendship_id },
+      data: {
+        requester_id: userId,
+        receiver_id: targetUserId,
+        status: "PENDING",
+      },
+    });
+    return friendship;
+  }
   const friendship = await prisma.friendship.create({
     data: { requester_id: userId, receiver_id: targetUserId },
   });
@@ -297,22 +321,14 @@ export async function rejectFriendRequest(
   userId: string,
   targetUserId: string
 ) {
-  // const friendship = await prisma.friendship.update({
-  //   where: {
-  //     requester_id_receiver_id: {
-  //       receiver_id: userId,
-  //       requester_id: targetUserId,
-  //     },
-  //   },
-  //   data: { status: "REJECTED" },
-  // });
-  const rejectedFriendShip = await prisma.friendship.delete({
+  const rejectedFriendShip = await prisma.friendship.update({
     where: {
       requester_id_receiver_id: {
         receiver_id: userId,
         requester_id: targetUserId,
       },
     },
+    data: { status: "REJECTED" },
   });
   return rejectedFriendShip;
 }
@@ -384,4 +400,22 @@ export async function getFriendList(userId: string) {
   });
 
   return friendList;
+}
+
+export async function removeFriend(userId: string, targetUserId: string) {
+  const friendship = await prisma.friendship.findFirst({
+    where: {
+      OR: [
+        { requester_id: userId, receiver_id: targetUserId },
+        { requester_id: targetUserId, receiver_id: userId },
+      ],
+    },
+  });
+
+  const removedFriendship = await prisma.friendship.update({
+    where: { friendship_id: friendship?.friendship_id },
+    data: { status: "UNFRIENDED" },
+  });
+
+  return removedFriendship;
 }

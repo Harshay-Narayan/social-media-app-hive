@@ -42,6 +42,8 @@ enum FriendshipStaus {
   PENDING
   ACCEPTED
   REJECTED
+  UNFRIENDED
+  BLOCKED
 }
 
 model Post {
