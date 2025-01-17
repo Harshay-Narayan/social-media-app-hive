@@ -7,26 +7,25 @@ import CloseButton from "../UI/CloseButton";
 import createPost from "@/actions/createPost";
 import Container from "../UI/container";
 import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Loader from "../UI/loader";
 import UserService from "@/lib/services/userService";
 import { revalidatePath } from "next/cache";
+import { useCreatePost } from "@/context";
 
 interface IFormInput {
   post_content: string | null;
   post_image: File | null;
 }
 
-type CreatePostFormProps = {
-  showCreatePostFormHandler: () => void;
-};
-
 const submitFormData = async (formData: FormData) => {
   const { data } = await axios.post("/api/posts", formData);
   return data;
 };
 
-function CreatePostForm({ showCreatePostFormHandler }: CreatePostFormProps) {
+function CreatePostForm() {
+  const queryClient = useQueryClient();
+  const { toggleShowCreatePostFrom } = useCreatePost();
   const { userProfileImageUrl, userFullName } = UserService.getUserInfo();
   const { register, handleSubmit, setValue, reset, watch } =
     useForm<IFormInput>({
@@ -41,6 +40,7 @@ function CreatePostForm({ showCreatePostFormHandler }: CreatePostFormProps) {
 
   const { mutate, data, isPending, isError, error } = useMutation({
     mutationFn: submitFormData,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["getPosts"] }),
   });
 
   const onSubmit: SubmitHandler<IFormInput> = (input) => {
@@ -49,11 +49,9 @@ function CreatePostForm({ showCreatePostFormHandler }: CreatePostFormProps) {
     const formData = new FormData();
     formData.append("post_content", input.post_content || "");
     formData.append("post_image", input.post_image || "");
-    mutate(formData, {
-      onSuccess: () => {},
-    });
+    mutate(formData);
     reset();
-    showCreatePostFormHandler();
+    toggleShowCreatePostFrom();
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,8 +79,8 @@ function CreatePostForm({ showCreatePostFormHandler }: CreatePostFormProps) {
         <CloseButton
           className="ml-auto"
           crossColor="#444"
-          onClick={showCreatePostFormHandler}
-          onClose={showCreatePostFormHandler}
+          onClick={toggleShowCreatePostFrom}
+          onClose={toggleShowCreatePostFrom}
         />
       </div>
       <div className="bg-gray-400 h-[1px] w-full"></div>

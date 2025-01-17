@@ -1,5 +1,6 @@
 import Feed from "@/components/home/feed";
 import ProfileSidebar from "@/components/serverComponents/sidebar/profile-sidebar";
+import { CreatePostProvider } from "@/context";
 
 export default async function Home() {
   return (
@@ -8,7 +9,9 @@ export default async function Home() {
         <ProfileSidebar />
       </div>
       <div className="flex justify-center">
-        <Feed />
+        <CreatePostProvider>
+          <Feed />
+        </CreatePostProvider>
       </div>
     </div>
   );

@@ -7,12 +7,10 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { IPost } from "@/types";
 import PostsSkeletonLoader from "../UI/posts-skeleton-loader";
+import { useCreatePost } from "@/context";
 
 function feed() {
-  const [showCreatePostForm, setShowCreatePostForm] = useState<boolean>(false);
-  const showCreatePostFormHandler = () => {
-    setShowCreatePostForm(!showCreatePostForm);
-  };
+  const { showCreatePostForm } = useCreatePost();
   const { data, isError, isLoading, error } = useQuery({
     queryKey: ["getPosts"],
     queryFn: async () => {
@@ -20,7 +18,7 @@ function feed() {
       return response.data;
     },
   });
-  console.log(data);
+  
   if (isLoading)
     return (
       <div className="flex flex-col">
@@ -30,7 +28,7 @@ function feed() {
   if (isError) return <span>Error occured: {error?.message}</span>;
   return (
     <div className="w-[36rem]">
-      <PostActionHeader showCreatePostFormHandler={showCreatePostFormHandler} />
+      <PostActionHeader />
       {data.posts.map((post: IPost) => {
         return (
           <Posts
@@ -47,9 +45,7 @@ function feed() {
         );
       })}
 
-      {showCreatePostForm ? (
-        <CreatePost showCreatePostFormHandler={showCreatePostFormHandler} />
-      ) : null}
+      {showCreatePostForm ? <CreatePost /> : null}
     </div>
   );
 }

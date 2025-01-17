@@ -3,22 +3,20 @@ import Image from "next/image";
 import React from "react";
 import { useUser } from "@clerk/nextjs";
 import Container from "../UI/container";
+import { useCreatePost } from "@/context";
 
-type PostActionHeaderProps = {
-  showCreatePostFormHandler: () => void;
-};
+// type PostActionHeaderProps = {
+//   showCreatePostFormHandler: () => void;
+// };
 
-function PostActionHeader({
-  showCreatePostFormHandler,
-}: PostActionHeaderProps) {
-  // const [showCreatePostForm, setShowCreatePostForm] = useState(false);
+function PostActionHeader() {
   const { user } = useUser();
-  // const showCreatePostFormHandler = () => {
-  //   setShowCreatePostForm(!showCreatePostForm);
+
+  // const onShowCreateForm = () => {
+  //   showCreatePostFormHandler();
   // };
-  const onShowCreateForm = () => {
-    showCreatePostFormHandler();
-  };
+
+  const { toggleShowCreatePostFrom } = useCreatePost();
 
   if (!user) return null;
   return (
@@ -35,7 +33,7 @@ function PostActionHeader({
         </div>
         <div
           className="bg-zinc-200 w-full ml-3 h-10 rounded-full px-3 cursor-pointer flex items-center"
-          onClick={onShowCreateForm}
+          onClick={toggleShowCreatePostFrom}
         >
           what&apos;s on your mind, {user?.firstName}
         </div>
