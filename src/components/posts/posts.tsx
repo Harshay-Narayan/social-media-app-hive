@@ -17,14 +17,15 @@ type PostsProps = {
   userProfileImageUrl: string;
   fullName: string;
   createdDate: Date;
+  isLiked: boolean;
 };
 
-async function isPostLiked({ queryKey }: { queryKey: [string, string] }) {
-  const [, postId] = queryKey;
-  const response = await axios.get(`/api/posts/isliked?postId=${postId}`);
-  console.log(response.data);
-  return response.data;
-}
+// async function getIsPostLiked({ queryKey }: { queryKey: [string, string] }) {
+//   const [, postId] = queryKey;
+//   const response = await axios.get(`/api/posts/isliked?postId=${postId}`);
+//   console.log(response.data);
+//   return response.data;
+// }
 
 async function likePost(postId: string) {
   const response = await axios.post("/api/posts/like", { postId });
@@ -47,15 +48,16 @@ function Posts({
   userProfileImageUrl,
   fullName,
   createdDate,
+  isLiked,
 }: PostsProps) {
   const queryClient = useQueryClient();
-  const { data } = useQuery({
-    queryKey: ["ispostLiked", postId],
-    queryFn: isPostLiked,
-  });
+  // const { data } = useQuery({
+  //   queryKey: ["ispostLiked", postId],
+  //   queryFn: getIsPostLiked,
+  // });
   const removePostLikeMutaion = useMutation({ mutationFn: removePostLike });
   const postLikeMutation = useMutation({ mutationFn: likePost });
-  const [isLiked, setIsLiked] = useState<boolean | null>(null);
+  const [isPostLiked, setIsPostLiked] = useState<boolean | null>(isLiked);
   const [likeCount, setLikeCount] = useState<number>(postLikeCount);
 
   const likeClickHandler = () => {
@@ -64,22 +66,22 @@ function Posts({
         onSuccess: () =>
           queryClient.invalidateQueries({ queryKey: ["ispostLiked"] }),
       });
-      setIsLiked(false);
+      setIsPostLiked(false);
       setLikeCount((prev) => prev - 1);
     } else {
       postLikeMutation.mutate(postId, {
         onSuccess: () =>
           queryClient.invalidateQueries({ queryKey: ["ispostLiked"] }),
       });
-      setIsLiked(true);
+      setIsPostLiked(true);
       setLikeCount((prev) => prev + 1);
     }
   };
-  useEffect(() => {
-    if (data && data.isLiked) {
-      setIsLiked(data.isLiked);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data && data.isLiked) {
+  //     setIsLiked(data.isLiked);
+  //   }
+  // }, [data]);
   return (
     <Container className="mb-2 p-4">
       <div className="flex p-2 gap-2">
@@ -120,7 +122,7 @@ function Posts({
         <div
           onClick={likeClickHandler}
           className={`group flex w-fit hover:bg-zinc-300 active:text-[#0566FF] active:scale-95 cursor-pointer py-1 px-6 rounded ${
-            isLiked ? "text-[#0566FF]" : ""
+            isPostLiked ? "text-[#0566FF]" : ""
           }`}
         >
           <span className="inline-block group-active:-rotate-12 transition-all">

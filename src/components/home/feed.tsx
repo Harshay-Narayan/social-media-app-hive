@@ -18,7 +18,7 @@ function feed() {
       return response.data;
     },
   });
-  
+
   if (isLoading)
     return (
       <div className="flex flex-col">
@@ -33,6 +33,7 @@ function feed() {
         return (
           <Posts
             key={post.post_id}
+            isLiked={post.isLiked}
             postId={post.post_id}
             postLikeCount={post.likes_count}
             username={post.user.username}

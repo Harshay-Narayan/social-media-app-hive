@@ -2,8 +2,7 @@ import { Post, Prisma, User } from "@prisma/client";
 import { prisma, supabase } from "./client";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
-import { IPostWithUserAvatar } from "@/types";
-import { getAuthInfo } from "./authUtil";
+import { IPostWithUserAvatar, IPostWithUserAvatarAndLikes } from "@/types";
 
 // user features
 
@@ -86,9 +85,12 @@ export async function createPost(
   return post;
 }
 
-export async function getAllPosts(): Promise<IPostWithUserAvatar[]> {
+export async function getAllPosts(
+  userId: string
+): Promise<IPostWithUserAvatarAndLikes[]> {
   const allPosts = await prisma.post.findMany({
     include: {
+      likes: { where: { user_id: userId }, select: { id: true } },
       user: {
         select: {
           user_avatar_url: true,
@@ -104,13 +106,14 @@ export async function getAllPosts(): Promise<IPostWithUserAvatar[]> {
 }
 
 export async function getPostsofUser(
-  user_id: string
-): Promise<IPostWithUserAvatar[]> {
+  userId: string
+): Promise<IPostWithUserAvatarAndLikes[]> {
   const posts = await prisma.post.findMany({
     where: {
-      user_id,
+      user_id: userId,
     },
     include: {
+      likes: { where: { user_id: userId }, select: { id: true } },
       user: {
         select: {
           user_avatar_url: true,

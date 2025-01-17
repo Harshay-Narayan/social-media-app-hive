@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Post } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { IPost } from "@/types";
+import { getAuthInfo } from "@/lib/authUtil";
 
 const BUCKET_NAME = "post-images";
 
@@ -87,17 +88,27 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    const allPosts = await getAllPosts();
+    const authInfo = await getAuthInfo();
+    if (!authInfo) {
+      return NextResponse.json(
+        { message: "Unauthorized: Please log in to send a friend request." },
+        { status: 401 }
+      );
+    }
+    const allPosts = await getAllPosts(authInfo.id);
     const postsWithImageUrl: IPost[] = allPosts.map((post) => {
       try {
+        const { likes, ...rest } = post;
         return {
-          ...post,
+          ...rest,
           post_image_url: post.post_image_location
             ? getImageUrl(BUCKET_NAME, post.post_image_location)
             : null,
+          isLiked: !!post.likes.length,
         };
       } catch (error) {
-        return { ...post, post_image_url: null };
+        const { likes, ...rest } = post;
+        return { ...rest, post_image_url: null, isLiked: !!post.likes.length };
       }
     });
     return NextResponse.json({ posts: postsWithImageUrl });
