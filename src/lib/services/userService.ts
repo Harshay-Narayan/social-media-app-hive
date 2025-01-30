@@ -8,6 +8,9 @@ class UserService {
       userFullName: user?.fullName,
       userProfileImageUrl: user?.imageUrl,
       username: user?.username,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      userId: user?.id,
     };
   }
 }

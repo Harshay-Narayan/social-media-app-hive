@@ -1,8 +1,8 @@
 import { getAuthInfo } from "@/lib/authUtil";
 import { getFriendsSuggestions } from "@/lib/dbUtils";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const authInfo = await getAuthInfo();
     if (!authInfo) {

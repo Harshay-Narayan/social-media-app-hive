@@ -1,5 +1,5 @@
 import { getAuthInfo } from "@/lib/authUtil";
-import { isPostLiked, likePost, removePostLike } from "@/lib/dbUtils";
+import { removePostLike } from "@/lib/dbUtils";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(request: NextRequest) {
@@ -28,6 +28,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { message: "Failed to remove the like" },
       { status: 500 }

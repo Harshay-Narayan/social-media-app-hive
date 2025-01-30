@@ -1,11 +1,11 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ThumbsUp, MessageCircle } from "lucide-react";
 import Container from "../UI/container";
 import { formatDate } from "@/lib/dateUtils";
 import Link from "next/link";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 type PostsProps = {
@@ -51,37 +51,27 @@ function Posts({
   isLiked,
 }: PostsProps) {
   const queryClient = useQueryClient();
-  // const { data } = useQuery({
-  //   queryKey: ["ispostLiked", postId],
-  //   queryFn: getIsPostLiked,
-  // });
   const removePostLikeMutaion = useMutation({ mutationFn: removePostLike });
   const postLikeMutation = useMutation({ mutationFn: likePost });
   const [isPostLiked, setIsPostLiked] = useState<boolean | null>(isLiked);
   const [likeCount, setLikeCount] = useState<number>(postLikeCount);
 
   const likeClickHandler = () => {
-    if (isLiked) {
+    if (isPostLiked) {
       removePostLikeMutaion.mutate(postId, {
-        onSuccess: () =>
-          queryClient.invalidateQueries({ queryKey: ["ispostLiked"] }),
+        // onSuccess: () =>queryClient.invalidateQueries({ queryKey: ["getPosts"] }),
       });
       setIsPostLiked(false);
       setLikeCount((prev) => prev - 1);
     } else {
       postLikeMutation.mutate(postId, {
-        onSuccess: () =>
-          queryClient.invalidateQueries({ queryKey: ["ispostLiked"] }),
+        // onSuccess: () =>queryClient.invalidateQueries({ queryKey: ["getPosts"] }),
       });
       setIsPostLiked(true);
       setLikeCount((prev) => prev + 1);
     }
   };
-  // useEffect(() => {
-  //   if (data && data.isLiked) {
-  //     setIsLiked(data.isLiked);
-  //   }
-  // }, [data]);
+
   return (
     <Container className="mb-2 p-4">
       <div className="flex p-2 gap-2">
@@ -108,7 +98,7 @@ function Posts({
       {postText ? <div>{postText}</div> : null}
       {postImageUrl ? (
         <div>
-          <Image src={postImageUrl} alt="post_image" height={300} width={300} />
+          <Image src={postImageUrl} alt="post_image" height={600} width={600} />
         </div>
       ) : null}
       {likeCount ? (

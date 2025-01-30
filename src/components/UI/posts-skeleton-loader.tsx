@@ -3,7 +3,7 @@ import Container from "./container";
 
 function PlaceholderCards() {
   return (
-    <Container className="w-[36rem] h-56 p-4 mt-2 mb-2">
+    <Container className="sm:w-[36rem] h-56 p-4 mx-4 my-2 skeleton">
       <div className="flex items-center gap-3">
         <div className="bg-slate-200 rounded-full h-10 w-10"></div>
         <div>

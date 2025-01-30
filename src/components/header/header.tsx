@@ -1,6 +1,8 @@
 import { SignedIn, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import React from "react";
+import Notification from "./notifications/notification";
+
 
 function Header() {
   return (
@@ -14,6 +16,7 @@ function Header() {
         <div>
           <Link href="/">Home</Link>
         </div>
+        <Notification/>
       </div>
     </header>
   );

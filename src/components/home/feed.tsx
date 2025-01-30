@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import PostActionHeader from "./post-action-header";
 import Posts from "../posts/posts";
 import CreatePost from "./create-post";
@@ -21,13 +21,13 @@ function feed() {
 
   if (isLoading)
     return (
-      <div className="flex flex-col">
+      <div className="flex flex-col w-full sm:w-auto">
         <PostsSkeletonLoader />
       </div>
     );
   if (isError) return <span>Error occured: {error?.message}</span>;
   return (
-    <div className="w-[36rem]">
+    <div className="w-[34rem] mx-4 sm:mx-0">
       <PostActionHeader />
       {data.posts.map((post: IPost) => {
         return (

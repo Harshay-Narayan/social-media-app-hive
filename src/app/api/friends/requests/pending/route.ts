@@ -1,15 +1,12 @@
 import { getAuthInfo } from "@/lib/authUtil";
 import { getPendingFriendRequests, getUserId } from "@/lib/dbUtils";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const authInfo = await getAuthInfo();
     if (!authInfo) {
-      return NextResponse.json(
-        { message: "UserId required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: "UserId required" }, { status: 400 });
     }
     if (!authInfo.id) {
       return NextResponse.json(

@@ -1,8 +1,8 @@
-import { Post, Prisma, User } from "@prisma/client";
+import { Post, User } from "@prisma/client";
 import { prisma, supabase } from "./client";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
-import { IPostWithUserAvatar, IPostWithUserAvatarAndLikes } from "@/types";
+import { IPostWithUserAvatarAndLikes } from "@/types";
 
 // user features
 
@@ -53,6 +53,19 @@ export async function getUserId(username: string) {
   return null;
 }
 
+export async function getUserInfo(userId: string) {
+  return await prisma.user.findUnique({
+    where: { user_id: userId },
+    select: {
+      first_name: true,
+      last_name: true,
+      user_avatar_url: true,
+      username: true,
+      user_id: true,
+    },
+  });
+}
+
 export async function updateUserProfileImage(
   user_id: string,
   user_avatar_url: string
@@ -85,6 +98,13 @@ export async function createPost(
   return post;
 }
 
+export async function getUserIdFromPostId(postId: string) {
+  return await prisma.post.findUnique({
+    where: { post_id: postId },
+    select: { user_id: true },
+  });
+}
+
 export async function getAllPosts(
   userId: string
 ): Promise<IPostWithUserAvatarAndLikes[]> {
@@ -106,14 +126,15 @@ export async function getAllPosts(
 }
 
 export async function getPostsofUser(
-  userId: string
+  userId: string,
+  currentUserId: string
 ): Promise<IPostWithUserAvatarAndLikes[]> {
   const posts = await prisma.post.findMany({
     where: {
       user_id: userId,
     },
     include: {
-      likes: { where: { user_id: userId }, select: { id: true } },
+      likes: { where: { user_id: currentUserId }, select: { id: true } },
       user: {
         select: {
           user_avatar_url: true,
@@ -425,18 +446,18 @@ export async function removeFriend(userId: string, targetUserId: string) {
 
 // Post Like feature
 
-export async function isPostLiked(
-  postId: string,
-  userId: string
-): Promise<boolean> {
-  const postLiked = await prisma.like.findUnique({
-    where: { post_id_user_id: { post_id: postId, user_id: userId } },
-  });
-  if (postLiked) {
-    return true;
-  }
-  return false;
-}
+// export async function isPostLiked(
+//   postId: string,
+//   userId: string
+// ): Promise<boolean> {
+//   const postLiked = await prisma.like.findUnique({
+//     where: { post_id_user_id: { post_id: postId, user_id: userId } },
+//   });
+//   if (postLiked) {
+//     return true;
+//   }
+//   return false;
+// }
 
 export async function likePost(postId: string, userId: string) {
   const [postLiked] = await prisma.$transaction([
@@ -463,4 +484,77 @@ export async function removePostLike(postId: string, userId: string) {
     }),
   ]);
   return removedLike;
+}
+
+// Notification feature
+
+interface ICreateNotification {
+  userId: string;
+  actorId: string;
+  postId?: string | null;
+  commentId?: string | null;
+  friendshipId?: string | null;
+}
+export async function createNotification({
+  userId,
+  actorId,
+  postId,
+  commentId,
+  friendshipId,
+}: ICreateNotification) {
+  if (userId === actorId) {
+    return;
+  }
+  if (commentId) {
+    await prisma.notifications.create({
+      data: {
+        user_id: userId,
+        actor_id: actorId,
+        comment_id: commentId,
+        type: "COMMENT",
+      },
+    });
+  }
+  if (postId) {
+    await prisma.notifications.create({
+      data: {
+        user_id: userId,
+        actor_id: actorId,
+        post_id: postId,
+        type: "LIKE",
+      },
+    });
+  }
+  if (friendshipId) {
+    await prisma.notifications.create({
+      data: {
+        user_id: userId,
+        actor_id: actorId,
+        friendshi_id: friendshipId,
+        type: "FRIENDREQUEST",
+      },
+    });
+  }
+  return;
+}
+
+export async function getNotifications(userId: string) {
+  const [notifications, unreadPostsCount] = await prisma.$transaction([
+    prisma.notifications.findMany({
+      where: { user_id: userId },
+      orderBy: { createdDate: "desc" },
+    }),
+    prisma.notifications.count({
+      where: { AND: [{ user_id: userId }, { is_read: false }] },
+    }),
+  ]);
+
+  return { notifications, unreadPostsCount };
+}
+
+export async function readNotification(notificationId: string) {
+  await prisma.notifications.update({
+    where: { notification_id: notificationId },
+    data: { is_read: true },
+  });
 }

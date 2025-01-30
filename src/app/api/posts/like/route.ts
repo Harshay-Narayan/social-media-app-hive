@@ -1,5 +1,10 @@
 import { getAuthInfo } from "@/lib/authUtil";
-import { isPostLiked, likePost } from "@/lib/dbUtils";
+import {
+  createNotification,
+  getUserIdFromPostId,
+  likePost,
+} from "@/lib/dbUtils";
+import pusher from "@/lib/pusher";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -19,17 +24,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const postLiked = await isPostLiked(postId, authInfo.id);
-    if (postLiked) {
-      return NextResponse.json(
-        { message: "post already liked" },
-        { status: 400 }
-      );
-    }
-    const likedThePost = await likePost(postId, authInfo.id);
-    if (likedThePost) {
-      return NextResponse.json({ message: "Post liked" }, { status: 201 });
-    }
+    await likePost(postId, authInfo.id);
+    const postOwnerId = (await getUserIdFromPostId(postId))?.user_id;
+    await createNotification({
+      userId: postOwnerId || "",
+      actorId: authInfo.id,
+      postId,
+    });
+    await pusher.trigger(
+      `notifications-${postOwnerId}`,
+      "new-notification",
+      {}
+    );
+    return NextResponse.json({ message: "Post liked" }, { status: 201 });
   } catch (error) {
     return NextResponse.json(
       { message: "Failed to like the post" },

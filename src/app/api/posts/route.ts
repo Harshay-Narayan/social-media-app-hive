@@ -104,11 +104,11 @@ export async function GET() {
           post_image_url: post.post_image_location
             ? getImageUrl(BUCKET_NAME, post.post_image_location)
             : null,
-          isLiked: !!post.likes.length,
+          isLiked: !!likes.length,
         };
       } catch (error) {
         const { likes, ...rest } = post;
-        return { ...rest, post_image_url: null, isLiked: !!post.likes.length };
+        return { ...rest, post_image_url: null, isLiked: !!likes.length };
       }
     });
     return NextResponse.json({ posts: postsWithImageUrl });

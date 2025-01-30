@@ -1,16 +1,13 @@
 "use client";
-import React, { useRef, useState, MouseEvent } from "react";
+import React, { useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { X, ImagePlus } from "lucide-react";
+import { ImagePlus } from "lucide-react";
 import Image from "next/image";
 import CloseButton from "../UI/CloseButton";
-import createPost from "@/actions/createPost";
 import Container from "../UI/container";
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Loader from "../UI/loader";
 import UserService from "@/lib/services/userService";
-import { revalidatePath } from "next/cache";
 import { useCreatePost } from "@/context";
 
 interface IFormInput {
@@ -26,7 +23,8 @@ const submitFormData = async (formData: FormData) => {
 function CreatePostForm() {
   const queryClient = useQueryClient();
   const { toggleShowCreatePostFrom } = useCreatePost();
-  const { userProfileImageUrl, userFullName } = UserService.getUserInfo();
+  const { userProfileImageUrl, userFullName, firstName } =
+    UserService.getUserInfo();
   const { register, handleSubmit, setValue, reset, watch } =
     useForm<IFormInput>({
       defaultValues: { post_content: null, post_image: null },
@@ -72,7 +70,7 @@ function CreatePostForm() {
   };
 
   return (
-    <Container role="dialog" className="w-[36rem]">
+    <Container role="dialog" className="w-[34rem]">
       {/* <Loader /> */}
       <div className="flex p-2">
         <div className="ml-auto font-extrabold">Create Post</div>
@@ -84,8 +82,8 @@ function CreatePostForm() {
         />
       </div>
       <div className="bg-gray-400 h-[1px] w-full"></div>
-      <div className="p-2">
-        <div className="flex mt-4 items-center">
+      <div className="p-3">
+        <div className="flex p-2 items-center">
           <div className="h-10 w-10 rounded-full overflow-hidden">
             <Image
               src={userProfileImageUrl ? userProfileImageUrl : "/avatar.svg"}
@@ -97,16 +95,22 @@ function CreatePostForm() {
           <div className="pl-2 font-bold">{userFullName}</div>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} action={createPost}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           {imagePreview ? (
-            <div className="h-72 overflow-y-scroll">
+            <div className="h-72 overflow-y-scroll hidden-scrollbar">
               <textarea
                 {...register("post_content")}
-                className="w-full h-32 outline-none border border-red-100 p-2 mt-4"
+                className="w-full h-32 outline-none p-2 mt-4"
+                placeholder={`What's on your mind, ${firstName}`}
               />
 
-              <div className="mt-4 border h-60 p-2 rounded relative aspect-square z-10">
-                <Image src={imagePreview} fill alt="Image-preview" />
+              <div className="mt-4 border p-2 rounded relative z-10">
+                <Image
+                  src={imagePreview}
+                  width={500}
+                  height={500}
+                  alt="Image-preview"
+                />
                 <div className="absolute right-3 top-3">
                   <CloseButton
                     className="ml-auto"
@@ -118,7 +122,8 @@ function CreatePostForm() {
           ) : (
             <textarea
               {...register("post_content")}
-              className="w-full outline-none border border-red-100 p-2 h-56 mt-4"
+              className="w-full outline-none p-2 h-56 mt-4"
+              placeholder={`What's on your mind, ${firstName}`}
             />
           )}
           <div className="mt-4">

@@ -7,15 +7,42 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.hidden-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 0;
+}
+.hidden-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgb(182, 181, 181);
+  border-radius: 8px;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.skeleton div {
+  position: relative;
+  color: #eee;
+  overflow: hidden;
+}
+
+.skeleton div::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100px;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.5),
+    transparent
+  );
+  animation: skeletonSlide 1s infinite ease-in-out;
+}
+
+@keyframes skeletonSlide {
+  from {
+    left: -100px;
+  }
+  to {
+    left: calc(100% + 100px);
+  }
 }

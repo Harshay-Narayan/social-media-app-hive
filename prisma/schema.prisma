@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      =  env("DATABASE_URL")
 }
 
 model User {
@@ -66,6 +66,28 @@ model Post {
   createDate          DateTime @default(now())
   updateDate          DateTime @default(now())
   user                User     @relation(fields: [user_id], references: [user_id])
-  likes_count          Int      @default(0)
+  likes_count         Int      @default(0)
   likes               Like[]
+
+  @@index([post_id, user_id])
+}
+
+model Notifications {
+  notification_id String             @id @default(cuid())
+  user_id         String
+  actor_id        String
+  post_id         String?
+  comment_id      String?
+  friendshi_id    String?
+  is_read         Boolean            @default(false)
+  type            NotificationsTypes
+  createdDate     DateTime           @default(now())
+
+  @@index([user_id])
+}
+
+enum NotificationsTypes {
+  LIKE
+  COMMENT
+  FRIENDREQUEST
 }

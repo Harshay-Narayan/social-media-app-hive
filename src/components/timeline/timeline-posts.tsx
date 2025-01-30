@@ -6,23 +6,19 @@ import Posts from "../posts/posts";
 import { IPost } from "@/types";
 import PostsSkeletonLoader from "../UI/posts-skeleton-loader";
 
-async function getMyPosts({
-  queryKey,
-}: {
-  queryKey: [string, { username: string }];
-}) {
-  const [, { username }] = queryKey;
-  const response = await axios.get(`/api/timeline/${username}`);
+async function getMyPosts({ queryKey }: { queryKey: [string, string] }) {
+  const [, username] = queryKey;
+  const response = await axios.get(`/api/timeline?username=${username}`);
   return response.data;
 }
 
 function TimelinePosts({ username }: { username: string }) {
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["timelinePosts", { username }],
+    queryKey: ["timelinePosts", username],
     queryFn: getMyPosts,
   });
   if (isLoading) {
-    return <PostsSkeletonLoader/>;
+    return <PostsSkeletonLoader />;
   }
   if (isError) {
     return <span>Error occured:{error.message}</span>;
@@ -34,6 +30,9 @@ function TimelinePosts({ username }: { username: string }) {
         return (
           <Posts
             key={post.post_id}
+            isLiked={post.isLiked}
+            postId={post.post_id}
+            postLikeCount={post.likes_count}
             username={post.user.username}
             postText={post.post_content}
             postImageUrl={post.post_image_url}
