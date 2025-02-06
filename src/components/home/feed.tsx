@@ -3,21 +3,14 @@ import React from "react";
 import PostActionHeader from "./post-action-header";
 import Posts from "../posts/posts";
 import CreatePost from "./create-post";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { IPost } from "@/types";
 import PostsSkeletonLoader from "../UI/posts-skeleton-loader";
 import { useCreatePost } from "@/context";
+import useGetPostsQuery from "@/hooks/likes/use-get-posts-query";
 
 function feed() {
   const { showCreatePostForm } = useCreatePost();
-  const { data, isError, isLoading, error } = useQuery({
-    queryKey: ["getPosts"],
-    queryFn: async () => {
-      const response = await axios.get("/api/posts");
-      return response.data;
-    },
-  });
+  const { data, error, isError, isLoading } = useGetPostsQuery();
 
   if (isLoading)
     return (
@@ -29,7 +22,7 @@ function feed() {
   return (
     <div className="w-[34rem] mx-4 sm:mx-0">
       <PostActionHeader />
-      {data.posts.map((post: IPost) => {
+      {data?.posts?.map((post: IPost) => {
         return (
           <Posts
             key={post.post_id}

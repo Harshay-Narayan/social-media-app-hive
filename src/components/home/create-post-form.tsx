@@ -77,7 +77,6 @@ function CreatePostForm() {
         <CloseButton
           className="ml-auto"
           crossColor="#444"
-          onClick={toggleShowCreatePostFrom}
           onClose={toggleShowCreatePostFrom}
         />
       </div>
@@ -114,7 +113,7 @@ function CreatePostForm() {
                 <div className="absolute right-3 top-3">
                   <CloseButton
                     className="ml-auto"
-                    onClick={handleClearSelectedImage}
+                    onClose={handleClearSelectedImage}
                   />
                 </div>
               </div>

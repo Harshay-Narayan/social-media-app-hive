@@ -538,11 +538,17 @@ export async function createNotification({
   return;
 }
 
-export async function getNotifications(userId: string) {
+export async function getNotifications(
+  userId: string,
+  limit: number,
+  cursor: string
+) {
   const [notifications, unreadPostsCount] = await prisma.$transaction([
     prisma.notifications.findMany({
       where: { user_id: userId },
       orderBy: { createdDate: "desc" },
+      take: limit,
+      ...(cursor ? { cursor: { notification_id: cursor }, skip: 1 } : {}),
     }),
     prisma.notifications.count({
       where: { AND: [{ user_id: userId }, { is_read: false }] },

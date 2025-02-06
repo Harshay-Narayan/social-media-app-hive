@@ -57,7 +57,6 @@ export async function GET(request: NextRequest) {
       {
         notifications: notificationsToBeReturned,
         unreadPostsCount: unreadPostsCount,
-        success: true,
       },
       { status: 200 }
     );
@@ -98,29 +97,13 @@ export async function POST(request: NextRequest) {
       friendshipId,
       postId,
     });
+    return NextResponse.json(
+      { message: "Notification created" },
+      { status: 201 }
+    );
   } catch (error) {
     return NextResponse.json(
       { message: "Error in creating notification" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function PUT(request: NextRequest) {
-  try {
-    const authInfo = await getAuthInfo();
-    if (!authInfo) {
-      return NextResponse.json(
-        { message: "Unauthorized: Please log in to send a friend request." },
-        { status: 401 }
-      );
-    }
-    const { notificationId }: { notificationId: string } = await request.json();
-    await readNotification(notificationId);
-    return NextResponse.json({ message: "notification read" }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      { message: "Error in updating notification status" },
       { status: 500 }
     );
   }

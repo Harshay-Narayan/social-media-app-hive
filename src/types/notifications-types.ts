@@ -13,7 +13,6 @@ export interface INotifications {
 export interface INotificationsApiResponse {
   notifications: INotifications[];
   unreadPostsCount: number;
-  success: boolean;
 }
 
 export interface INotificationsListProps extends INotifications {

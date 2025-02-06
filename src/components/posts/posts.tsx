@@ -5,39 +5,10 @@ import { ThumbsUp, MessageCircle } from "lucide-react";
 import Container from "../UI/container";
 import { formatDate } from "@/lib/dateUtils";
 import Link from "next/link";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-
-type PostsProps = {
-  postId: string;
-  postLikeCount: number;
-  username?: string;
-  postText?: string | null;
-  postImageUrl?: string | null;
-  userProfileImageUrl: string;
-  fullName: string;
-  createdDate: Date;
-  isLiked: boolean;
-};
-
-// async function getIsPostLiked({ queryKey }: { queryKey: [string, string] }) {
-//   const [, postId] = queryKey;
-//   const response = await axios.get(`/api/posts/isliked?postId=${postId}`);
-//   console.log(response.data);
-//   return response.data;
-// }
-
-async function likePost(postId: string) {
-  const response = await axios.post("/api/posts/like", { postId });
-  return response.data;
-}
-
-async function removePostLike(postId: string) {
-  const response = await axios.delete(
-    `/api/posts/remove-like?postId=${postId}`
-  );
-  return response.data;
-}
+import { useQueryClient } from "@tanstack/react-query";
+import { PostsProps } from "@/types";
+import CommentsModal from "../comments/comments-modal";
+import usePostLikeMutation from "@/hooks/likes/use-post-like-mutation";
 
 function Posts({
   postId,
@@ -50,26 +21,15 @@ function Posts({
   createdDate,
   isLiked,
 }: PostsProps) {
-  const queryClient = useQueryClient();
-  const removePostLikeMutaion = useMutation({ mutationFn: removePostLike });
-  const postLikeMutation = useMutation({ mutationFn: likePost });
-  const [isPostLiked, setIsPostLiked] = useState<boolean | null>(isLiked);
-  const [likeCount, setLikeCount] = useState<number>(postLikeCount);
+  const [showComments, setShowComments] = useState<boolean>(false);
 
+  const { likeMutation } = usePostLikeMutation();
+
+  const toggleShowCommentsHandler = () => {
+    setShowComments(!showComments);
+  };
   const likeClickHandler = () => {
-    if (isPostLiked) {
-      removePostLikeMutaion.mutate(postId, {
-        // onSuccess: () =>queryClient.invalidateQueries({ queryKey: ["getPosts"] }),
-      });
-      setIsPostLiked(false);
-      setLikeCount((prev) => prev - 1);
-    } else {
-      postLikeMutation.mutate(postId, {
-        // onSuccess: () =>queryClient.invalidateQueries({ queryKey: ["getPosts"] }),
-      });
-      setIsPostLiked(true);
-      setLikeCount((prev) => prev + 1);
-    }
+    likeMutation.mutate({ postId, isLiked });
   };
 
   return (
@@ -77,7 +37,7 @@ function Posts({
       <div className="flex p-2 gap-2">
         <div className="w-10 h-10 rounded-full overflow-hidden">
           <Image
-            src={userProfileImageUrl ? userProfileImageUrl : "/globe.svg"}
+            src={userProfileImageUrl || "/avatar.svg"}
             width={50}
             height={50}
             alt="userProfileImage"
@@ -101,10 +61,10 @@ function Posts({
           <Image src={postImageUrl} alt="post_image" height={600} width={600} />
         </div>
       ) : null}
-      {likeCount ? (
+      {postLikeCount ? (
         <div className="mt-1 flex items-center">
           <ThumbsUp size={18} />
-          {likeCount}
+          {postLikeCount}
         </div>
       ) : null}
       <div className="h-[1px] w-full bg-gray-200 mt-1"></div>
@@ -112,7 +72,7 @@ function Posts({
         <div
           onClick={likeClickHandler}
           className={`group flex w-fit hover:bg-zinc-300 active:text-[#0566FF] active:scale-95 cursor-pointer py-1 px-6 rounded ${
-            isPostLiked ? "text-[#0566FF]" : ""
+            isLiked ? "text-[#0566FF]" : ""
           }`}
         >
           <span className="inline-block group-active:-rotate-12 transition-all">
@@ -120,13 +80,22 @@ function Posts({
           </span>
           <span className="pl-1">Like</span>
         </div>
-        <div className="flex w-fit hover:bg-zinc-300 active:text-[#0566FF] active:scale-95 py-1 cursor-pointer px-6 rounded">
+        <div
+          onClick={toggleShowCommentsHandler}
+          className="flex w-fit hover:bg-zinc-300 active:text-[#0566FF] active:scale-95 py-1 cursor-pointer px-6 rounded"
+        >
           <span className="inline-block">
             <MessageCircle size={20} />
           </span>
           <span className="pl-1">Comment</span>
         </div>
       </div>
+      {showComments && (
+        <CommentsModal
+          toggleShowCommentHandler={toggleShowCommentsHandler}
+          postId={postId}
+        />
+      )}
     </Container>
   );
 }

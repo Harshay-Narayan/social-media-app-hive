@@ -1,77 +1,34 @@
 "use client";
 import Container from "@/components/UI/container";
 import { pusherConfig } from "@/config";
-import {
-  INotifications,
-  INotificationsApiResponse,
-} from "@/types/notifications-types";
 import { useUser } from "@clerk/nextjs";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 import Pusher from "pusher-js";
 import React, { useEffect, useRef, useState } from "react";
 import NotificationsList from "./notifications-list";
 import NotificationsSekeletonLoader from "./notifications-skeleton-loader";
-
-async function fetchNotifications() {
-  const response = await axios.get("/api/notifications");
-  return response.data;
-}
-
-async function markNotificationsRead(
-  notificationId: INotifications["notificationId"]
-) {
-  const response = await axios.put("/api/notifications", { notificationId });
-  return response.data;
-}
+import useNotificationsQuery from "@/hooks/notifications/use-notifications-query";
+import useReadnotificationsMutation from "@/hooks/notifications/use-read-notifications-mutation";
 
 type NotificationsDropdownProps = {
-  closeNotificationsDropdownHandler: () => void;
   setUnreadNotificationsCountHandler: (count: number) => void;
 };
 
 function NotificationsDropdown({
-  closeNotificationsDropdownHandler,
   setUnreadNotificationsCountHandler,
 }: NotificationsDropdownProps) {
   const { user } = useUser();
-
   const popupRef = useRef<HTMLDivElement>(null);
+  const { data, isError, isLoading } = useNotificationsQuery();
+  const { readNotificationMutation } = useReadnotificationsMutation();
 
-  const handlePopupBlur = (e: MouseEvent) => {
-    if (popupRef && !popupRef.current?.contains(e.target as Node)) {
-      closeNotificationsDropdownHandler();
-    }
-  };
-
-  const handleNotificationsListItemsClick = (
-    notificationId: INotifications["notificationId"]
-  ) => {
-    notificationMutation.mutate(notificationId);
-  };
   const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery<INotificationsApiResponse>({
-    queryKey: ["fetchNotifications"],
-    queryFn: fetchNotifications,
-  });
-  const notificationMutation = useMutation({
-    mutationFn: markNotificationsRead,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["fetchNotifications"] }),
-  });
 
   useEffect(() => {
     if (data) {
       setUnreadNotificationsCountHandler(data.unreadPostsCount);
     }
   }, [data]);
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handlePopupBlur);
-    return () => {
-      document.removeEventListener("mousedown", handlePopupBlur);
-    };
-  }, []);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -88,8 +45,15 @@ function NotificationsDropdown({
       channel.unsubscribe();
     };
   }, [user?.id]);
+
+  const readNotificationHandler = (notificationId: string) => {
+    readNotificationMutation.mutate({ notificationId });
+  };
   return (
-    <Container className="absolute mt-1 w-80 font-extrabold bg-red-400 max-h-96" ref={popupRef}>
+    <Container
+      className="absolute mt-1 w-80 font-extrabold bg-red-400 max-h-96 overflow-y-scroll hidden-scrollbar"
+      ref={popupRef}
+    >
       <div className="pt-4 px-4">Notifications</div>
       {isLoading ? (
         <div className="m-2">
@@ -98,7 +62,7 @@ function NotificationsDropdown({
           ))}
         </div>
       ) : (
-        <div className="overflow-y-scroll hidden-scrollbar">
+        <>
           {data?.notifications.map((notification) => {
             let notificationContent;
             if (notification.type === "LIKE") {
@@ -108,7 +72,7 @@ function NotificationsDropdown({
               <div
                 key={notification.user_id + notification.createdDate}
                 onClick={() =>
-                  handleNotificationsListItemsClick(notification.notificationId)
+                  readNotificationHandler(notification.notificationId)
                 }
               >
                 <NotificationsList
@@ -126,7 +90,7 @@ function NotificationsDropdown({
               </div>
             );
           })}
-        </div>
+        </>
       )}
     </Container>
   );

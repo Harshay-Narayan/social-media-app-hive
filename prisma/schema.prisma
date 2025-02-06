@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      =  env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -90,4 +90,24 @@ enum NotificationsTypes {
   LIKE
   COMMENT
   FRIENDREQUEST
+}
+
+model Comments {
+  comment_id   String    @id @default(uuid())
+  comment_text String    @db.Text
+  post_id      String
+  createdDate  DateTime  @default(now())
+  actor_id     String
+  replies      Replies[]
+
+  @@index([post_id])
+}
+
+model Replies {
+  reply_id    String   @id @default(uuid())
+  reply_text  String   @db.Text
+  comment_id  String
+  actor_id    String
+  createdDate DateTime @default(now())
+  Comment     Comments @relation(fields: [comment_id], references: [comment_id], onDelete: Cascade)
 }

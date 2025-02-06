@@ -4,12 +4,14 @@ import { Bell } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import useClickOutside from "@/hooks/useClickOutside";
 const NotificationsDropdown = dynamic(
   () => import("./notifications-dropdown"),
   { ssr: false }
 );
 
 function Notification() {
+  const notificationsDropdownRef = useRef<HTMLDivElement>(null);
   const [showNotificationPopup, setShowNotificationPopup] =
     useState<boolean>(false);
   const [unredNotificationsCount, setunredNotificationsCount] = useState<
@@ -17,7 +19,7 @@ function Notification() {
   >(null);
 
   const togglePopup = () => {
-    setShowNotificationPopup(!showNotificationPopup);
+    setShowNotificationPopup((prev) => !prev);
   };
 
   const closeNotificationsDropdownHandler = () => {
@@ -28,21 +30,14 @@ function Notification() {
     setunredNotificationsCount(count);
   };
 
-  const queryClient = useQueryClient();
-  const router = useRouter();
-  const prefetchNotifications = () => {
-    // queryClient.prefetchQuery({ queryKey: ["fetchNotifications"] });
-    router.prefetch("/api/notifications");
-  };
+  useClickOutside(notificationsDropdownRef, () =>
+    closeNotificationsDropdownHandler()
+  );
 
   return (
     <div aria-label="notification">
       <div className="relative">
-        <div
-          onClick={togglePopup}
-          className="cursor-pointer"
-          onMouseEnter={prefetchNotifications}
-        >
+        <div onClick={togglePopup} className="cursor-pointer">
           <Bell color="white" />
         </div>
 
@@ -53,14 +48,13 @@ function Notification() {
         ) : null}
 
         {showNotificationPopup && (
-          <NotificationsDropdown
-            closeNotificationsDropdownHandler={
-              closeNotificationsDropdownHandler
-            }
-            setUnreadNotificationsCountHandler={
-              setUnreadNotificationsCountHandler
-            }
-          />
+          <div ref={notificationsDropdownRef}>
+            <NotificationsDropdown
+              setUnreadNotificationsCountHandler={
+                setUnreadNotificationsCountHandler
+              }
+            />
+          </div>
         )}
       </div>
     </div>

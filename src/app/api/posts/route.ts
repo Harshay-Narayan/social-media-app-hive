@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
         throw new Error("Failed to upload Image " + error?.message);
       }
     }
-    revalidatePath("/"); //check logic later
+    // revalidatePath("/"); //check logic later
     return NextResponse.json({
       success: true,
       message: "Post created Successfully",
@@ -111,7 +111,7 @@ export async function GET() {
         return { ...rest, post_image_url: null, isLiked: !!likes.length };
       }
     });
-    return NextResponse.json({ posts: postsWithImageUrl });
+    return NextResponse.json({ posts: postsWithImageUrl }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json(
       {

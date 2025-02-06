@@ -6,7 +6,6 @@ type CloseButtonProps = {
   crossSize?: number;
   crossColor?: string;
   crossStrokeWidth?: number;
-  onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
   onClose?: () => void;
 };
 function CloseButton({
@@ -14,7 +13,6 @@ function CloseButton({
   crossSize,
   crossColor,
   crossStrokeWidth,
-  onClick,
   onClose,
 }: CloseButtonProps) {
   useEffect(() => {
@@ -30,7 +28,7 @@ function CloseButton({
   return (
     <button
       className={`bg-gray-300 rounded-full w-fit h-fit p-[3px] cursor-pointer ${className}`}
-      onClick={onClick}
+      onClick={onClose}
       aria-label="close"
     >
       <X color={crossColor} size={crossSize} strokeWidth={crossStrokeWidth} />

@@ -12,3 +12,19 @@ export interface IPost extends IPostWithUserAvatar {
   isLiked: boolean;
   post_image_url: string | null;
 }
+
+export interface IGetPostsApiResponse {
+  posts: IPost[];
+}
+
+export interface PostsProps {
+  postId: string;
+  postLikeCount: number;
+  username?: string;
+  postText?: string | null;
+  postImageUrl?: string | null;
+  userProfileImageUrl: string;
+  fullName: string;
+  createdDate: Date;
+  isLiked: boolean;
+}
