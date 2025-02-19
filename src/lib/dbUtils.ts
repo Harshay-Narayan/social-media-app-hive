@@ -210,7 +210,11 @@ export function generateUniqueNameforFiles(file: File): string {
 
 // Friends feature
 
-export async function getFriendsSuggestions(userId: string) {
+export async function getFriendsSuggestions(
+  userId: string,
+  limit: number,
+  lastCursor: string | null
+) {
   const suggestions = await prisma.user.findMany({
     where: {
       AND: [
@@ -240,11 +244,14 @@ export async function getFriendsSuggestions(userId: string) {
       ],
     },
     select: {
+      user_id: true,
       username: true,
       first_name: true,
       last_name: true,
       user_avatar_url: true,
     },
+    take: limit,
+    ...(lastCursor ? { cursor: { user_id: lastCursor }, skip: 1 } : {}),
   });
   return suggestions;
 }
@@ -315,12 +322,17 @@ export async function sendFriendRequest(userId: string, targetUserId: string) {
         requester_id: userId,
         receiver_id: targetUserId,
         status: "PENDING",
+        createdDate: new Date(),
       },
     });
     return friendship;
   }
   const friendship = await prisma.friendship.create({
-    data: { requester_id: userId, receiver_id: targetUserId },
+    data: {
+      requester_id: userId,
+      receiver_id: targetUserId,
+      createdDate: new Date(),
+    },
   });
   return friendship;
 }
@@ -357,10 +369,15 @@ export async function rejectFriendRequest(
   return rejectedFriendShip;
 }
 
-export async function getPendingFriendRequests(userId: string) {
+export async function getPendingFriendRequests(
+  userId: string,
+  limit: number,
+  lastCursor: string | null
+) {
   const requesters = await prisma.friendship.findMany({
     where: { AND: [{ receiver_id: userId }, { status: "PENDING" }] },
     select: {
+      friendship_id: true,
       requester: {
         select: {
           username: true,
@@ -370,9 +387,12 @@ export async function getPendingFriendRequests(userId: string) {
         },
       },
     },
+    take: limit,
+    orderBy: { createdDate: "desc" },
+    ...(lastCursor ? { skip: 1, cursor: { friendship_id: lastCursor } } : {}),
   });
   const friendRequests = requesters.map((requester) => {
-    return { ...requester.requester };
+    return { friendship_id: requester.friendship_id, ...requester.requester };
   });
   return friendRequests;
 }
@@ -392,6 +412,7 @@ export async function getFriendList(userId: string) {
           last_name: true,
           user_avatar_url: true,
           username: true,
+          user_id: true,
         },
       },
       receiver: {
@@ -400,6 +421,7 @@ export async function getFriendList(userId: string) {
           last_name: true,
           user_avatar_url: true,
           username: true,
+          user_id: true,
         },
       },
     },
@@ -412,6 +434,7 @@ export async function getFriendList(userId: string) {
         first_name: friendship.receiver.first_name,
         last_name: friendship.receiver.last_name,
         user_avatar_url: friendship.receiver.user_avatar_url,
+        user_id: friendship.receiver.user_id,
       };
     } else {
       return {
@@ -419,6 +442,7 @@ export async function getFriendList(userId: string) {
         first_name: friendship.requester.first_name,
         last_name: friendship.requester.last_name,
         user_avatar_url: friendship.requester.user_avatar_url,
+        user_id: friendship.requester.user_id,
       };
     }
   });
@@ -541,14 +565,16 @@ export async function createNotification({
 export async function getNotifications(
   userId: string,
   limit: number,
-  cursor: string
+  lastCursor: string | null
 ) {
   const [notifications, unreadPostsCount] = await prisma.$transaction([
     prisma.notifications.findMany({
       where: { user_id: userId },
       orderBy: { createdDate: "desc" },
       take: limit,
-      ...(cursor ? { cursor: { notification_id: cursor }, skip: 1 } : {}),
+      ...(lastCursor
+        ? { skip: 1, cursor: { notification_id: lastCursor } }
+        : {}),
     }),
     prisma.notifications.count({
       where: { AND: [{ user_id: userId }, { is_read: false }] },

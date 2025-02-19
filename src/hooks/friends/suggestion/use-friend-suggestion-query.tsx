@@ -1,0 +1,38 @@
+import { IFriendsApiResponse } from "@/types";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import axios from "axios";
+
+async function getFriendsSuggestion({ pageParam }: any) {
+  const response = await axios.get(
+    `/api/friends/suggestion?cursor=${pageParam}`
+  );
+  return response.data;
+}
+
+function useFriendSuggestionQuery() {
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery<IFriendsApiResponse>({
+    queryKey: ["friendsSuggestion"],
+    queryFn: getFriendsSuggestion,
+    initialPageParam: null,
+    getNextPageParam: (lastPage, pages) => lastPage.meta.nextCursor,
+  });
+  return {
+    data,
+    isError,
+    isLoading,
+    error,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  };
+}
+
+export default useFriendSuggestionQuery;

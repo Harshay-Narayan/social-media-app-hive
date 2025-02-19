@@ -5,11 +5,7 @@ import axios from "axios";
 import React from "react";
 import FriendsListCards from "./card-components/friends-list-cards";
 import SkeletonCard from "./card-components/skeleton-card";
-
-async function getFriendsList() {
-  const response = await axios.get("/api/friends/friend-list");
-  return response.data;
-}
+import useFriendListQuery from "@/hooks/friends/list/use-friend-list-query";
 
 async function removeFriend(targetUsername: string) {
   const response = await axios.put("/api/friends/remove-friend", {
@@ -18,10 +14,7 @@ async function removeFriend(targetUsername: string) {
   return response.data;
 }
 function FriendsList() {
-  const { data, isLoading, isError, error } = useQuery<IFriendsApiResponse>({
-    queryKey: ["getFriendList"],
-    queryFn: getFriendsList,
-  });
+  const { data, error, isError, isLoading } = useFriendListQuery();
   const removeFriendMutation = useMutation({ mutationFn: removeFriend });
 
   const removeFriendHandler = (targetUsername: string) => {
@@ -34,18 +27,19 @@ function FriendsList() {
     return <SkeletonCard />;
   }
   return (
-    <div className="">
+    <div className="m-2 flex gap-3 overflow-x-scroll hidden-scrollbar-x">
       {data?.data.length ? (
         data?.data.map((user) => {
           return (
-            <FriendsListCards
-              key={user.user_avatar_url}
-              first_name={user.first_name}
-              last_name={user.last_name}
-              user_avatar_url={user.user_avatar_url}
-              username={user.username}
-              removeFriendHandler={removeFriendHandler}
-            />
+            <div key={user.user_avatar_url}>
+              <FriendsListCards
+                first_name={user.first_name}
+                last_name={user.last_name}
+                user_avatar_url={user.user_avatar_url}
+                username={user.username}
+                removeFriendHandler={removeFriendHandler}
+              />
+            </div>
           );
         })
       ) : (

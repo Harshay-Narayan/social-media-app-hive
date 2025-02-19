@@ -12,7 +12,10 @@ export interface INotifications {
 
 export interface INotificationsApiResponse {
   notifications: INotifications[];
-  unreadPostsCount: number;
+  meta: {
+    unread_count: number;
+    next_cursor: string | null;
+  };
 }
 
 export interface INotificationsListProps extends INotifications {

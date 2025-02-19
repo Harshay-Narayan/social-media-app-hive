@@ -14,18 +14,28 @@ datasource db {
 }
 
 model User {
-  user_id          String       @id
-  username         String       @unique
+  user_id          String        @id
+  username         String        @unique
   user_avatar_url  String
   first_name       String
   last_name        String
-  user_email       String       @unique
+  user_email       String        @unique
   posts            Post[]
-  sentRequests     Friendship[] @relation(name: "UserSentRequests")
-  receivedRequests Friendship[] @relation(name: "UserReceivedRequests")
+  sentRequests     Friendship[]  @relation(name: "UserSentRequests")
+  receivedRequests Friendship[]  @relation(name: "UserReceivedRequests")
   Like             Like[]
+  userSession      UserSession[]
 
   @@index([username])
+}
+
+model UserSession {
+  session_id  String   @id @default(uuid())
+  user_id     String   @unique
+  isOnline    Boolean  @default(false)
+  lastSeen    DateTime @default(now())
+  updatedDate DateTime @updatedAt
+  User        User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 }
 
 model Friendship {
@@ -35,6 +45,7 @@ model Friendship {
   status        FriendshipStaus @default(PENDING)
   requester     User            @relation(name: "UserReceivedRequests", fields: [requester_id], references: [user_id])
   receiver      User            @relation(name: "UserSentRequests", fields: [receiver_id], references: [user_id])
+  createdDate   DateTime        @default(now())
 
   @@unique([requester_id, receiver_id])
 }

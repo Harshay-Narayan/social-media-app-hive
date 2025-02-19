@@ -8,19 +8,14 @@ function ConfirmFriendRequestCard({
   last_name,
   user_avatar_url,
   username,
+  isRequestAccepted,
+  isRequestRejected,
   acceptFriendRequestHandler,
   rejectFriendRequestHandler,
 }: ConfirmFriendRequestCardProps) {
-  const onAcceptRequest = (username: string) => {
-    acceptFriendRequestHandler(username);
-  };
-
-  const onRejectRequest = (username: string) => {
-    rejectFriendRequestHandler(username);
-  };
   return (
     <Container className="w-44 rounded overflow-hidden">
-      <div className="bg-red-500 h-44 w-full">
+      <div className="h-44 w-full overflow-hidden">
         <Image
           src={user_avatar_url}
           alt="profile-image"
@@ -33,20 +28,28 @@ function ConfirmFriendRequestCard({
           <span className="hover:underline">{`${first_name} ${last_name}`}</span>
         </Link>
       </div>
-      <div className="p-2 w-full">
+
+      <div
+        className={`p-2 w-full ${
+          isRequestAccepted ? "bg-zinc-400 cursor-not-allowed" : ""
+        } ${isRequestRejected ? "invisible" : ""}`}
+      >
         <button
           className="bg-[#0866FF] rounded p-1 w-full font-bold text-white"
-          onClick={() => onAcceptRequest(username)}
+          onClick={() => acceptFriendRequestHandler(username)}
         >
-          Confirm
+          {isRequestAccepted ? "Friends" : "Confirm"}
         </button>
       </div>
+
       <div className="p-2 pt-0 w-full">
         <button
-          className="bg-zinc-300 rounded p-1 w-full font-bold"
-          onClick={() => onRejectRequest(username)}
+          className={`bg-zinc-300 rounded p-1 w-full font-bold ${
+            isRequestRejected ? "bg-zinc-400 cursor-not-allowed" : ""
+          } ${isRequestAccepted ? "invisible" : ""}`}
+          onClick={() => rejectFriendRequestHandler(username)}
         >
-          Delete
+          {isRequestRejected ? "Request Deleted" : "Delete"}
         </button>
       </div>
     </Container>

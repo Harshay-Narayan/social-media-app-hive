@@ -16,6 +16,16 @@
   border-radius: 8px;
 }
 
+.hidden-scrollbar-x::-webkit-scrollbar {
+  height: 8px;
+  width: 0;
+}
+
+.hidden-scrollbar-x::-webkit-scrollbar-thumb {
+  background-color: rgb(182, 181, 181);
+  border-radius: 8px;
+}
+
 .skeleton div {
   position: relative;
   color: #eee;

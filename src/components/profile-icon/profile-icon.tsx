@@ -3,7 +3,7 @@ import React from "react";
 
 function ProfileIcon({ imageUrl }: { imageUrl: string }) {
   return (
-    <div className="rounded-full overflow-hidden">
+    <div className="rounded-full overflow-hidden w-10 h-10">
       <Image
         src={imageUrl || "/avatar.svg"}
         alt="profile-image"

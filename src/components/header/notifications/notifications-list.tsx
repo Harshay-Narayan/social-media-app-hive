@@ -1,17 +1,12 @@
-"use client"
+"use client";
 import Image from "next/image";
 import { formatDate } from "@/lib/dateUtils";
 import { INotificationsListProps } from "@/types/notifications-types";
 
 export default function NotificationsList({
   isRead,
-  type,
   createdDate,
-  first_name,
-  last_name,
   user_avatar_url,
-  username,
-  user_id,
   notificationContent,
 }: INotificationsListProps) {
   const timeElapsed = formatDate(createdDate);

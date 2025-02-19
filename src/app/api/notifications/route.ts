@@ -14,7 +14,7 @@ type NotificationPayload = {
   postId?: string;
   friendshipId?: string;
 };
-
+const PAGE_SIZE = 4;
 export async function GET(request: NextRequest) {
   try {
     const authInfo = await getAuthInfo();
@@ -24,8 +24,17 @@ export async function GET(request: NextRequest) {
         { status: 401 }
       );
     }
+    const searchParams = request.nextUrl.searchParams;
+    let cursor = searchParams.get("cursor");
+    let lastCursor = cursor;
+    if (cursor?.trim() === "null" || cursor?.trim() === "undefined") {
+      lastCursor = null;
+    }
+
     const { notifications, unreadPostsCount } = await getNotifications(
-      authInfo.id
+      authInfo.id,
+      PAGE_SIZE,
+      lastCursor
     );
     const uniqueActorIds = [
       ...new Set(notifications.map((notification) => notification.actor_id)),
@@ -35,9 +44,9 @@ export async function GET(request: NextRequest) {
       uniqueActorIds.map((id) => getUserInfo(id))
     );
 
-    if (userInfo.length === 0) {
-      throw new Error("error in fetching user details");
-    }
+    // if (userInfo.length === 0) {
+    //   throw new Error("error in fetching user details");
+    // }
 
     const actorIdsMap = new Map();
     userInfo.forEach((actor) => actorIdsMap.set(actor?.user_id, actor));
@@ -52,17 +61,20 @@ export async function GET(request: NextRequest) {
         ...actor,
       };
     });
+    const nextCursor = notifications.length
+      ? notifications[notifications.length - 1].notification_id
+      : null;
 
     return NextResponse.json(
       {
         notifications: notificationsToBeReturned,
-        unreadPostsCount: unreadPostsCount,
+        meta: { unread_count: unreadPostsCount, next_cursor: nextCursor },
       },
       { status: 200 }
     );
   } catch (error) {
     return NextResponse.json(
-      { message: "Error in fetching notifications" },
+      { message: "Error in fetching notifications" + error },
       { status: 500 }
     );
   }

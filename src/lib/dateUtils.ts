@@ -22,17 +22,7 @@ export function formatDate(date: Date): string {
   const minutes = String(newDate.getMinutes()).padStart(2, "0");
 
   const formattedDate = `${day} ${months[month]} ${year} at ${hours} : ${minutes}`;
-  // const timeElapsed = Math.floor((Date.now() - newDate.getTime()) / 3600000);
-  // if (timeElapsed > 1 && timeElapsed < 24) {
-  //   return `${timeElapsed} hours`;
-  // }
-  // if (timeElapsed < 1) {
-  //   return `just now`;
-  // }
-  // if (timeElapsed >= 24 && timeElapsed < 48) {
-  //   const timeElapsedInDays = Math.floor(timeElapsed / 24);
-  //   return `${timeElapsedInDays} day`;
-  // }
+
   const timeElapsed = Math.floor((Date.now() - newDate.getTime()) / 60000); // minutes
   if (timeElapsed >= 60 && timeElapsed < 1440) {
     const timeElapsedInhours = Math.floor(timeElapsed / 60);
@@ -42,7 +32,7 @@ export function formatDate(date: Date): string {
     return `${timeElapsed} ${timeElapsed > 1 ? "minutes" : "minutes"}`;
   }
   if (timeElapsed < 1) {
-    return `just now`;
+    return `Just now`;
   }
   if (timeElapsed >= 1440 && timeElapsed < 2880) {
     const timeElapsedInDays = Math.floor(timeElapsed / 1440);

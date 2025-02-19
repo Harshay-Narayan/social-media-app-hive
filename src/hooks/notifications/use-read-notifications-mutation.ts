@@ -22,21 +22,25 @@ function useReadnotificationsMutation() {
       const prevNotifications = queryClient.getQueryData([
         "fetchNotifications",
       ]);
-      queryClient.setQueryData(
-        ["fetchNotifications"],
-        (old: INotificationsApiResponse) => {
-          if (!old) return { notifications: [], unreadPostsCount: 0 };
-          const updatedNotifications = old.notifications.map((notification) =>
-            notification.notificationId === variables.notificationId
-              ? { ...notification, isRead: true }
-              : { ...notification }
-          );
-          return {
-            notifications: updatedNotifications,
-            unreadPostsCount: old.unreadPostsCount - 1,
-          };
-        }
-      );
+      queryClient.setQueryData(["fetchNotifications"], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          pages: old.pages.map((page: any) => {
+            return {
+              ...page,
+              meta: { ...page.meta, unread_count: page.meta.unread_count - 1 },
+              notifications: page.notifications.map(
+                (notification: INotifications) =>
+                  notification.notificationId === variables.notificationId
+                    ? { ...notification, isRead: true }
+                    : notification
+              ),
+            };
+          }),
+        };
+      });
+
       return { prevNotifications };
     },
     onError(error, variables, context) {

@@ -1,14 +1,17 @@
 import { getAuthInfo } from "@/lib/authUtil";
-import { getUserId, rejectFriendRequest } from "@/lib/dbUtils";
+import { acceptFriendRequest, getUserId } from "@/lib/dbUtils";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PUT(request: NextRequest) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ username: string }> }
+) {
   try {
     const authInfo = await getAuthInfo();
     if (!authInfo) {
       return NextResponse.json({ message: "UserId required" }, { status: 400 });
     }
-    const { username } = await request.json();
+    const username = (await params).username;
     if (!username) {
       return NextResponse.json(
         { message: "Username is required to send a friend request." },
@@ -22,21 +25,19 @@ export async function PUT(request: NextRequest) {
         { status: 404 }
       );
     }
-    if (targetUserId) {
-      const rejectedFriendShip = await rejectFriendRequest(
-        authInfo.id,
-        targetUserId
+    const acceptedFriendRequest = await acceptFriendRequest(
+      authInfo.id,
+      targetUserId
+    );
+    if (acceptedFriendRequest) {
+      return NextResponse.json(
+        { message: "Friend request accepted" },
+        { status: 201 }
       );
-      if (rejectedFriendShip) {
-        return NextResponse.json(
-          { message: "Friend request rejected" },
-          { status: 201 }
-        );
-      }
     }
   } catch (error) {
     return NextResponse.json(
-      { message: "Error in rejecting friend request" },
+      { message: "Error in accepting friend request" },
       { status: 500 }
     );
   }

@@ -1,83 +1,84 @@
 "use client";
-import { IFriendsApiResponse } from "@/types";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import React from "react";
 import SkeletonCard from "./card-components/skeleton-card";
 import ConfirmFriendRequestCard from "./card-components/confirm-friend-request-card";
-
-async function getFriendRequests() {
-  const response = await axios.get("/api/friends/requests/pending");
-  return response.data;
-}
-
-async function acceptFriendRequest(targetUsername: string) {
-  const response = await axios.post("/api/friends/requests/accept", {
-    username: targetUsername,
-  });
-  return response.data;
-}
-
-async function rejectFriendRequest(targetUsername: string) {
-  const response = await axios.put("/api/friends/requests/reject", {
-    username: targetUsername,
-  });
-  return response.data;
-}
+import useFriendRequestQuery from "@/hooks/friends/request/use-friend-requests-query";
+import useRequestResponseMutation from "@/hooks/friends/request/use-request-response-mutattion";
 
 function FriendRequests() {
-  const { data, isLoading, isError, error } = useQuery<IFriendsApiResponse>({
-    queryKey: ["getFriendRequests"],
-    queryFn: getFriendRequests,
-  });
-
-  const acceptRequestMutation = useMutation({
-    mutationFn: acceptFriendRequest,
-  });
-  const rejectRequestMutation = useMutation({
-    mutationFn: rejectFriendRequest,
-  });
-  console.log(data);
+  const {
+    data,
+    error,
+    isError,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useFriendRequestQuery();
+  const { responseMutation } = useRequestResponseMutation();
 
   const acceptFriendRequestHandler = (targetUsername: string) => {
-    acceptRequestMutation.mutate(targetUsername, {
-      onSuccess: () => console.log("Friend Request accepted"),
-    });
+    console.log("clicked" + targetUsername);
+    responseMutation.mutate({ targetUsername, action: "ACCEPT" });
   };
   const rejectFriendRequestHandler = (targetUsername: string) => {
-    rejectRequestMutation.mutate(targetUsername, {
-      onSuccess: () => console.log("Friend Request rejected"),
-    });
+    console.log("reject clicked" + targetUsername);
+    responseMutation.mutate({ targetUsername, action: "REJECT" });
   };
 
   if (isLoading) {
     return <SkeletonCard />;
   }
 
+  const isNoPendingFriendReuest = data?.pages.every(
+    (page) => page.data.length === 0
+  );
   return (
-    <div className="">
-      {data?.data.length ? (
-        data?.data.map((user) => {
-          return (
-            <ConfirmFriendRequestCard
-              key={user.user_avatar_url}
-              first_name={user.first_name}
-              last_name={user.last_name}
-              user_avatar_url={user.user_avatar_url}
-              username={user.username}
-              acceptFriendRequestHandler={(targetUsername: string) =>
-                acceptFriendRequestHandler(targetUsername)
-              }
-              rejectFriendRequestHandler={(targetUsername: string) =>
-                rejectFriendRequestHandler(targetUsername)
-              }
-            />
-          );
-        })
+    <>
+      {!isNoPendingFriendReuest ? (
+        <div className="m-2 flex gap-3 max-w-full overflow-x-scroll hidden-scrollbar">
+          {data?.pages.map((group, i) => (
+            <div key={i}>
+              {group?.data.map((user) => {
+                return (
+                  <ConfirmFriendRequestCard
+                    friendship_id={user.friendship_id}
+                    isRequestAccepted={user.isRequestAccepted ?? false}
+                    isRequestRejected={user.isRequestRejected ?? false}
+                    key={user.friendship_id}
+                    first_name={user.first_name}
+                    last_name={user.last_name}
+                    user_avatar_url={user.user_avatar_url}
+                    username={user.username}
+                    acceptFriendRequestHandler={(targetUsername: string) =>
+                      acceptFriendRequestHandler(targetUsername)
+                    }
+                    rejectFriendRequestHandler={(targetUsername: string) =>
+                      rejectFriendRequestHandler(targetUsername)
+                    }
+                  />
+                );
+              })}
+            </div>
+          ))}
+        </div>
       ) : (
-        <div>No pending Friend Request!</div>
+        <div className="m-2">No Pending Friend Request!</div>
       )}
-    </div>
+
+      <div className="m-2">
+        <button
+          onClick={() => fetchNextPage()}
+          className="w-full hover:bg-zinc-400 hover:text-white rounded p-1"
+        >
+          {isFetchingNextPage
+            ? "...loading"
+            : hasNextPage
+            ? "load More"
+            : "Nothing to load"}
+        </button>
+      </div>
+    </>
   );
 }
 

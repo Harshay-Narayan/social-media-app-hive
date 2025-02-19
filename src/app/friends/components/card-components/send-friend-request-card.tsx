@@ -8,6 +8,7 @@ function SendFriendRequestCard({
   last_name,
   user_avatar_url,
   username,
+  isRequestSent,
   sendFriendRequestHandler,
 }: SendFriendRequestCardProps) {
   const onAddFriendClick = (targetUsername: string) => {
@@ -16,7 +17,7 @@ function SendFriendRequestCard({
 
   return (
     <Container className="w-44 rounded overflow-hidden">
-      <div className="h-44 w-full">
+      <div className="h-44 w-full overflow-hidden">
         <Image
           src={user_avatar_url}
           alt="profile-image"
@@ -31,10 +32,13 @@ function SendFriendRequestCard({
       </div>
       <div className="p-2 w-full">
         <button
-          className="bg-[#0866FF] rounded p-1 w-full font-bold text-white"
+          className={`bg-[#0866FF] rounded disabled:cursor-not-allowed p-1 w-full font-bold text-white ${
+            isRequestSent && "bg-zinc-400"
+          }`}
           onClick={() => onAddFriendClick(username)}
+          disabled={isRequestSent}
         >
-          Add Friend
+          {isRequestSent ? "Request Sent" : "Add Friend"}
         </button>
       </div>
     </Container>

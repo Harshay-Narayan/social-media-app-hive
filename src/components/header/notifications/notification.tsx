@@ -41,7 +41,7 @@ function Notification() {
           <Bell color="white" />
         </div>
 
-        {unredNotificationsCount ? (
+        {unredNotificationsCount && unredNotificationsCount > 0 ? (
           <div className="absolute text-white text-xs font-semibold -top-2 -right-2 bg-red-500 rounded-full w-4 h-4 flex items-center justify-center">
             {unredNotificationsCount}
           </div>

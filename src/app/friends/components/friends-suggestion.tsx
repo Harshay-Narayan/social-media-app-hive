@@ -1,55 +1,70 @@
 "use client";
 import React from "react";
 import SendFriendRequestCard from "./card-components/send-friend-request-card";
-import axios from "axios";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { IFriendsApiResponse } from "@/types";
-
-async function getFriendsSuggestion() {
-  const response = await axios.get("/api/friends/suggestion");
-  return response.data;
-}
-
-async function sendFriendRequest(targetUsername: string) {
-  const respone = await axios.post("/api/friends/requests/send", {
-    username: targetUsername,
-  });
-  return respone.data;
-}
+import useFriendSuggestionQuery from "@/hooks/friends/suggestion/use-friend-suggestion-query";
+import useSendRequestMutation from "@/hooks/friends/suggestion/use-send-request-mutation";
+import { IFriendsInfo, ISuggestionsFriendInfo } from "@/types";
+import useInfiniteScroll from "@/hooks/infinite-scroll/use-infinite-scroll";
+import Spinner from "@/components/UI/spinner";
 
 function FriendsSuggestion() {
-  const { data, isLoading, isError, error } = useQuery<IFriendsApiResponse>({
-    queryKey: ["friendsSuggestion"],
-    queryFn: getFriendsSuggestion,
-  });
-
-  const { mutate } = useMutation({
-    mutationFn: sendFriendRequest,
-  });
-
+  const {
+    data,
+    error,
+    isError,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useFriendSuggestionQuery();
+  const { sendFriendRequestMutation } = useSendRequestMutation();
   const sendFriendRequestHandler = (targetUsername: string) => {
-    console.log(targetUsername);
-    mutate(targetUsername, {
-      onSuccess: () => console.log("Friend Request sent!"),
-    });
+    sendFriendRequestMutation.mutate({ targetUsername });
   };
+  const { targetRef } = useInfiniteScroll({
+    fetchNextPage,
+    hasNextPage,
+    threshold: 0.5,
+  });
+  const isNoFriendsSuggestion = data?.pages.every(
+    (page) => page.data.length === 0
+  );
   return (
-    <div className="">
-      {data?.data.map((user) => {
-        return (
-          <SendFriendRequestCard
-            key={user.user_avatar_url}
-            first_name={user.first_name}
-            last_name={user.last_name}
-            user_avatar_url={user.user_avatar_url}
-            username={user.username}
-            sendFriendRequestHandler={(targetUsername: string) =>
-              sendFriendRequestHandler(targetUsername)
-            }
-          />
-        );
-      })}
-    </div>
+    <>
+      {!isNoFriendsSuggestion ? (
+        <div className="m-2 flex gap-3 overflow-x-scroll max-w-full hidden-scrollbar">
+          {data?.pages.map((group, i) => (
+            <div key={i}>
+              {group?.data.map((user: ISuggestionsFriendInfo, index, arr) => {
+                return (
+                  <SendFriendRequestCard
+                    isRequestSent={user.isRequestSent ?? false}
+                    key={user.user_avatar_url}
+                    first_name={user.first_name}
+                    last_name={user.last_name}
+                    user_avatar_url={user.user_avatar_url}
+                    username={user.username}
+                    sendFriendRequestHandler={(targetUsername: string) =>
+                      sendFriendRequestHandler(targetUsername)
+                    }
+                  />
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="m-2">No Friend Suggestion</div>
+      )}
+
+      {isFetchingNextPage && (
+        <div className="flex justify-center">
+          <Spinner className="w-5 h-5 border-2" />
+        </div>
+      )}
+
+      <div className="w-full h-1" ref={targetRef}></div>
+    </>
   );
 }
 

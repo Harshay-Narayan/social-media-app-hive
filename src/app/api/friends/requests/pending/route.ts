@@ -1,8 +1,10 @@
 import { getAuthInfo } from "@/lib/authUtil";
 import { getPendingFriendRequests, getUserId } from "@/lib/dbUtils";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+const PAGE_SIZE = 1;
+
+export async function GET(request: NextRequest) {
   try {
     const authInfo = await getAuthInfo();
     if (!authInfo) {
@@ -14,11 +16,27 @@ export async function GET() {
         { status: 404 }
       );
     }
+
+    const searchParams = request.nextUrl.searchParams;
+    const cursor = searchParams.get("cursor");
+    let lastCursor = cursor;
+    if (cursor?.trim() === "null" || cursor?.trim() === "undefined") {
+      lastCursor = null;
+    }
+
     const pendingFriendRequestUsers = await getPendingFriendRequests(
-      authInfo.id
+      authInfo.id,
+      PAGE_SIZE,
+      lastCursor
     );
+    console.log(authInfo.id, PAGE_SIZE,lastCursor)
+    console.log("here"+pendingFriendRequestUsers)
+    const nextCursor = pendingFriendRequestUsers.length
+      ? pendingFriendRequestUsers[pendingFriendRequestUsers.length - 1]
+          .friendship_id
+      : null;
     return NextResponse.json(
-      { data: pendingFriendRequestUsers, success: true },
+      { data: pendingFriendRequestUsers, meta: { nextCursor } },
       { status: 200 }
     );
   } catch (error) {

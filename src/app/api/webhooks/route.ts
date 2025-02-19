@@ -2,6 +2,12 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { createUser, deleteUser, updateUserProfileImage } from "@/lib/dbUtils";
+import { createOrUpdateUserStatusOnline } from "@/lib/dbUtils/userSessionStatusdbUtils";
+import pusher from "@/lib/pusher";
+import {
+  setStatusOnline,
+  setStatusoffline,
+} from "@/lib/active-user-status/setUserStatus";
 
 export async function POST(req: Request) {
   const SIGNING_SECRET = process.env.SIGNING_SECRET;
@@ -66,9 +72,9 @@ export async function POST(req: Request) {
         evt.data.last_name as string,
         evt.data.image_url
       );
-      return new Response("User Created in DB :" + user);
+      return new Response("User Created", { status: 201 });
     } catch (error: any) {
-      throw new Error("Error creating user in DB " + error);
+      return new Response("Error creating user in DB ", { status: 500 });
     }
   }
 
@@ -77,10 +83,12 @@ export async function POST(req: Request) {
       const user_id = evt.data.id;
       if (user_id) {
         const deletedUser = await deleteUser(user_id);
-        return new Response("User Deleted from DB: " + deletedUser);
+        return new Response("User Deleted from DB: " + deletedUser, {
+          status: 200,
+        });
       }
     } catch (error) {
-      throw new Error("Error in deleteing user in DB " + error);
+      return new Response("Error in deleteing user in DB", { status: 500 });
     }
   }
 
@@ -90,9 +98,33 @@ export async function POST(req: Request) {
         evt.data.id,
         evt.data.image_url
       );
-      return new Response("User avatar updated " + updateUser);
+      return new Response("User avatar updated ", { status: 200 });
     } catch (error) {
-      throw new Error("Error in updating user avatar" + error);
+      return new Response("Error in updating user avatar", { status: 500 });
+    }
+  }
+
+  if (evt.type === "session.created") {
+    try {
+      await createOrUpdateUserStatusOnline(evt.data.user_id);
+      await setStatusOnline(evt.data.user_id);
+      return new Response("online status updated", { status: 200 });
+    } catch (error) {
+      console.log(error);
+      return new Response("Error in setting status online", { status: 500 });
+    }
+  }
+
+  if (
+    evt.type === "session.removed" ||
+    evt.type === "session.ended" ||
+    evt.type === "session.revoked"
+  ) {
+    try {
+      await setStatusoffline(evt.data.user_id);
+      return new Response("offline status updated", { status: 200 });
+    } catch (error) {
+      return new Response("Error in setting status offline", { status: 500 });
     }
   }
 
