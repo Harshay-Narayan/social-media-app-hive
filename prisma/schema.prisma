@@ -25,6 +25,8 @@ model User {
   receivedRequests Friendship[]  @relation(name: "UserReceivedRequests")
   Like             Like[]
   userSession      UserSession[]
+  sentMessages     Messages[]    @relation(name: "SentMessages")
+  receivedMessages Messages[]    @relation(name: "ReceivedMessages")
 
   @@index([username])
 }
@@ -121,4 +123,21 @@ model Replies {
   actor_id    String
   createdDate DateTime @default(now())
   Comment     Comments @relation(fields: [comment_id], references: [comment_id], onDelete: Cascade)
+}
+
+model Messages {
+  message_id  String        @id @default(uuid())
+  message     String
+  sender_id   String
+  receiver_id String
+  createdDate DateTime      @default(now())
+  sender      User          @relation(name: "SentMessages", fields: [sender_id], references: [user_id])
+  receiver    User          @relation(name: "ReceivedMessages", fields: [receiver_id], references: [user_id])
+  status      MessageStatus @default(SENT)
+}
+
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
 }
