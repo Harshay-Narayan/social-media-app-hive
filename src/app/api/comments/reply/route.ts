@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     return NextResponse.json(
-      { message: "Error in creating reply" },
+      { message: "Error in creating reply" + error },
       { status: 500 }
     );
   }

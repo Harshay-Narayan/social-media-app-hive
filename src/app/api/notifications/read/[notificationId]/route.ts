@@ -26,7 +26,7 @@ export async function PUT(
     return NextResponse.json({ message: "notification read" }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { message: "Error in updating notification status" },
+      { message: "Error in updating notification status"+error },
       { status: 500 }
     );
   }

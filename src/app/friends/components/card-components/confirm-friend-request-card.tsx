@@ -12,8 +12,6 @@ function ConfirmFriendRequestCard({
   isRequestRejected,
   acceptFriendRequestHandler,
   rejectFriendRequestHandler,
-  friendship_id,
-  user_id,
 }: ConfirmFriendRequestCardProps) {
   return (
     <Container className="w-44 rounded overflow-hidden">

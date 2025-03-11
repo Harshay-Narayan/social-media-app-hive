@@ -1,11 +1,9 @@
-import { Comment, CommentsApiResponse } from "@/types";
+import { CommentsApiResponse } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import React from "react";
 
 async function deleteComment({
   commentId,
-  postId,
 }: {
   commentId: string;
   postId: string;
@@ -42,7 +40,7 @@ function useDeleteCommentMutaion() {
         context?.prevComments
       );
     },
-    onSettled: (data, err, variables, context) => {
+    onSettled: (data, err, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["fetchComments", variables.postId],
       });

@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
     );
   } catch (error) {
     return NextResponse.json(
-      { message: "Error fetching comments" },
+      { message: "Error fetching comments" + error },
       { status: 500 }
     );
   }
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Comment created" }, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { message: "Error in creating comment" },
+      { message: "Error in creating comment" + error },
       { status: 500 }
     );
   }

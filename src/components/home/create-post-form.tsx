@@ -25,10 +25,11 @@ function CreatePostForm() {
   const { toggleShowCreatePostFrom } = useCreatePost();
   const { userProfileImageUrl, userFullName, firstName } =
     UserService.getUserInfo();
-  const { register, handleSubmit, setValue, reset, watch } =
-    useForm<FormInput>({
+  const { register, handleSubmit, setValue, reset, watch } = useForm<FormInput>(
+    {
       defaultValues: { post_content: null, post_image: null },
-    });
+    }
+  );
   const [imagePreview, setImagePreview] = useState<string | null>();
   const postImageInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -36,7 +37,7 @@ function CreatePostForm() {
   const postImage = watch("post_image");
   const isPostButtonDisabled = !postContent?.trim() && !postImage;
 
-  const { mutate, data, isPending, isError, error } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: submitFormData,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["getPosts"] }),
   });

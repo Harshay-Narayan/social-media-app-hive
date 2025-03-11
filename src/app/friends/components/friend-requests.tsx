@@ -8,8 +8,6 @@ import useRequestResponseMutation from "@/hooks/friends/request/use-request-resp
 function FriendRequests() {
   const {
     data,
-    error,
-    isError,
     isLoading,
     fetchNextPage,
     hasNextPage,

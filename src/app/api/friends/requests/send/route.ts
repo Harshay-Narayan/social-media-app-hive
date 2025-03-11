@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     return NextResponse.json(
-      { message: "Failed to send friend request." },
+      { message: "Failed to send friend request." + error },
       { status: 500 }
     );
   }

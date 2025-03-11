@@ -30,7 +30,7 @@ export async function DELETE(request: NextRequest) {
   } catch (error) {
     console.log(error);
     return NextResponse.json(
-      { message: "Failed to remove the like" },
+      { message: "Failed to remove the like"+error },
       { status: 500 }
     );
   }

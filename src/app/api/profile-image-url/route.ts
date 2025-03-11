@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     );
   } catch (error) {
     return NextResponse.json(
-      { message: "Error in fetching profile Image", success: false },
+      { message: "Error in fetching profile Image" + error, success: false },
       { status: 500 }
     );
   }

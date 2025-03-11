@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Post liked" }, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { message: "Failed to like the post" },
+      { message: "Failed to like the post"+error },
       { status: 500 }
     );
   }

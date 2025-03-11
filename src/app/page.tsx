@@ -23,9 +23,7 @@ export default async function Home() {
           </Suspense>
         </CreatePostProvider>
       </div>
-      <div></div>
-      <div className="">{/* <ChatPopup /> */}</div>
-      <div className="">
+      <div>
         <ChatHead />
       </div>
     </div>

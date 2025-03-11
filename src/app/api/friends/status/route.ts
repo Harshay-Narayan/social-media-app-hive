@@ -21,10 +21,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ friendsStatuses }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { message: "Error in fetching friends statuses" },
+      { message: "Error in fetching friends statuses" + error },
       { status: 500 }
     );
   }
 }
-
-

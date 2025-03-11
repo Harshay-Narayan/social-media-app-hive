@@ -18,7 +18,7 @@ export async function GET() {
     return NextResponse.json({ data: friendList }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { message: "Error fetching frield list", success: false },
+      { message: "Error fetching frield list" + error, success: false },
       { status: 500 }
     );
   }

@@ -19,22 +19,7 @@ function FriendsStatusList({ friends }: { friends: FriendsInfo[] }) {
   const [friendsStatues, setFriendsStatues] = useState<FriendsStatues | null>(
     null
   );
-  const [lastSeen, setLastSeen] = useState("");
   const { data: initialStatuses, isLoading } = useFriendsStatus();
-  
-  //   console.log("initialStatuses");
-  //   console.log(initialStatuses);
-  //   useHeartbeat();
-  //   useEffect(() => {
-  //     if (initialStatuses?.friendsStatuses.length) {
-  //       setFriendsStatues(
-  //         initialStatuses.friendsStatuses.reduce((acc, status) => {
-  //           acc[status.userId] = status.isOnline ? "online" : status.lastSeen;
-  //           return acc;
-  //         }, {} as FriendsStatues)
-  //       );
-  //     }
-  //   }, [initialStatuses?.friendsStatuses.length]);
 
   useEffect(() => {
     if (initialStatuses) {

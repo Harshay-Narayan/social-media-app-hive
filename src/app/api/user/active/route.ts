@@ -13,7 +13,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ message: "Status set online" }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { message: "Error in setting status online" },
+      { message: "Error in setting status online" + error },
       { status: 500 }
     );
   }

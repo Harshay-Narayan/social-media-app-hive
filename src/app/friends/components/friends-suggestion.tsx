@@ -10,9 +10,6 @@ import Spinner from "@/components/UI/spinner";
 function FriendsSuggestion() {
   const {
     data,
-    error,
-    isError,
-    isLoading,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,

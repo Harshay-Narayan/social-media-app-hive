@@ -39,7 +39,7 @@ export async function PUT(
     }
   } catch (error) {
     return NextResponse.json(
-      { message: "Error in rejecting friend request" },
+      { message: "Error in rejecting friend request" + error },
       { status: 500 }
     );
   }

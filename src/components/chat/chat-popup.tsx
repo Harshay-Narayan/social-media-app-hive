@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Container from "../UI/container";
 import ProfileIcon from "../profile-icon/profile-icon";
-import { X, Minus, SendHorizonalIcon, Divide } from "lucide-react";
+import { X, Minus, SendHorizonalIcon } from "lucide-react";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import ChatSection from "./chat-section";
 import { socket } from "@/lib/socket";
@@ -69,7 +69,7 @@ function ChatPopup() {
       socket.off("private_chat");
       socket.disconnect();
     };
-  }, [messageFlag]);
+  }, [messageFlag, queryClient, showPopupChatUser.user_id, user?.id]);
   const handleSendMessage = () => {
     if (!textAreaRef.current || !showPopupChatUser) return;
     setmessageFlag((prev) => !prev);

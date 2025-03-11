@@ -3,7 +3,6 @@ import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { createUser, deleteUser, updateUserProfileImage } from "@/lib/dbUtils";
 import { createOrUpdateUserStatusOnline } from "@/lib/dbUtils/userSessionStatusdbUtils";
-import pusher from "@/lib/pusher";
 import {
   setStatusOnline,
   setStatusoffline,
@@ -74,7 +73,9 @@ export async function POST(req: Request) {
       );
       return new Response("User Created", { status: 201 });
     } catch (error: any) {
-      return new Response("Error creating user in DB ", { status: 500 });
+      return new Response("Error creating user in DB " + error, {
+        status: 500,
+      });
     }
   }
 
@@ -88,7 +89,9 @@ export async function POST(req: Request) {
         });
       }
     } catch (error) {
-      return new Response("Error in deleteing user in DB", { status: 500 });
+      return new Response("Error in deleteing user in DB" + error, {
+        status: 500,
+      });
     }
   }
 
@@ -100,7 +103,9 @@ export async function POST(req: Request) {
       );
       return new Response("User avatar updated ", { status: 200 });
     } catch (error) {
-      return new Response("Error in updating user avatar", { status: 500 });
+      return new Response("Error in updating user avatar" + error, {
+        status: 500,
+      });
     }
   }
 
@@ -111,7 +116,9 @@ export async function POST(req: Request) {
       return new Response("online status updated", { status: 200 });
     } catch (error) {
       console.log(error);
-      return new Response("Error in setting status online", { status: 500 });
+      return new Response("Error in setting status online" + error, {
+        status: 500,
+      });
     }
   }
 
@@ -124,9 +131,9 @@ export async function POST(req: Request) {
       await setStatusoffline(evt.data.user_id);
       return new Response("offline status updated", { status: 200 });
     } catch (error) {
-      return new Response("Error in setting status offline", { status: 500 });
+      return new Response("Error in setting status offline" + error, {
+        status: 500,
+      });
     }
   }
-
-  //   return new Response("Webhook received", { status: 200 });
 }

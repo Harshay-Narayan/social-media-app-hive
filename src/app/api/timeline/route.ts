@@ -1,6 +1,6 @@
 import { getAuthInfo } from "@/lib/authUtil";
 import { getImageUrl, getPostsofUser, getUserId } from "@/lib/dbUtils";
-import { IPost } from "@/types";
+import { Post } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 const BUCKET_NAME = "post-images";
 
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: "userId Required" }, { status: 401 });
     }
     const myPosts = await getPostsofUser(userId, authInfo.id);
-    const myPostsWithImageUrl: IPost[] = myPosts.map((post) => {
+    const myPostsWithImageUrl: Post[] = myPosts.map((post) => {
       const { likes, ...rest } = post;
       return {
         ...rest,
@@ -43,6 +43,6 @@ export async function GET(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    return NextResponse.json({});
+    return NextResponse.json({ message: error });
   }
 }

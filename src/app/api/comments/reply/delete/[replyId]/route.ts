@@ -25,7 +25,7 @@ export async function DELETE(
     return NextResponse.json({ message: "Reply deleted" }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { message: "Error in deleting reply" },
+      { message: "Error in deleting reply" + error },
       { status: 500 }
     );
   }

@@ -29,8 +29,8 @@ export async function GET(request: NextRequest) {
       PAGE_SIZE,
       lastCursor
     );
-    console.log(authInfo.id, PAGE_SIZE,lastCursor)
-    console.log("here"+pendingFriendRequestUsers)
+    console.log(authInfo.id, PAGE_SIZE, lastCursor);
+    console.log("here" + pendingFriendRequestUsers);
     const nextCursor = pendingFriendRequestUsers.length
       ? pendingFriendRequestUsers[pendingFriendRequestUsers.length - 1]
           .friendship_id
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     );
   } catch (error) {
     return NextResponse.json(
-      { message: "Failed to fetch pending requests" },
+      { message: "Failed to fetch pending requests" + error },
       { status: 500 }
     );
   }

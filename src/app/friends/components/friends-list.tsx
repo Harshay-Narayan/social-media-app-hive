@@ -1,5 +1,5 @@
 "use client";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import React from "react";
 import FriendsListCards from "./card-components/friends-list-cards";
@@ -13,7 +13,7 @@ async function removeFriend(targetUsername: string) {
   return response.data;
 }
 function FriendsList() {
-  const { data, error, isError, isLoading } = useFriendListQuery();
+  const { data, isLoading } = useFriendListQuery();
   const removeFriendMutation = useMutation({ mutationFn: removeFriend });
 
   const removeFriendHandler = (targetUsername: string) => {

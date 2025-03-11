@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "message sent" }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { messages: "Error in sending messages" },
+      { messages: "Error in sending messages" + error },
       { status: 500 }
     );
   }

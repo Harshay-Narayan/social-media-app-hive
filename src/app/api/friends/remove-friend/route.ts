@@ -31,7 +31,7 @@ export async function PUT(request: NextRequest) {
     }
   } catch (error) {
     return NextResponse.json(
-      { message: "Error in removing friend" },
+      { message: "Error in removing friend"+error },
       { status: 500 }
     );
   }

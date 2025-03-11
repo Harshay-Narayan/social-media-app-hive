@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ data: friendSearchResult, success: true });
   } catch (error) {
     return NextResponse.json(
-      { message: "Error fetching search results", success: false },
+      { message: "Error fetching search results" + error, success: false },
       { status: 500 }
     );
   }

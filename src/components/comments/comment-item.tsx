@@ -1,13 +1,12 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import ProfileIcon from "../profile-icon/profile-icon";
 import CommentInput from "./comment-input";
 import { Replies } from "@/types";
 import useReplyMutation from "@/hooks/replies/use-reply-mutation";
 import { useUser } from "@clerk/nextjs";
-import { Divide, Ellipsis } from "lucide-react";
+import { Ellipsis } from "lucide-react";
 import EditDeletePopover from "../UI/edit-delete-popover";
-import useClickOutside from "@/hooks/useClickOutside";
 import useDeleteCommentMutaion from "@/hooks/comments/use-delete-comment-mutation";
 import useReplyDeleteMutation from "@/hooks/replies/use-reply-delete-mutation";
 

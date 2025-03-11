@@ -4,7 +4,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ commentId: string }> }
+  {
+    params,
+  }: {
+    params: Promise<{ commentId: string }>;
+  }
 ) {
   try {
     const authInfo = await getAuthInfo();
@@ -25,7 +29,7 @@ export async function DELETE(
     return NextResponse.json({ message: "Comment deleted" }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { message: "Error occured in deleting comment" },
+      { message: "Error occured in deleting comment" + error },
       { status: 500 }
     );
   }

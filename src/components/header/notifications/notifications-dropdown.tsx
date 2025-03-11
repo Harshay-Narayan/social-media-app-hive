@@ -40,7 +40,7 @@ function NotificationsDropdown({
     if (data?.pages) {
       setUnreadNotificationsCountHandler(data?.pages?.[0]?.meta.unread_count);
     }
-  }, [data]);
+  }, [data, setUnreadNotificationsCountHandler]);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -56,7 +56,7 @@ function NotificationsDropdown({
       channel.unbind_all();
       channel.unsubscribe();
     };
-  }, [user?.id]);
+  }, [user?.id, queryClient]);
 
   const readNotificationHandler = (notificationId: string, isRead: boolean) => {
     if (isRead) return;

@@ -1,4 +1,4 @@
-import { FriendsApiResponse, FriendsListApiResponse } from "@/types";
+import { FriendsListApiResponse } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 

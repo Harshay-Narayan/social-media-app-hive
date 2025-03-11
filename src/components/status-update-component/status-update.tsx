@@ -1,13 +1,9 @@
 "use client";
-import { setStatusOnline } from "@/lib/active-user-status/setUserStatus";
-import { useUser } from "@clerk/nextjs";
 import axios from "axios";
-import React, { useEffect } from "react";
-import throttle from "lodash.throttle";
+import { useEffect } from "react";
 import debounce from "lodash.debounce";
 
 function StatusUpdater() {
-  const { user } = useUser();
 
   useEffect(() => {
     const handleUnload = () => {

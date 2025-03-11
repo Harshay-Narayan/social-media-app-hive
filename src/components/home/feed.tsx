@@ -12,7 +12,7 @@ import { useGlobalStore } from "@/store/useGlobalStore";
 import ChatSidebar from "../serverComponents/sidebar/chat-sidebar";
 const ChatPopup = dynamic(() => import("../chat/chat-popup"), { ssr: false });
 
-function feed() {
+function Feed() {
   const { showCreatePostForm } = useCreatePost();
   const [hidden, setHidden] = useState<boolean>(true);
   const { data } = useGetPostsQuery();
@@ -59,4 +59,4 @@ function feed() {
   );
 }
 
-export default feed;
+export default Feed;

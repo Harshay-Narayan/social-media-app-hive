@@ -12,6 +12,6 @@ export async function POST(request: Request) {
     // await redis.publish("disconnect", authInfo.id);
     return new Response("user makred offline", { status: 200 });
   } catch (error) {
-    return new Response("Error in making user offline");
+    return new Response("Error in making user offline" + error);
   }
 }

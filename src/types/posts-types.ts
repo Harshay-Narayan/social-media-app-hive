@@ -1,6 +1,6 @@
 import { User, Like } from "@prisma/client";
 
-interface PostSchema {
+export interface PostSchema {
   user_id: string;
   post_id: string;
   post_content: string | null;

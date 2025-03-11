@@ -9,9 +9,7 @@ import {
 import { NextRequest, NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { v4 as uuidv4 } from "uuid";
-import { Post } from "@prisma/client";
-import { revalidatePath } from "next/cache";
-import { IPost } from "@/types";
+import { Post, PostSchema } from "@/types";
 import { getAuthInfo } from "@/lib/authUtil";
 import { createBlurImagePlaceholder } from "@/lib/create-blur-image-placeholder";
 
@@ -56,7 +54,7 @@ export async function POST(request: NextRequest) {
     const blurImageData =
       postImage && (await createBlurImagePlaceholder(postImage));
 
-    const createdPost: Post = await createPost(
+    const createdPost: PostSchema = await createPost(
       postContent,
       postImageLocation,
       userId,
@@ -101,7 +99,7 @@ export async function GET() {
       );
     }
     const allPosts = await getAllPosts(authInfo.id);
-    const postsWithImageUrl: IPost[] = allPosts.map((post) => {
+    const postsWithImageUrl: Post[] = allPosts.map((post) => {
       try {
         const { likes, ...rest } = post;
         return {

@@ -62,7 +62,7 @@ function useCommentMutation() {
         context?.prevComments
       );
     },
-    onSettled: (data, err, variables, context) =>
+    onSettled: (data, err, variables) =>
       queryClient.invalidateQueries({
         queryKey: ["fetchComments", variables.postId],
       }),
