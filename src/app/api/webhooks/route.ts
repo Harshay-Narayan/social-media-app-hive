@@ -63,7 +63,7 @@ export async function POST(req: Request) {
   // user event logic
   if (evt.type === "user.created") {
     try {
-      const user = createUser(
+      await createUser(
         evt.data.username as string,
         evt.data.id,
         evt.data.email_addresses[0].email_address,
@@ -83,8 +83,8 @@ export async function POST(req: Request) {
     try {
       const user_id = evt.data.id;
       if (user_id) {
-        const deletedUser = await deleteUser(user_id);
-        return new Response("User Deleted from DB: " + deletedUser, {
+        await deleteUser(user_id);
+        return new Response("User Deleted from DB: ", {
           status: 200,
         });
       }
@@ -97,10 +97,7 @@ export async function POST(req: Request) {
 
   if (evt.type === "user.updated") {
     try {
-      const updateUser = await updateUserProfileImage(
-        evt.data.id,
-        evt.data.image_url
-      );
+      await updateUserProfileImage(evt.data.id, evt.data.image_url);
       return new Response("User avatar updated ", { status: 200 });
     } catch (error) {
       return new Response("Error in updating user avatar" + error, {

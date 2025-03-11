@@ -20,7 +20,6 @@ function ChatPopup() {
   const addFriendToActiveChatList = useGlobalStore(
     (state) => state.addFriendToActiveChat
   );
-  if (!showPopupChatUser) return null;
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   // const { messageMutation } = useMessagesMutation();
@@ -45,9 +44,9 @@ function ChatPopup() {
     socket.on("private_chat", (data) => {
       setmessageFlag((prev) => !prev);
       console.log(data);
-      if (data.senderId !== showPopupChatUser.user_id) return;
+      if (data.senderId !== showPopupChatUser!.user_id) return;
       queryClient.setQueryData(
-        ["fetchMessages", showPopupChatUser.user_id],
+        ["fetchMessages", showPopupChatUser!.user_id],
         (old: any) => {
           const updatedPages = [...old.pages];
           updatedPages[0].messages.unshift({
@@ -69,7 +68,7 @@ function ChatPopup() {
       socket.off("private_chat");
       socket.disconnect();
     };
-  }, [messageFlag, queryClient, showPopupChatUser.user_id, user?.id]);
+  }, [messageFlag, queryClient, showPopupChatUser!.user_id, user?.id]);
   const handleSendMessage = () => {
     if (!textAreaRef.current || !showPopupChatUser) return;
     setmessageFlag((prev) => !prev);
@@ -99,14 +98,11 @@ function ChatPopup() {
       receiverId: showPopupChatUser.user_id,
       message: textAreaRef.current.value,
     });
-    // messageMutation.mutate({
-    //   message: textAreaRef.current?.value,
-    //   targetUserId: showPopupChatUser.user_id,
-    // });
+
     textAreaRef.current.value = "";
     textAreaRef.current.style.height = "auto";
   };
-
+  if (!showPopupChatUser) return null;
   return (
     <div>
       <Container className="fixed inset-0 flex flex-col z-[1002] rounded-none sm:rounded-lg sm:rounded-b-none sm:inset-auto sm:bottom-0 sm:right-36 sm:w-80 sm:h-96">

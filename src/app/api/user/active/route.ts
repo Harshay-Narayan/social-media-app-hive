@@ -1,9 +1,8 @@
 import { setStatusOnline } from "@/lib/active-user-status/setUserStatus";
 import { getAuthInfo } from "@/lib/authUtil";
-import redis from "@/lib/redis";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function PUT(request: NextRequest) {
+export async function PUT() {
   try {
     const authInfo = await getAuthInfo();
     if (!authInfo) {

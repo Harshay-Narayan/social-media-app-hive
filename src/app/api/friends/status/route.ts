@@ -2,9 +2,9 @@ import { getFriendsStatuses } from "@/lib/active-user-status/getFriendsStatuses"
 import { getAuthInfo } from "@/lib/authUtil";
 import { getFriendList } from "@/lib/dbUtils";
 import redis from "@/lib/redis";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const authInfo = await getAuthInfo();
     if (!authInfo) {

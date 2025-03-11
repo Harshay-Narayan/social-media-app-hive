@@ -1,4 +1,4 @@
-import React, { MouseEvent, KeyboardEvent, useEffect } from "react";
+import React, { useEffect } from "react";
 import { X } from "lucide-react";
 
 type CloseButtonProps = {
@@ -21,9 +21,8 @@ function CloseButton({
         onClose();
       }
     };
-    (document as any).addEventListener("keydown", handleEscapeKey);
-    return () =>
-      (document as any).removeEventListener("keydown", handleEscapeKey);
+    document.addEventListener("keydown", handleEscapeKey);
+    return () => document.removeEventListener("keydown", handleEscapeKey);
   }, [onClose]);
   return (
     <button

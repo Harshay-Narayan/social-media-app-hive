@@ -78,11 +78,11 @@ export async function POST(request: NextRequest) {
       message: "Post created Successfully",
       status: 201,
     });
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
       {
         message: "Error creating post",
-        error: error.message || "unknown error",
+        error: error || "unknown error",
       },
       { status: 500 }
     );
@@ -110,16 +110,17 @@ export async function GET() {
           isLiked: !!likes.length,
         };
       } catch (error) {
+        console.log(error);
         const { likes, ...rest } = post;
         return { ...rest, post_image_url: null, isLiked: !!likes.length };
       }
     });
     return NextResponse.json({ posts: postsWithImageUrl }, { status: 200 });
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
       {
         message: "Failed to retrieve posts",
-        error: error.message || "Unknown error",
+        error: error || "Unknown error",
       },
       { status: 500 }
     );

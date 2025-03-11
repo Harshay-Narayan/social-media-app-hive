@@ -32,7 +32,7 @@ function FriendsSuggestion() {
         <div className="m-2 flex gap-3 overflow-x-scroll max-w-full hidden-scrollbar">
           {data?.pages.map((group, i) => (
             <div key={i}>
-              {group?.data.map((user: SuggestionsFriendInfo, index, arr) => {
+              {group?.data.map((user: SuggestionsFriendInfo) => {
                 return (
                   <SendFriendRequestCard
                     user_id={user.user_id}

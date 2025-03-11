@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ messages, nextCursor }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { message: "Error fetching messages" },
+      { message: "Error fetching messages" + error },
       { status: 500 }
     );
   }

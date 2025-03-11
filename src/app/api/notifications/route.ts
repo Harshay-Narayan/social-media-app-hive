@@ -3,6 +3,7 @@ import {
   createNotification,
   getNotifications,
   getUserInfo,
+  readNotification,
 } from "@/lib/dbUtils";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -24,11 +25,9 @@ export async function GET(request: NextRequest) {
       );
     }
     const searchParams = request.nextUrl.searchParams;
-    let cursor = searchParams.get("cursor");
-    let lastCursor = cursor;
-    if (cursor?.trim() === "null" || cursor?.trim() === "undefined") {
-      lastCursor = null;
-    }
+    const cursor = searchParams.get("cursor");
+    const lastCursor =
+      cursor === "null" || cursor === "undefined" ? null : cursor;
 
     const { notifications, unreadPostsCount } = await getNotifications(
       authInfo.id,
@@ -42,10 +41,6 @@ export async function GET(request: NextRequest) {
     const userInfo = await Promise.all(
       uniqueActorIds.map((id) => getUserInfo(id))
     );
-
-    // if (userInfo.length === 0) {
-    //   throw new Error("error in fetching user details");
-    // }
 
     const actorIdsMap = new Map();
     userInfo.forEach((actor) => actorIdsMap.set(actor?.user_id, actor));
@@ -101,7 +96,7 @@ export async function POST(request: NextRequest) {
         { status: 200 }
       );
     }
-    const notifications = await createNotification({
+    await createNotification({
       actorId,
       userId,
       commentId,
@@ -114,7 +109,7 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     return NextResponse.json(
-      { message: "Error in creating notification"+error },
+      { message: "Error in creating notification" },
       { status: 500 }
     );
   }

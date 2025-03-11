@@ -1,5 +1,5 @@
 import { getAuthInfo } from "@/lib/authUtil";
-import { getPendingFriendRequests, getUserId } from "@/lib/dbUtils";
+import { getPendingFriendRequests } from "@/lib/dbUtils";
 import { NextRequest, NextResponse } from "next/server";
 
 const PAGE_SIZE = 1;
@@ -19,10 +19,8 @@ export async function GET(request: NextRequest) {
 
     const searchParams = request.nextUrl.searchParams;
     const cursor = searchParams.get("cursor");
-    let lastCursor = cursor;
-    if (cursor?.trim() === "null" || cursor?.trim() === "undefined") {
-      lastCursor = null;
-    }
+    const lastCursor =
+      cursor === "null" || cursor === "undefined" ? null : cursor;
 
     const pendingFriendRequestUsers = await getPendingFriendRequests(
       authInfo.id,
