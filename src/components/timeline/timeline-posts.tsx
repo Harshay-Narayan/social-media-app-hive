@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React from "react";
 import Posts from "../posts/posts";
-import { IPost } from "@/types";
+import { Post } from "@/types";
 import PostsSkeletonLoader from "../UI/posts-skeleton-loader";
 
 async function getMyPosts({ queryKey }: { queryKey: [string, string] }) {
@@ -26,7 +26,7 @@ function TimelinePosts({ username }: { username: string }) {
 
   return (
     <>
-      {data.posts.map((post: IPost) => {
+      {data.posts.map((post: Post) => {
         return (
           <Posts
             key={post.post_id}

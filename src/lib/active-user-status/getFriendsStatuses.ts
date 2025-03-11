@@ -5,7 +5,6 @@ export async function getFriendsStatuses(friendIds: string[]) {
   const pipeline = redis.multi();
   friendIds.forEach((id) => pipeline.get(`online-${id}`));
   const results = await pipeline.exec();
-  console.log("here=>" + results);
   const onlineStatuses = friendIds.map((id, index) => ({
     userId: id,
     isOnline: results![index][1] !== null,

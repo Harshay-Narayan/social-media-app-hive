@@ -6,7 +6,7 @@ import CloseButton from "../UI/CloseButton";
 import useCommentMutation from "@/hooks/comments/use-comment-mutation";
 import CommentInput from "./comment-input";
 import useCommentQuery from "@/hooks/comments/use-comment-query";
-import { ICommentsApiResponse } from "@/types";
+import { CommentsApiResponse } from "@/types";
 import Spinner from "../UI/spinner";
 
 function Comments({
@@ -19,7 +19,7 @@ function Comments({
   const {
     data,
     isLoading,
-  }: { data: ICommentsApiResponse; isLoading: boolean } =
+  }: { data: CommentsApiResponse; isLoading: boolean } =
     useCommentQuery(postId);
   const { commentMutaion } = useCommentMutation();
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
@@ -38,7 +38,7 @@ function Comments({
   };
 
   return (
-    <Container className="w-[34rem] absolute top-16 overflow-hidden bottom-10 left-1/2 -translate-x-1/2">
+    <Container className="sm:w-[34rem] absolute top-16 right-2 left-2 bottom-10 md:bottom-96 xl:bottom-10 overflow-hidden sm:left-1/2 sm:-translate-x-1/2">
       <div className="flex p-2 border-b-2 border-gray-300 font-semibold">
         <div className="ml-auto">Comments</div>
         <div className="ml-auto">
@@ -72,7 +72,7 @@ function Comments({
         </div>
       )}
 
-      <div className="p-2 border-t-2 w-full bg-white border-gray-300 fixed bottom-0">
+      <div className="p-2 border-t-2 w-full bg-white border-gray-300 absolute bottom-0">
         <CommentInput
           commentInputHadler={commentInputHadler}
           ref={commentInputRef}

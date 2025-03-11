@@ -13,7 +13,7 @@ function CreatePost() {
         }
       }}
     >
-      <div className="absolute top-16 left-[50%] -translate-x-1/2">
+      <div className="absolute top-16 left-2 right-2 bottom-10 sm:left-1/2 sm:right-auto sm:-translate-x-1/2">
         <CreatePostForm />
       </div>
     </div>

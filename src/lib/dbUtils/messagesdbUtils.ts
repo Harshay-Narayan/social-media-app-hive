@@ -17,7 +17,12 @@ export async function getMessages(
   lastCursor: string | null
 ) {
   return await prisma.messages.findMany({
-    where: { sender_id: userId, receiver_id: targetUserId },
+    where: {
+      OR: [
+        { sender_id: userId, receiver_id: targetUserId },
+        { sender_id: targetUserId, receiver_id: userId },
+      ],
+    },
     take: limit,
     orderBy: { createdDate: "desc" },
     ...(lastCursor ? { cursor: { message_id: lastCursor }, skip: 1 } : {}),

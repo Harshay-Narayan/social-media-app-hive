@@ -1,4 +1,4 @@
-import { ICommentsApiResponse } from "@/types";
+import { CommentsApiResponse } from "@/types";
 import { useUser } from "@clerk/nextjs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
@@ -36,7 +36,7 @@ function useReplyMutation() {
       ]);
       queryClient.setQueryData(
         ["fetchComments", variables.postId],
-        (old: ICommentsApiResponse) => {
+        (old: CommentsApiResponse) => {
           const updatedComments = old.comments.map((comment) => {
             if (comment.comment_id === variables.commentId) {
               return {

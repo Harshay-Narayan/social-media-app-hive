@@ -5,17 +5,8 @@ import { useUser } from "@clerk/nextjs";
 import Container from "../UI/container";
 import { useCreatePost } from "@/context";
 
-// type PostActionHeaderProps = {
-//   showCreatePostFormHandler: () => void;
-// };
-
 function PostActionHeader() {
   const { user } = useUser();
-
-  // const onShowCreateForm = () => {
-  //   showCreatePostFormHandler();
-  // };
-
   const { toggleShowCreatePostFrom } = useCreatePost();
 
   if (!user) return null;

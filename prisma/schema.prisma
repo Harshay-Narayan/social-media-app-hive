@@ -72,15 +72,17 @@ model Like {
 }
 
 model Post {
-  user_id             String
-  post_id             String   @id @default(cuid())
-  post_content        String?  @db.Text
-  post_image_location String?
-  createDate          DateTime @default(now())
-  updateDate          DateTime @default(now())
-  user                User     @relation(fields: [user_id], references: [user_id])
-  likes_count         Int      @default(0)
-  likes               Like[]
+  user_id                 String
+  post_id                 String   @id @default(cuid())
+  post_content            String?  @db.Text
+  post_image_location     String?
+  post_image_thumbnail    String?
+  post_image_aspect_ratio String?
+  createDate              DateTime @default(now())
+  updateDate              DateTime @default(now())
+  user                    User     @relation(fields: [user_id], references: [user_id])
+  likes_count             Int      @default(0)
+  likes                   Like[]
 
   @@index([post_id, user_id])
 }

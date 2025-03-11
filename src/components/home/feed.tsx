@@ -1,28 +1,28 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import PostActionHeader from "./post-action-header";
 import Posts from "../posts/posts";
 import CreatePost from "./create-post";
-import { IPost } from "@/types";
-import PostsSkeletonLoader from "../UI/posts-skeleton-loader";
+import { Post } from "@/types";
 import { useCreatePost } from "@/context";
 import useGetPostsQuery from "@/hooks/likes/use-get-posts-query";
+import ChatHead from "../chat/chat-head";
+import dynamic from "next/dynamic";
+import { useGlobalStore } from "@/store/useGlobalStore";
+import ChatSidebar from "../serverComponents/sidebar/chat-sidebar";
+const ChatPopup = dynamic(() => import("../chat/chat-popup"), { ssr: false });
 
 function feed() {
   const { showCreatePostForm } = useCreatePost();
-  const { data, error, isError, isLoading } = useGetPostsQuery();
+  const [hidden, setHidden] = useState<boolean>(true);
+  const { data } = useGetPostsQuery();
+  const showPopupChatUser = useGlobalStore((state) => state.showPopupChatUser);
+  const showChatDrawer = useGlobalStore((state) => state.showChatDrawer);
 
-  if (isLoading)
-    return (
-      <div className="flex flex-col w-full sm:w-auto">
-        <PostsSkeletonLoader />
-      </div>
-    );
-  if (isError) return <span>Error occured: {error?.message}</span>;
   return (
-    <div className="w-[34rem] mx-4 sm:mx-0">
+    <div className="w-[34rem] mx-2 sm:mx-0" onClick={() => setHidden(!hidden)}>
       <PostActionHeader />
-      {data?.posts?.map((post: IPost) => {
+      {data.posts?.map((post: Post) => {
         return (
           <Posts
             key={post.post_id}
@@ -35,11 +35,26 @@ function feed() {
             userProfileImageUrl={post.user.user_avatar_url}
             fullName={`${post.user.first_name} ${post.user.last_name}`}
             createdDate={post.updateDate}
+            blurPostImageDataUrl={post.post_image_thumbnail}
+            postImageAspectRatio={post.post_image_aspect_ratio}
           />
         );
       })}
 
+      <div
+        className="xl:bg-transparent bg-white p-2 h-full fixed w-80 right-0 top-14 sm:top-16 hover:overflow-scroll scroll-smooth hidden-scrollbar"
+        tabIndex={showChatDrawer ? 0 : -1}
+        style={{
+          pointerEvents: showChatDrawer ? "auto" : "none",
+          transform: `translateX(${showChatDrawer ? 0 : 100}%)`,
+          transition: "opacity,transform 0.5s ease-in",
+        }}
+      >
+        <ChatSidebar />
+      </div>
       {showCreatePostForm ? <CreatePost /> : null}
+      <ChatHead />
+      {showPopupChatUser && <ChatPopup />}
     </div>
   );
 }

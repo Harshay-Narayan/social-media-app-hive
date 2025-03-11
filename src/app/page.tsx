@@ -1,10 +1,9 @@
 import ChatHead from "@/components/chat/chat-head";
-import ChatPopup from "@/components/chat/chat-popup";
 import Feed from "@/components/home/feed";
-import ChatSidebar from "@/components/serverComponents/sidebar/chat-sidebar";
 import ProfileSidebar from "@/components/serverComponents/sidebar/profile-sidebar";
+import PostsSkeletonLoader from "@/components/UI/posts-skeleton-loader";
 import { CreatePostProvider } from "@/context";
-import { useChatHeadStore } from "@/store/useChatHeadStore";
+import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 
 export default async function Home() {
@@ -13,24 +12,21 @@ export default async function Home() {
       <div>
         <Toaster />
       </div>
-      <div className="fixed w-80 bottom-0 top-16 hover:overflow-scroll scroll-smooth hidden-scrollbar">
+      <div className="hidden sm:block fixed w-80 bottom-0 top-16 hover:overflow-scroll scroll-smooth hidden-scrollbar">
         <ProfileSidebar />
       </div>
+
       <div className="flex justify-center">
         <CreatePostProvider>
-          <Feed />
+          <Suspense fallback={<PostsSkeletonLoader />}>
+            <Feed />
+          </Suspense>
         </CreatePostProvider>
       </div>
-      <div>
-        <div className="fixed w-80 right-0 top-16 hover:overflow-scroll scroll-smooth hidden-scrollbar">
-          <ChatSidebar />
-        </div>
-      </div>
+      <div></div>
+      <div className="">{/* <ChatPopup /> */}</div>
       <div className="">
-        <ChatPopup />
-      </div>
-      <div className="">
-        <ChatHead/>
+        <ChatHead />
       </div>
     </div>
   );

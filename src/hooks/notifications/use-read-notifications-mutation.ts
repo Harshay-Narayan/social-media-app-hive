@@ -1,6 +1,6 @@
 import {
-  INotifications,
-  INotificationsApiResponse,
+  Notifications,
+  NotificationsApiResponse,
 } from "@/types/notifications-types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
@@ -8,7 +8,7 @@ import axios from "axios";
 async function readNotification({
   notificationId,
 }: {
-  notificationId: INotifications["notificationId"];
+  notificationId: Notifications["notificationId"];
 }) {
   const response = await axios.put(`/api/notifications/read/${notificationId}`);
   return response.data;
@@ -31,7 +31,7 @@ function useReadnotificationsMutation() {
               ...page,
               meta: { ...page.meta, unread_count: page.meta.unread_count - 1 },
               notifications: page.notifications.map(
-                (notification: INotifications) =>
+                (notification: Notifications) =>
                   notification.notificationId === variables.notificationId
                     ? { ...notification, isRead: true }
                     : notification

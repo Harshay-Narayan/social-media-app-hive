@@ -7,6 +7,6 @@ export interface Messages {
   sender_id: string;
 }
 export interface GetMessagesApiRespnse {
-  message: Messages[];
+  messages: Messages[];
   nextCursor: string;
 }

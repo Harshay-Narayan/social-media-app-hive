@@ -1,6 +1,6 @@
 "use client";
 import { SendHorizonal } from "lucide-react";
-import React, { forwardRef, RefObject, useRef, useState } from "react";
+import React, { forwardRef } from "react";
 
 const CommentInput = forwardRef(function (
   { commentInputHadler }: { commentInputHadler: () => void },

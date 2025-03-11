@@ -1,4 +1,4 @@
-import { INotificationsApiResponse } from "@/types/notifications-types";
+import { NotificationsApiResponse } from "@/types/notifications-types";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -15,7 +15,7 @@ function useNotificationsQuery() {
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
-  } = useInfiniteQuery<INotificationsApiResponse>({
+  } = useInfiniteQuery<NotificationsApiResponse>({
     queryKey: ["fetchNotifications"],
     queryFn: fetchNotifications,
     initialPageParam: null,

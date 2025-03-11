@@ -1,4 +1,4 @@
-export interface IUserInfo {
+export interface UserInfo {
   username: string;
   user_id: string;
   user_avatar_url: string;

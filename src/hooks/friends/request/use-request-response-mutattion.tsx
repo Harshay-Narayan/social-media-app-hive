@@ -1,4 +1,4 @@
-import { IRequestFriendInfo } from "@/types";
+import { RequestFriendInfo } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -48,7 +48,7 @@ function useRequestResponseMutation() {
           pages: old.pages.map((page: any) => {
             return {
               ...page,
-              data: page.data.map((friend: IRequestFriendInfo) =>
+              data: page.data.map((friend: RequestFriendInfo) =>
                 friend.username === variables.targetUsername
                   ? {
                       ...friend,

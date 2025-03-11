@@ -2,7 +2,7 @@ import { Post, User } from "@prisma/client";
 import { prisma, supabase } from "./client";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
-import { IPostWithUserAvatarAndLikes } from "@/types";
+import { PostWithUserAvatarAndLikes } from "@/types";
 
 // user features
 
@@ -84,7 +84,9 @@ export async function updateUserProfileImage(
 export async function createPost(
   post_content: string | null,
   post_image_location: string | null,
-  user_id: string
+  user_id: string,
+  post_image_thumbnail: string | null,
+  post_image_aspect_ratio: string | null
 ): Promise<Post> {
   const post: Post = await prisma.post.create({
     data: {
@@ -93,6 +95,8 @@ export async function createPost(
       updateDate: new Date(),
       createDate: new Date(),
       user_id,
+      post_image_thumbnail,
+      post_image_aspect_ratio,
     },
   });
   return post;
@@ -107,7 +111,7 @@ export async function getUserIdFromPostId(postId: string) {
 
 export async function getAllPosts(
   userId: string
-): Promise<IPostWithUserAvatarAndLikes[]> {
+): Promise<PostWithUserAvatarAndLikes[]> {
   const allPosts = await prisma.post.findMany({
     include: {
       likes: { where: { user_id: userId }, select: { id: true } },
@@ -128,7 +132,7 @@ export async function getAllPosts(
 export async function getPostsofUser(
   userId: string,
   currentUserId: string
-): Promise<IPostWithUserAvatarAndLikes[]> {
+): Promise<PostWithUserAvatarAndLikes[]> {
   const posts = await prisma.post.findMany({
     where: {
       user_id: userId,
@@ -200,12 +204,12 @@ export function getImageUrl(bucketName: string, fileLocation: string) {
 
 // Generate unique name for files
 
-export function generateUniqueNameforFiles(file: File): string {
+export function generateUniqueNameforFiles(file: File) {
   const fileId = uuidv4();
   const fileName = file.name;
   const fileExtention = path.extname(fileName);
-  const fileNameWithoutExtention = `${fileId}${fileExtention}`;
-  return fileNameWithoutExtention;
+  const uploadFileName = `${fileId}${fileExtention}`;
+  return { uploadFileName };
 }
 
 // Friends feature
@@ -540,6 +544,7 @@ export async function createNotification({
     });
   }
   if (postId) {
+    console.log(postId)
     await prisma.notifications.create({
       data: {
         user_id: userId,

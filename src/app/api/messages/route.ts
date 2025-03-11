@@ -2,7 +2,7 @@ import { getAuthInfo } from "@/lib/authUtil";
 import { getMessages, sendMessage } from "@/lib/dbUtils/messagesdbUtils";
 import { NextRequest, NextResponse } from "next/server";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 7;
 
 export async function GET(request: NextRequest) {
   try {

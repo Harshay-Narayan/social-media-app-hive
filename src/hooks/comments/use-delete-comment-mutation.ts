@@ -1,4 +1,4 @@
-import { IComment, ICommentsApiResponse } from "@/types";
+import { Comment, CommentsApiResponse } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import React from "react";
@@ -27,7 +27,7 @@ function useDeleteCommentMutaion() {
       ]);
       queryClient.setQueryData(
         ["fetchComments", payload.postId],
-        (old: ICommentsApiResponse) => {
+        (old: CommentsApiResponse) => {
           const updatedComments = old.comments.filter(
             (comment) => comment.comment_id !== payload.commentId
           );

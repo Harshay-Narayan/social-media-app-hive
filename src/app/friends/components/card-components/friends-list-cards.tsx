@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import Container from "@/components/UI/container";
-import { IFriendListCardProps } from "@/types";
+import { FriendListCardProps } from "@/types";
 import Link from "next/link";
 
 function FriendsListCards({
@@ -10,7 +10,7 @@ function FriendsListCards({
   user_avatar_url,
   username,
   removeFriendHandler,
-}: IFriendListCardProps) {
+}: FriendListCardProps) {
   const onRemoveFrined = (username: string) => {
     removeFriendHandler(username);
   };

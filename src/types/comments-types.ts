@@ -1,6 +1,6 @@
-import { IUserInfo } from "./user-types";
+import { UserInfo } from "./user-types";
 
-export interface IComment extends IUserInfo {
+export interface Comment extends UserInfo {
   createdDate: Date;
   post_id: string;
   comment_id: string;
@@ -8,7 +8,7 @@ export interface IComment extends IUserInfo {
   actor_id: string;
 }
 
-export interface IReplies extends IUserInfo {
+export interface Replies extends UserInfo {
   createdDate: string;
   comment_id: string;
   actor_id: string;
@@ -16,10 +16,10 @@ export interface IReplies extends IUserInfo {
   reply_text: string;
 }
 
-export interface ICommentsWithUserInfoAndReplies extends IComment {
-  replies: IReplies[];
+export interface CommentsWithUserInfoAndReplies extends Comment {
+  replies: Replies[];
 }
 
-export interface ICommentsApiResponse {
-  comments: ICommentsWithUserInfoAndReplies[];
+export interface CommentsApiResponse {
+  comments: CommentsWithUserInfoAndReplies[];
 }

@@ -13,6 +13,7 @@ import { Post } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { IPost } from "@/types";
 import { getAuthInfo } from "@/lib/authUtil";
+import { createBlurImagePlaceholder } from "@/lib/create-blur-image-placeholder";
 
 const BUCKET_NAME = "post-images";
 
@@ -49,13 +50,18 @@ export async function POST(request: NextRequest) {
     let postImageLocation = null;
 
     if (postImage) {
-      const uniqueImageName = generateUniqueNameforFiles(postImage);
-      postImageLocation = `${userId}/${postId}/${uniqueImageName}`;
+      const { uploadFileName } = generateUniqueNameforFiles(postImage);
+      postImageLocation = `${userId}/${postId}/${uploadFileName}`;
     }
+    const blurImageData =
+      postImage && (await createBlurImagePlaceholder(postImage));
+
     const createdPost: Post = await createPost(
       postContent,
       postImageLocation,
-      userId
+      userId,
+      blurImageData?.base64DataUrl || null,
+      blurImageData?.aspectRatio || null
     );
 
     if (postImage && postImageLocation) {
@@ -69,7 +75,6 @@ export async function POST(request: NextRequest) {
         throw new Error("Failed to upload Image " + error?.message);
       }
     }
-    // revalidatePath("/"); //check logic later
     return NextResponse.json({
       success: true,
       message: "Post created Successfully",

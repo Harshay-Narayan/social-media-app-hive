@@ -1,22 +1,29 @@
 "use client";
-import React from "react";
+import React, { useEffect} from "react";
 import useFriendListQuery from "@/hooks/friends/list/use-friend-list-query";
-import { useQueryClient } from "@tanstack/react-query";
-import { IFriendsListApiResponse } from "@/types";
 import FriendsStatusList from "./friends-status-list";
+import { socket } from "@/lib/socket";
+import { useUser } from "@clerk/nextjs";
+import StatusUpdater from "@/components/status-update-component/status-update";
 
 function ChatSidebar() {
-  const queryClient = useQueryClient();
   const { data: friends } = useFriendListQuery();
+  const { user } = useUser();
 
-  // if (!friends) {
-  //   return <p className="text-red-600">Error occured</p>;
-  // }
-  // console.log(friends.data);
-  console.log(friends);
+  useEffect(() => {
+    if (!socket.connected) {
+      socket.connect();
+    }
+    socket.on("connect", () => {
+      socket.emit("authenticate", {
+        userId: user?.id,
+      });
+    });
+  }, [user?.id]);
 
   return (
     <div>
+      <StatusUpdater />
       <div className="font-bold">Friends Online</div>
       <FriendsStatusList friends={friends?.data ?? []} />
     </div>

@@ -1,4 +1,4 @@
-import { IGetPostsApiResponse, IPost } from "@/types";
+import { GetPostsApiResponse, Post } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -32,7 +32,7 @@ function usePostLikeMutation() {
         queryKey: ["getPosts"],
       });
       const prevPosts = queryClient.getQueryData(["getPosts"]);
-      queryClient.setQueryData(["getPosts"], (old: IGetPostsApiResponse) => {
+      queryClient.setQueryData(["getPosts"], (old: GetPostsApiResponse) => {
         const updatedPosts = old.posts.map((post) =>
           post.post_id === variables.postId
             ? {

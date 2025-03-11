@@ -3,19 +3,19 @@ import Container from "./container";
 
 function PlaceholderCards() {
   return (
-    <Container className="sm:w-[36rem] h-56 p-4 mx-4 my-2 skeleton">
+    <Container className="w-full sm:w-[34rem] h-80 p-4 mb-2 skeleton">
       <div className="flex items-center gap-3">
         <div className="bg-slate-200 rounded-full h-10 w-10"></div>
-        <div>
-          <div className="h-2 w-44 bg-slate-200 rounded m-2 ml-0"></div>
-          <div className="h-2 w-14 bg-slate-200 rounded m-2 ml-0"></div>
+        <div className="space-y-2">
+          <div className="h-2 w-44 bg-slate-200 rounded"></div>
+          <div className="h-2 w-14 bg-slate-200 rounded"></div>
         </div>
       </div>
-      <div>
-        <div className="h-2 w-5/6 bg-slate-200 rounded mt-2"></div>
-        <div className="h-2 w-4/6 bg-slate-200 rounded mt-2"></div>
-        <div className="h-2 w-5/6 bg-slate-200 rounded mt-2"></div>
-        <div className="h-24 w-full bg-slate-200 rounded mt-2"></div>
+      <div className="space-y-2 mt-2">
+        <div className="h-2 w-5/6 bg-slate-200 rounded"></div>
+        <div className="h-2 w-4/6 bg-slate-200 rounded"></div>
+        <div className="h-2 w-5/6 bg-slate-200 rounded"></div>
+        <div className="h-48 w-full bg-slate-200 rounded"></div>
       </div>
     </Container>
   );
@@ -23,11 +23,11 @@ function PlaceholderCards() {
 
 function PostsSkeletonLoader() {
   return (
-    <>
-      {[...Array(3)].map((_, index) => (
+    <div className="flex flex-col w-full sm:w-auto mx-2 sm:mx-0">
+      {[...Array(2)].map((_, index) => (
         <PlaceholderCards key={index} />
       ))}
-    </>
+    </div>
   );
 }
 

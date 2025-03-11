@@ -42,6 +42,7 @@ function FriendRequests() {
               {group?.data.map((user) => {
                 return (
                   <ConfirmFriendRequestCard
+                    user_id={user.user_id}
                     friendship_id={user.friendship_id}
                     isRequestAccepted={user.isRequestAccepted ?? false}
                     isRequestRejected={user.isRequestRejected ?? false}

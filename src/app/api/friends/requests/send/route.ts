@@ -43,6 +43,7 @@ export async function POST(request: NextRequest) {
       authInfo.id,
       targetUserId
     );
+
     if (friendRequestSent) {
       return NextResponse.json(
         { message: "Friend request sent successfully." },

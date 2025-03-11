@@ -1,4 +1,4 @@
-import { IComment, ICommentsApiResponse } from "@/types";
+import { Comment, CommentsApiResponse } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -27,7 +27,7 @@ function useReplyDeleteMutation() {
       ]);
       queryClient.setQueryData(
         ["fetchComments", payload.postId],
-        (old: ICommentsApiResponse) => {
+        (old: CommentsApiResponse) => {
           const commetsMap = new Map(
             old.comments.map((comment) => [comment.comment_id, { ...comment }])
           );

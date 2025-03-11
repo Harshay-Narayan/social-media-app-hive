@@ -1,40 +1,30 @@
 "use client";
 import { pusherConfig } from "@/config";
-import useHeartbeat from "@/hooks/heartbeat/use-heart-beat";
 import { FriendsInfo } from "@/types";
-
 import Pusher from "pusher-js";
 import React, { useEffect, useState } from "react";
 import useFriendsStatus from "@/hooks/status/use-friends-status-query";
-import ProfileIcon from "@/components/profile-icon/profile-icon";
-import { formatDate } from "@/lib/dateUtils";
 import FriendsStatusListItem from "./friends-status-list-item";
-import { useChatHeadStore } from "@/store/useChatHeadStore";
+import { useGlobalStore } from "@/store/useGlobalStore";
 
 const pusher = new Pusher(pusherConfig.pusherKey, {
   cluster: pusherConfig.pusherCluster,
 });
-
-// type FriendsStatues = {
-//   [userd_id: string]: "online" | Date;
-// };
 
 type FriendsStatues = {
   [userd_id: string]: { isOnline: boolean; lastSeen: string };
 };
 
 function FriendsStatusList({ friends }: { friends: FriendsInfo[] }) {
-  console.log("status list rendered");
   const [friendsStatues, setFriendsStatues] = useState<FriendsStatues | null>(
     null
   );
   const [lastSeen, setLastSeen] = useState("");
   const { data: initialStatuses, isLoading } = useFriendsStatus();
+  
   //   console.log("initialStatuses");
   //   console.log(initialStatuses);
-  console.log(friendsStatues);
   //   useHeartbeat();
-
   //   useEffect(() => {
   //     if (initialStatuses?.friendsStatuses.length) {
   //       setFriendsStatues(
@@ -74,7 +64,7 @@ function FriendsStatusList({ friends }: { friends: FriendsInfo[] }) {
   }, []);
 
   // const test = useChatHeadStore((state) => state.addFriendToActiveChat);
-  const setShowPopupChatUser = useChatHeadStore(
+  const setShowPopupChatUser = useGlobalStore(
     (state) => state.setShowPopupChatUser
   );
 

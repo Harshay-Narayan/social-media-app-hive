@@ -4,20 +4,23 @@ import { pusherConfig } from "@/config";
 import { useUser } from "@clerk/nextjs";
 import { useQueryClient } from "@tanstack/react-query";
 import Pusher from "pusher-js";
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import NotificationsList from "./notifications-list";
 import NotificationsSekeletonLoader from "./notifications-skeleton-loader";
 import useNotificationsQuery from "@/hooks/notifications/use-notifications-query";
 import useReadnotificationsMutation from "@/hooks/notifications/use-read-notifications-mutation";
 import Spinner from "@/components/UI/spinner";
 import useInfiniteScroll from "@/hooks/infinite-scroll/use-infinite-scroll";
+import CloseButton from "@/components/UI/CloseButton";
 
 type NotificationsDropdownProps = {
+  closeNotificationsDropdownHandler: () => void;
   setUnreadNotificationsCountHandler: (count: number) => void;
 };
 
 function NotificationsDropdown({
   setUnreadNotificationsCountHandler,
+  closeNotificationsDropdownHandler,
 }: NotificationsDropdownProps) {
   const { user } = useUser();
   const popupRef = useRef<HTMLDivElement>(null);
@@ -68,10 +71,16 @@ function NotificationsDropdown({
   });
   return (
     <Container
-      className="absolute mt-1 w-80 font-extrabold max-h-96 overflow-y-scroll hidden-scrollbar"
+      className="fixed inset-0 top-14 max-sm:rounded-none h-screen sm:absolute sm:top-5 sm:mt-1 sm:w-80 font-extrabold sm:max-h-96 overflow-y-scroll hidden-scrollbar"
       ref={popupRef}
     >
-      <div className="pt-4 px-4">Notifications</div>
+      <div className="flex justify-between px-2 pt-2">
+        <div>Notifications</div>
+        <div className="sm:hidden">
+          <CloseButton onClose={closeNotificationsDropdownHandler} />
+        </div>
+      </div>
+
       {isLoading ? (
         <div className="m-2">
           {[...Array(6)].map((_, index) => (
@@ -87,6 +96,12 @@ function NotificationsDropdown({
                   let notificationContent;
                   if (notification.type === "LIKE") {
                     notificationContent = `${notification.first_name} ${notification.last_name} liked you post`;
+                  }
+                  if (notification.type === "COMMENT") {
+                    notificationContent = `${notification.first_name} ${notification.last_name} commented on your post`;
+                  }
+                  if (notification.type === "FRIENDREQUEST") {
+                    notificationContent = `${notification.first_name} ${notification.last_name} sent you a friend request`;
                   }
                   return (
                     <div

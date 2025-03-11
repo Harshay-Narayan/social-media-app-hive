@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import ProfileIcon from "../profile-icon/profile-icon";
 import CommentInput from "./comment-input";
-import { IReplies } from "@/types";
+import { Replies } from "@/types";
 import useReplyMutation from "@/hooks/replies/use-reply-mutation";
 import { useUser } from "@clerk/nextjs";
 import { Divide, Ellipsis } from "lucide-react";
@@ -26,7 +26,7 @@ function CommentItem({
   replyId?: string;
   imageUrl: string;
   comment: string;
-  replies?: IReplies[];
+  replies?: Replies[];
   fullName: string;
   postId: string;
   commentId: string;

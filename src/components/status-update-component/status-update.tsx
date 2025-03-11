@@ -30,7 +30,10 @@ function StatusUpdater() {
     async function goOnline() {
       axios.put("/api/user/active");
     }
-    goOnline();
+    const timer = setTimeout(() => {
+      goOnline();
+    }, 7000);
+
     const keepUserActive = debounce(goOnline, 5000);
     const visiblityHandler = debounce(handleVisiblityChange, 5000);
     const unloadHandler = debounce(handleUnload, 5000);
@@ -47,6 +50,7 @@ function StatusUpdater() {
       document.removeEventListener("keydown", keepUserActive);
       document.removeEventListener("click", keepUserActive);
       document.removeEventListener("scroll", keepUserActive);
+      clearTimeout(timer);
     };
   }, []);
   return null;

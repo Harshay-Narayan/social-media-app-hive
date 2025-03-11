@@ -1,4 +1,4 @@
-import { ICommentsApiResponse } from "@/types";
+import { CommentsApiResponse } from "@/types";
 import { useUser } from "@clerk/nextjs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
@@ -33,7 +33,7 @@ function useCommentMutation() {
       ]);
       queryClient.setQueryData(
         ["fetchComments", newComment.postId],
-        (old: ICommentsApiResponse) => {
+        (old: CommentsApiResponse) => {
           const updateComments = [
             ...old.comments,
             {

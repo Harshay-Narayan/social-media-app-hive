@@ -1,9 +1,8 @@
 "use client";
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Bell } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+
 import useClickOutside from "@/hooks/useClickOutside";
 const NotificationsDropdown = dynamic(
   () => import("./notifications-dropdown"),
@@ -18,17 +17,13 @@ function Notification() {
     number | null
   >(null);
 
-  const togglePopup = () => {
-    setShowNotificationPopup((prev) => !prev);
-  };
+  const togglePopup = () => setShowNotificationPopup((prev) => !prev);
 
-  const closeNotificationsDropdownHandler = () => {
+  const closeNotificationsDropdownHandler = () =>
     setShowNotificationPopup(false);
-  };
 
-  const setUnreadNotificationsCountHandler = (count: number) => {
+  const setUnreadNotificationsCountHandler = (count: number) =>
     setunredNotificationsCount(count);
-  };
 
   useClickOutside(notificationsDropdownRef, () =>
     closeNotificationsDropdownHandler()
@@ -50,6 +45,9 @@ function Notification() {
         {showNotificationPopup && (
           <div ref={notificationsDropdownRef}>
             <NotificationsDropdown
+              closeNotificationsDropdownHandler={
+                closeNotificationsDropdownHandler
+              }
               setUnreadNotificationsCountHandler={
                 setUnreadNotificationsCountHandler
               }

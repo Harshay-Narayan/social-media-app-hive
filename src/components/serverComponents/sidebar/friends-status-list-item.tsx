@@ -16,9 +16,15 @@ function FriendsStatusListItem({
   isOnline?: boolean;
   lastSeen?: string;
 }) {
-  const lastSeenDuration = lastSeen
-    ? formatDate(new Date(lastSeen))
-    : "Available";
+  const [lastSeenDuration, setLastSeenDuration] = useState<string>();
+
+  useEffect(() => {
+    if (isOnline) {
+      setLastSeenDuration("Available");
+    } else if (lastSeen) {
+      setLastSeenDuration(formatDate(new Date(lastSeen)));
+    }
+  }, [lastSeen, isOnline]);
   return (
     <div>
       <div className="flex items-center gap-1 cursor-pointer">

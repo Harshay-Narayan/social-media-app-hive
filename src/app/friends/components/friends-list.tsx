@@ -1,5 +1,4 @@
 "use client";
-import { IFriendsApiResponse } from "@/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React from "react";
@@ -33,6 +32,7 @@ function FriendsList() {
           return (
             <div key={user.user_avatar_url}>
               <FriendsListCards
+                user_id={user.user_id}
                 first_name={user.first_name}
                 last_name={user.last_name}
                 user_avatar_url={user.user_avatar_url}

@@ -1,11 +1,10 @@
 import {
-  IFriendsApiResponse,
-  IFriendsInfo,
-  ISuggestionsFriendInfo,
+  FriendsApiResponse,
+  FriendsInfo,
+  SuggestionsFriendInfo,
 } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import React from "react";
 
 async function sendFriendRequest({
   targetUsername,
@@ -32,7 +31,7 @@ function useSendRequestMutation() {
           pages: old.pages.map((page: any) => {
             return {
               ...page,
-              data: page.data.map((friend: ISuggestionsFriendInfo) =>
+              data: page.data.map((friend: SuggestionsFriendInfo) =>
                 friend.username === variables.targetUsername
                   ? { ...friend, isRequestSent: true }
                   : { ...friend }

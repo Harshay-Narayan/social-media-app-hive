@@ -1,18 +1,18 @@
 "use client";
 import Image from "next/image";
 import { formatDate } from "@/lib/dateUtils";
-import { INotificationsListProps } from "@/types/notifications-types";
+import { NotificationsListProps } from "@/types/notifications-types";
 
 export default function NotificationsList({
   isRead,
   createdDate,
   user_avatar_url,
   notificationContent,
-}: INotificationsListProps) {
+}: NotificationsListProps) {
   const timeElapsed = formatDate(createdDate);
   return (
     <div
-      className={`flex items-center gap-2 rounded p-2 my-1 cursor-pointer active:bg-zinc-300 ${
+      className={`flex items-center gap-2 rounded p-3 cursor-pointer active:bg-zinc-300 ${
         !isRead ? "bg-zinc-200" : ""
       }`}
     >

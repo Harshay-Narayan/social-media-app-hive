@@ -5,10 +5,12 @@ import { ThumbsUp, MessageCircle } from "lucide-react";
 import Container from "../UI/container";
 import { formatDate } from "@/lib/dateUtils";
 import Link from "next/link";
-import { useQueryClient } from "@tanstack/react-query";
 import { PostsProps } from "@/types";
 import CommentsModal from "../comments/comments-modal";
 import usePostLikeMutation from "@/hooks/likes/use-post-like-mutation";
+
+const DEFAULT_BLUR_IMAGE_DATA_URL =
+  "data:image/jpeg;base64,/9j/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wAARCAFjAMgDASIAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAAAAECBv/EABYQAQEBAAAAAAAAAAAAAAAAAAABEf/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABYRAQEBAAAAAAAAAAAAAAAAAAABEf/aAAwDAQACEQMRAD8A58FAAQBQEFAQUAFAQUBBQERpAQUBBQEABBQEUFAFQAABQAFAFAQVQZGkBBQGRQGRQERQEAAAUUBBQAFABQAUUEFAQUBEUBEVAQAEBAAAABFABQBVVFAUAUAAAUAEQEAQARFQBAAEFFEVEFRQUAVVRQUAFAFAAAQBFQERpBERUBEUUQABUUQVFFUFQFRQUAFAAABAAEUFRGkERGkBlGkUQAQAAUUUVFBQUAAFAAAAAQABUFBGRRRlGkEZFAQABQBQUBUUBQAUUVBRBBQERQEABARQRUEAAZABQUBUUFEUFVFFVQRcBQXERQRlFqCCCAAioAgAAIACgAqooCooLGozFiNRqKzGhoARRKqVUrNSrUoylZVFQQBBAAABFRQFRQVUVFFRRVVlRY0rKo00ICqgCM1K1UozYyy1UqpjKNVFRAQQAAVFAUEVVRRRQRrBUVFURRVVAVoRQRK0gmM1mt1mqzYzWa1Uqs1lFRUABBUUFARpVRUaigI0AIqiKoqsqDSsqiqioglSrUqs1ms1qs1piso1UVlAFQVFFFRUWKqDLcUAUVBFUQUaEAa1dZ01Fa01NNASmoJSs1alaYqIqKygorKKgKqoI0qoI0oggogKogCrrJoNaus6aLrWms6aJrWogCoCs1AFZQUVGQUABGlARRAABAUQFUQBVQBRFAVAFEUQAVkAEYUFABFFQFAAEVBQAAAFEUAAFEUBUBFBRAARgQUUQRVEBVQAAQFEAURQAAFQBRFBRFEURVRRAGBAFEABAVRBBRAVRAFEAUQBRARVZVRVZURVZAaEBGRAUBAVBAUQFUQBRAFEAUQBRAFVlRFVkBo1AF0QEAQAEFAQAAAQBQAFQBUAAAFEAUQBoQBRARQQAEFAAQAAAAAAAAAAAAAFEAUAFEAaQBBAFEAAAAAAAAAAAAAAAAABQAAB/9k=";
 
 function Posts({
   postId,
@@ -20,17 +22,13 @@ function Posts({
   fullName,
   createdDate,
   isLiked,
+  blurPostImageDataUrl,
+  postImageAspectRatio,
 }: PostsProps) {
   const [showComments, setShowComments] = useState<boolean>(false);
-
   const { likeMutation } = usePostLikeMutation();
-
-  const toggleShowCommentsHandler = () => {
-    setShowComments(!showComments);
-  };
-  const likeClickHandler = () => {
-    likeMutation.mutate({ postId, isLiked });
-  };
+  const toggleShowCommentsHandler = () => setShowComments(!showComments);
+  const likeClickHandler = () => likeMutation.mutate({ postId, isLiked });
 
   return (
     <Container className="mb-2 p-4">
@@ -43,7 +41,7 @@ function Posts({
             alt="userProfileImage"
             priority={false}
             placeholder="blur"
-            blurDataURL="/next.svg"
+            blurDataURL={blurPostImageDataUrl || "/avatar.svg"}
           />
         </div>
         <div className="">
@@ -55,10 +53,24 @@ function Posts({
           </div>
         </div>
       </div>
-      {postText ? <div>{postText}</div> : null}
+      {postText && <div>{postText}</div>}
       {postImageUrl ? (
-        <div>
-          <Image src={postImageUrl} alt="post_image" height={600} width={600} />
+        <div
+          className="relative"
+          style={{
+            aspectRatio: `${postImageAspectRatio ?? 1}`,
+          }}
+        >
+          <Image
+            src={postImageUrl}
+            alt="post_image"
+            fill
+            style={{ objectFit: "cover" }}
+            priority={false}
+            placeholder="blur"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            blurDataURL={blurPostImageDataUrl || DEFAULT_BLUR_IMAGE_DATA_URL}
+          />
         </div>
       ) : null}
       {postLikeCount ? (

@@ -3,7 +3,7 @@ import React from "react";
 import SendFriendRequestCard from "./card-components/send-friend-request-card";
 import useFriendSuggestionQuery from "@/hooks/friends/suggestion/use-friend-suggestion-query";
 import useSendRequestMutation from "@/hooks/friends/suggestion/use-send-request-mutation";
-import { IFriendsInfo, ISuggestionsFriendInfo } from "@/types";
+import { SuggestionsFriendInfo } from "@/types";
 import useInfiniteScroll from "@/hooks/infinite-scroll/use-infinite-scroll";
 import Spinner from "@/components/UI/spinner";
 
@@ -35,9 +35,10 @@ function FriendsSuggestion() {
         <div className="m-2 flex gap-3 overflow-x-scroll max-w-full hidden-scrollbar">
           {data?.pages.map((group, i) => (
             <div key={i}>
-              {group?.data.map((user: ISuggestionsFriendInfo, index, arr) => {
+              {group?.data.map((user: SuggestionsFriendInfo, index, arr) => {
                 return (
                   <SendFriendRequestCard
+                    user_id={user.user_id}
                     isRequestSent={user.isRequestSent ?? false}
                     key={user.user_avatar_url}
                     first_name={user.first_name}

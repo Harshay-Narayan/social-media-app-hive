@@ -1,4 +1,4 @@
-export interface INotifications {
+export interface Notifications {
   notificationId: string;
   isRead: boolean;
   type: "LIKE" | "COMMENT" | "FRIENDREQUEST";
@@ -10,14 +10,14 @@ export interface INotifications {
   user_id: string;
 }
 
-export interface INotificationsApiResponse {
-  notifications: INotifications[];
+export interface NotificationsApiResponse {
+  notifications: Notifications[];
   meta: {
     unread_count: number;
     next_cursor: string | null;
   };
 }
 
-export interface INotificationsListProps extends INotifications {
+export interface NotificationsListProps extends Notifications {
   notificationContent: string;
 }

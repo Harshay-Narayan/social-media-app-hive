@@ -1,7 +1,6 @@
-import { IGetPostsApiResponse } from "@/types";
-import { useQuery } from "@tanstack/react-query";
+import { GetPostsApiResponse } from "@/types";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import axios from "axios";
-import React from "react";
 
 async function getPosts() {
   try {
@@ -13,10 +12,11 @@ async function getPosts() {
 }
 
 function useGetPostsQuery() {
-  const { data, isLoading, isError, error } = useQuery<IGetPostsApiResponse>({
-    queryKey: ["getPosts"],
-    queryFn: getPosts,
-  });
+  const { data, isLoading, isError, error } =
+    useSuspenseQuery<GetPostsApiResponse>({
+      queryKey: ["getPosts"],
+      queryFn: getPosts,
+    });
   return { data, isLoading, isError, error };
 }
 

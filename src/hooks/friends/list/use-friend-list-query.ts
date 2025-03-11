@@ -1,4 +1,4 @@
-import { IFriendsApiResponse, IFriendsListApiResponse } from "@/types";
+import { FriendsApiResponse, FriendsListApiResponse } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -7,12 +7,10 @@ async function getFriendsList() {
   return response.data;
 }
 function useFriendListQuery() {
-  const { data, isLoading, isError, error } = useQuery<IFriendsListApiResponse>(
-    {
-      queryKey: ["getFriendList"],
-      queryFn: getFriendsList,
-    }
-  );
+  const { data, isLoading, isError, error } = useQuery<FriendsListApiResponse>({
+    queryKey: ["getFriendList"],
+    queryFn: getFriendsList,
+  });
   return { data, isLoading, isError, error };
 }
 

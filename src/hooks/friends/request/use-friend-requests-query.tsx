@@ -1,5 +1,5 @@
-import { IFriendRequestsApiResponse, IFriendsApiResponse } from "@/types";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { FriendRequestsApiResponse } from "@/types";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 async function getFriendRequests({ pageParam }: any) {
@@ -18,7 +18,7 @@ function useFriendRequestQuery() {
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
-  } = useInfiniteQuery<IFriendRequestsApiResponse>({
+  } = useInfiniteQuery<FriendRequestsApiResponse>({
     queryKey: ["getFriendRequests"],
     queryFn: getFriendRequests,
     initialPageParam: null,

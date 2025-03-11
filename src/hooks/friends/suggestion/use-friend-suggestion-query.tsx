@@ -1,4 +1,4 @@
-import { IFriendsApiResponse } from "@/types";
+import { FriendsApiResponse } from "@/types";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -18,7 +18,7 @@ function useFriendSuggestionQuery() {
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
-  } = useInfiniteQuery<IFriendsApiResponse>({
+  } = useInfiniteQuery<FriendsApiResponse>({
     queryKey: ["friendsSuggestion"],
     queryFn: getFriendsSuggestion,
     initialPageParam: null,

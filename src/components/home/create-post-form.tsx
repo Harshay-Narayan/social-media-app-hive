@@ -10,7 +10,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import UserService from "@/lib/services/userService";
 import { useCreatePost } from "@/context";
 
-interface IFormInput {
+interface FormInput {
   post_content: string | null;
   post_image: File | null;
 }
@@ -26,7 +26,7 @@ function CreatePostForm() {
   const { userProfileImageUrl, userFullName, firstName } =
     UserService.getUserInfo();
   const { register, handleSubmit, setValue, reset, watch } =
-    useForm<IFormInput>({
+    useForm<FormInput>({
       defaultValues: { post_content: null, post_image: null },
     });
   const [imagePreview, setImagePreview] = useState<string | null>();
@@ -41,7 +41,7 @@ function CreatePostForm() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["getPosts"] }),
   });
 
-  const onSubmit: SubmitHandler<IFormInput> = (input) => {
+  const onSubmit: SubmitHandler<FormInput> = (input) => {
     setImagePreview(null);
 
     const formData = new FormData();
@@ -70,7 +70,7 @@ function CreatePostForm() {
   };
 
   return (
-    <Container role="dialog" className="w-[34rem]">
+    <Container role="dialog" className="sm:w-[34rem]">
       {/* <Loader /> */}
       <div className="flex p-2">
         <div className="ml-auto font-extrabold">Create Post</div>

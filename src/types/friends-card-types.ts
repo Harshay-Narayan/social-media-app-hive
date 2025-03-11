@@ -6,36 +6,36 @@ export interface FriendsInfo {
   user_id: string;
 }
 
-export interface ISuggestionsFriendInfo extends FriendsInfo {
+export interface SuggestionsFriendInfo extends FriendsInfo {
   isRequestSent: boolean;
 }
-export interface IRequestFriendInfo extends FriendsInfo {
+export interface RequestFriendInfo extends FriendsInfo {
   friendship_id: string;
   isRequestAccepted: boolean;
   isRequestRejected: boolean;
 }
 
-export interface IFriendsApiResponse {
-  data: ISuggestionsFriendInfo[];
+export interface FriendsApiResponse {
+  data: SuggestionsFriendInfo[];
   meta: { nextCursor: string | null };
 }
-export interface IFriendRequestsApiResponse {
-  data: IRequestFriendInfo[];
+export interface FriendRequestsApiResponse {
+  data: RequestFriendInfo[];
   meta: { nextCursor: string | null };
 }
-export interface IFriendsListApiResponse {
+export interface FriendsListApiResponse {
   data: FriendsInfo[];
 }
 
-export interface SendFriendRequestCardProps extends ISuggestionsFriendInfo {
+export interface SendFriendRequestCardProps extends SuggestionsFriendInfo {
   sendFriendRequestHandler: (username: string) => void;
 }
 
-export interface ConfirmFriendRequestCardProps extends IRequestFriendInfo {
+export interface ConfirmFriendRequestCardProps extends RequestFriendInfo {
   acceptFriendRequestHandler: (username: string) => void;
   rejectFriendRequestHandler: (username: string) => void;
 }
 
-export interface IFriendListCardProps extends FriendsInfo {
+export interface FriendListCardProps extends FriendsInfo {
   removeFriendHandler: (username: string) => void;
 }

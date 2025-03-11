@@ -1,5 +1,5 @@
 {
-  "name": "chitter",
+  "name": "hive",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.6.0",
+    "@plaiceholder/next": "^3.0.0",
     "@prisma/client": "^6.2.1",
     "@supabase/supabase-js": "^2.47.7",
     "@tanstack/react-query": "^5.62.10",
@@ -20,12 +21,15 @@
     "lodash.throttle": "^4.1.1",
     "lucide-react": "^0.462.0",
     "next": "15.0.3",
+    "plaiceholder": "^3.0.0",
     "pusher": "^5.2.0",
     "pusher-js": "^8.4.0-rc2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.2",
     "react-hot-toast": "^2.5.1",
+    "sharp": "^0.33.5",
+    "socket.io-client": "^4.8.1",
     "svix": "^1.44.0",
     "uuid": "^11.0.3",
     "zustand": "^5.0.3"
