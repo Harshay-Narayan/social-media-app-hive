@@ -3,7 +3,6 @@ import {
   createNotification,
   getNotifications,
   getUserInfo,
-  readNotification,
 } from "@/lib/dbUtils";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -109,7 +108,7 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     return NextResponse.json(
-      { message: "Error in creating notification" },
+      { message: "Error in creating notification" + error },
       { status: 500 }
     );
   }

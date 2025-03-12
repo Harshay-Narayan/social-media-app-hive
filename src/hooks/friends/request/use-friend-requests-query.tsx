@@ -22,7 +22,7 @@ function useFriendRequestQuery() {
     queryKey: ["getFriendRequests"],
     queryFn: getFriendRequests,
     initialPageParam: null,
-    getNextPageParam: (lastPage, page) => lastPage.meta.nextCursor,
+    getNextPageParam: (lastPage) => lastPage.meta.nextCursor,
   });
   return {
     data,

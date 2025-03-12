@@ -9,7 +9,7 @@ import useGetPostsQuery from "@/hooks/likes/use-get-posts-query";
 import ChatHead from "../chat/chat-head";
 import dynamic from "next/dynamic";
 import { useGlobalStore } from "@/store/useGlobalStore";
-import ChatSidebar from "../serverComponents/sidebar/chat-sidebar";
+import ChatSidebar from "../sidebar/chat-sidebar";
 const ChatPopup = dynamic(() => import("../chat/chat-popup"), { ssr: false });
 
 function Feed() {

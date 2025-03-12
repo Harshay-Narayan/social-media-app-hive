@@ -1,6 +1,6 @@
 import ChatHead from "@/components/chat/chat-head";
 import Feed from "@/components/home/feed";
-import ProfileSidebar from "@/components/serverComponents/sidebar/profile-sidebar";
+import ProfileSidebar from "@/components/sidebar/profile-sidebar";
 import PostsSkeletonLoader from "@/components/UI/posts-skeleton-loader";
 import { CreatePostProvider } from "@/context";
 import { Suspense } from "react";

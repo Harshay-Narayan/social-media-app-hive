@@ -1,8 +1,4 @@
-import {
-  FriendsApiResponse,
-  FriendsInfo,
-  SuggestionsFriendInfo,
-} from "@/types";
+import { SuggestionsFriendInfo } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -45,7 +41,7 @@ function useSendRequestMutation() {
     onError: (error, variables, context) => {
       queryClient.setQueryData(["friendsSuggestion"], context?.prevSuggestions);
     },
-    onSettled: (data, error, variables, context) => {
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["friendsSuggestion"] });
     },
   });

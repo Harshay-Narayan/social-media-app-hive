@@ -70,7 +70,7 @@ export async function updateUserProfileImage(
   user_id: string,
   user_avatar_url: string
 ) {
-  const updateUser = await prisma.user.update({
+  await prisma.user.update({
     where: {
       user_id,
     },
@@ -544,7 +544,7 @@ export async function createNotification({
     });
   }
   if (postId) {
-    console.log(postId)
+    console.log(postId);
     await prisma.notifications.create({
       data: {
         user_id: userId,

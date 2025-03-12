@@ -1,5 +1,5 @@
 import { NotificationsApiResponse } from "@/types/notifications-types";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 async function fetchNotifications({ pageParam }: any) {
@@ -19,7 +19,7 @@ function useNotificationsQuery() {
     queryKey: ["fetchNotifications"],
     queryFn: fetchNotifications,
     initialPageParam: null,
-    getNextPageParam: (lastPage, pages) => lastPage.meta.next_cursor,
+    getNextPageParam: (lastPage) => lastPage.meta.next_cursor,
   });
 
   return {

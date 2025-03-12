@@ -9,10 +9,8 @@ import useInfiniteScroll from "@/hooks/infinite-scroll/use-infinite-scroll";
 function ChatSection() {
   const messageContainerRef = useRef<HTMLDivElement>(null);
 
-  const showPopupChatUser = useGlobalStore(
-    (state) => state.showPopupChatUser
-  );
-  const { data, fetchNextPage, hasNextPage, isError, isFetching, isLoading } =
+  const showPopupChatUser = useGlobalStore((state) => state.showPopupChatUser);
+  const { data, fetchNextPage, hasNextPage, isFetching, isLoading } =
     useMessagesQuery(showPopupChatUser!.user_id);
 
   const { targetRef } = useInfiniteScroll({

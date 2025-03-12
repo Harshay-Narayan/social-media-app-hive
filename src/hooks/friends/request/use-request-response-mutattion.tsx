@@ -70,7 +70,7 @@ function useRequestResponseMutation() {
         context?.prevFriendRequests
       );
     },
-    onSettled: (data, error, variables, context) => {
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["getFriendRequests"] });
     },
   });

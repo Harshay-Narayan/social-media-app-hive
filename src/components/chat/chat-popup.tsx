@@ -23,7 +23,7 @@ function ChatPopup() {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   // const { messageMutation } = useMessagesMutation();
-  function chatChangeHandler(e: React.ChangeEvent<HTMLTextAreaElement>) {
+  function chatChangeHandler() {
     if (textAreaRef.current) {
       textAreaRef.current.style.height = "auto";
       textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
@@ -68,7 +68,7 @@ function ChatPopup() {
       socket.off("private_chat");
       socket.disconnect();
     };
-  }, [messageFlag, queryClient, showPopupChatUser!.user_id, user?.id]);
+  }, [messageFlag, queryClient, showPopupChatUser, user?.id]);
   const handleSendMessage = () => {
     if (!textAreaRef.current || !showPopupChatUser) return;
     setmessageFlag((prev) => !prev);

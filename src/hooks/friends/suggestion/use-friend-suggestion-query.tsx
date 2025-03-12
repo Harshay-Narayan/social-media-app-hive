@@ -22,7 +22,7 @@ function useFriendSuggestionQuery() {
     queryKey: ["friendsSuggestion"],
     queryFn: getFriendsSuggestion,
     initialPageParam: null,
-    getNextPageParam: (lastPage, pages) => lastPage.meta.nextCursor,
+    getNextPageParam: (lastPage) => lastPage.meta.nextCursor,
   });
   return {
     data,

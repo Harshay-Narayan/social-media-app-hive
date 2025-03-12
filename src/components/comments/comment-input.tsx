@@ -8,7 +8,7 @@ const CommentInput = forwardRef(function (
 ) {
   const textAreaRef = ref as React.RefObject<HTMLTextAreaElement>;
 
-  const commentChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const commentChangeHandler = () => {
     if (textAreaRef.current) {
       textAreaRef.current.style.height = "auto";
       textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
@@ -33,5 +33,5 @@ const CommentInput = forwardRef(function (
     </div>
   );
 });
-
+CommentInput.displayName = "CommentInput";
 export default CommentInput;

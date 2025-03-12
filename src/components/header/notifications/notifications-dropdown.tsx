@@ -27,7 +27,6 @@ function NotificationsDropdown({
 
   const {
     data,
-    isError,
     isLoading,
     fetchNextPage,
     hasNextPage,

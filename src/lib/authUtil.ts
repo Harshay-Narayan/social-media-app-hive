@@ -5,6 +5,6 @@ export async function getAuthInfo() {
     const auth = await currentUser();
     return auth;
   } catch (error) {
-    throw new Error("Error retrieving userId");
+    throw new Error("Error retrieving userId"+error);
   }
 }

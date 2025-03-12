@@ -1,4 +1,4 @@
-import { GetPostsApiResponse, Post } from "@/types";
+import { GetPostsApiResponse } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -49,7 +49,7 @@ function usePostLikeMutation() {
     onError: (error, variables, context) => {
       queryClient.setQueryData(["getPosts"], context?.prevPosts);
     },
-    onSettled: (data, error, variables, context) => {
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["getPosts"] });
     },
   });

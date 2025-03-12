@@ -16,7 +16,7 @@ function useMessagesQuery(recepientId: string) {
       queryKey: ["fetchMessages", recepientId],
       queryFn: fetchMessages,
       initialPageParam: null,
-      getNextPageParam: (lastPage, page) => lastPage.nextCursor,
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
     });
   return { data, isLoading, isFetching, fetchNextPage, hasNextPage, isError };
 }

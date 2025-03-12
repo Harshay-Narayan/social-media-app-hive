@@ -72,7 +72,7 @@ export async function POST(req: Request) {
         evt.data.image_url
       );
       return new Response("User Created", { status: 201 });
-    } catch (error: any) {
+    } catch (error) {
       return new Response("Error creating user in DB " + error, {
         status: 500,
       });

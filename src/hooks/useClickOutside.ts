@@ -12,7 +12,7 @@ function useClickOutside(
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => removeEventListener("mousedown", handleClickOutside);
-  }, [ref, callback]);
+  }, [ref, callback, handleClickOutside]);
 }
 
 export default useClickOutside;

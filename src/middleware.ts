@@ -5,7 +5,7 @@ const isPublicApiRoute = createRouteMatcher(["/api/webhooks(.*)"]);
 const isProtectedRoute = createRouteMatcher(["/timeline(.*)", "/friends(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
-  const { userId, redirectToSignIn } = await auth();
+  const { userId } = await auth();
 
   if (isPublicApiRoute(req)) {
     return NextResponse.next();

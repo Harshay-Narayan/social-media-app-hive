@@ -1,6 +1,5 @@
 import {
   Notifications,
-  NotificationsApiResponse,
 } from "@/types/notifications-types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
@@ -49,7 +48,7 @@ function useReadnotificationsMutation() {
         context?.prevNotifications
       );
     },
-    onSettled(data, error, variables, context) {
+    onSettled() {
       queryClient.invalidateQueries({ queryKey: ["fetchNotifications"] });
     },
   });

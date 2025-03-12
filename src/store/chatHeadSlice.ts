@@ -30,7 +30,7 @@ export const createChatHeadSlice: StateCreator<ChatHeadSlice> = (set) => ({
     }),
   showPopupChatUser: null,
   setShowPopupChatUser: (friend: FriendsInfo | null) =>
-    set((state) => {
+    set(() => {
       return { showPopupChatUser: friend };
     }),
 });
