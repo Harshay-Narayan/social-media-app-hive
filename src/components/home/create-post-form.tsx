@@ -7,8 +7,8 @@ import CloseButton from "../UI/CloseButton";
 import Container from "../UI/container";
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import UserService from "@/lib/services/userService";
 import { useCreatePost } from "@/context";
+import { useUser } from "@clerk/nextjs";
 
 interface FormInput {
   post_content: string | null;
@@ -23,8 +23,7 @@ const submitFormData = async (formData: FormData) => {
 function CreatePostForm() {
   const queryClient = useQueryClient();
   const { toggleShowCreatePostFrom } = useCreatePost();
-  const { userProfileImageUrl, userFullName, firstName } =
-    UserService.getUserInfo();
+  const { user } = useUser();
   const { register, handleSubmit, setValue, reset, watch } = useForm<FormInput>(
     {
       defaultValues: { post_content: null, post_image: null },
@@ -86,13 +85,15 @@ function CreatePostForm() {
         <div className="flex p-2 items-center">
           <div className="h-10 w-10 rounded-full overflow-hidden">
             <Image
-              src={userProfileImageUrl ? userProfileImageUrl : "/avatar.svg"}
+              src={user?.imageUrl ?? "/avatar.svg"}
               alt="profile_image"
               width={100}
               height={100}
             />
           </div>
-          <div className="pl-2 font-bold">{userFullName}</div>
+          <div className="pl-2 font-bold">
+            {user?.firstName} {user?.lastName}
+          </div>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -101,7 +102,7 @@ function CreatePostForm() {
               <textarea
                 {...register("post_content")}
                 className="w-full h-32 outline-none p-2 mt-4"
-                placeholder={`What's on your mind, ${firstName}`}
+                placeholder={`What's on your mind, ${user?.firstName}`}
               />
 
               <div className="mt-4 border p-2 rounded relative z-10">
@@ -123,7 +124,7 @@ function CreatePostForm() {
             <textarea
               {...register("post_content")}
               className="w-full outline-none p-2 h-56 mt-4"
-              placeholder={`What's on your mind, ${firstName}`}
+              placeholder={`What's on your mind, ${user?.firstName}`}
             />
           )}
           <div className="mt-4">
