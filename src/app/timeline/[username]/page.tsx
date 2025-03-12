@@ -1,7 +1,6 @@
 import TimelinePosts from "@/components/timeline/timeline-posts";
-import React from "react";
 
-export async function Timeline({
+export default async function Page({
   params,
 }: {
   params: Promise<{ username: string }>;
@@ -15,5 +14,3 @@ export async function Timeline({
     </div>
   );
 }
-
-export default Timeline;
