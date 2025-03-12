@@ -6,7 +6,6 @@ import axios from "axios";
 async function createReply({
   commentId,
   replyText,
-  postId,
 }: {
   commentId: string;
   replyText: string;
@@ -71,7 +70,7 @@ function useReplyMutation() {
         context?.prevComments
       );
     },
-    onSettled(data, error, variables, context) {
+    onSettled(data, error, variables) {
       queryClient.invalidateQueries({
         queryKey: ["fetchComments", variables.postId],
       });
