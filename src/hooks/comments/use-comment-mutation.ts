@@ -1,5 +1,4 @@
 import { CommentsApiResponse } from "@/types";
-import { UserProfile } from "@clerk/nextjs";
 import {
   InfiniteData,
   useMutation,

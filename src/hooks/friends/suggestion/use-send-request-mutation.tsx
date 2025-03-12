@@ -1,4 +1,4 @@
-import { FriendsSuggestionApiResponse, SuggestionsFriendInfo } from "@/types";
+import { FriendsSuggestionApiResponse } from "@/types";
 import {
   InfiniteData,
   useMutation,

@@ -1,4 +1,4 @@
-import { FriendRequestsApiResponse, RequestFriendInfo } from "@/types";
+import { FriendRequestsApiResponse } from "@/types";
 import {
   InfiniteData,
   useMutation,

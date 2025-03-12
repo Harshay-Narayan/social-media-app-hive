@@ -1,8 +1,5 @@
 import { FriendRequestsApiResponse } from "@/types";
-import {
-  InfiniteQueryPageParamsOptions,
-  useInfiniteQuery,
-} from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 async function getFriendRequests({ pageParam }: { pageParam?: unknown }) {
