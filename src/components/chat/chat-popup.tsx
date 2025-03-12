@@ -72,7 +72,7 @@ function ChatPopup() {
     };
   }, [messageFlag, queryClient, showPopupChatUser, user?.id]);
   const handleSendMessage = () => {
-    if (!textAreaRef.current || !showPopupChatUser) return;
+    if (!textAreaRef.current?.value || !showPopupChatUser || !user?.id) return;
     setmessageFlag((prev) => !prev);
     queryClient.setQueryData<InfiniteData<GetMessagesApiRespnse>>(
       ["fetchMessages", showPopupChatUser.user_id],
@@ -84,8 +84,8 @@ function ChatPopup() {
           receiver_id: showPopupChatUser.user_id,
           createdDate: new Date(),
           message_id: Math.random().toString(),
-          message: textAreaRef.current?.value!,
-          sender_id: user?.id!,
+          message: textAreaRef.current?.value ?? "",
+          sender_id: user?.id ?? null,
         });
         return { ...old, pages: updatedPages }; // Return updated data
       }
