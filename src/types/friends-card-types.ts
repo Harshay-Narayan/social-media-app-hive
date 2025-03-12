@@ -15,7 +15,7 @@ export interface RequestFriendInfo extends FriendsInfo {
   isRequestRejected: boolean;
 }
 
-export interface FriendsApiResponse {
+export interface FriendsSuggestionApiResponse {
   data: SuggestionsFriendInfo[];
   meta: { nextCursor: string | null };
 }

@@ -37,17 +37,23 @@ function FriendsStatusList({ friends }: { friends: FriendsInfo[] }) {
 
   useEffect(() => {
     const channel = pusher.subscribe("online-presence");
-    channel.bind("user-status", (data: any) => {
-      console.log("Binding event online-presence");
-      console.log(data);
-      setFriendsStatues((prev) => ({
-        ...prev,
-        [data.userId]: { isOnline: data.isOnline, lastSeen: data.lastSeen },
-      }));
-    });
+    channel.bind(
+      "user-status",
+      (data: {
+        userId: string;
+        isOnline: boolean;
+        lastSeen: string ;
+      }) => {
+        console.log("Binding event online-presence");
+        console.log(data);
+        setFriendsStatues((prev) => ({
+          ...prev,
+          [data.userId]: { isOnline: data.isOnline, lastSeen: data.lastSeen },
+        }));
+      }
+    );
     return () => channel.unsubscribe();
   }, []);
-
   // const test = useChatHeadStore((state) => state.addFriendToActiveChat);
   const setShowPopupChatUser = useGlobalStore(
     (state) => state.setShowPopupChatUser

@@ -1,5 +1,9 @@
-import { RequestFriendInfo } from "@/types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { FriendRequestsApiResponse, RequestFriendInfo } from "@/types";
+import {
+  InfiniteData,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import axios from "axios";
 
 async function acceptFriendRequest(targetUsername: string) {
@@ -41,27 +45,29 @@ function useRequestResponseMutation() {
       const prevFriendRequests = queryClient.getQueryData([
         "getFriendRequests",
       ]);
-      queryClient.setQueryData(["getFriendRequests"], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          pages: old.pages.map((page: any) => {
-            return {
-              ...page,
-              data: page.data.map((friend: RequestFriendInfo) =>
-                friend.username === variables.targetUsername
-                  ? {
-                      ...friend,
-                      isRequestAccepted: variables.action === "ACCEPT",
-                      isRequestRejected: variables.action === "REJECT",
-                    }
-                  : friend
-              ),
-            };
-          }),
-        };
-      });
-      console.log(prevFriendRequests);
+      queryClient.setQueryData<InfiniteData<FriendRequestsApiResponse>>(
+        ["getFriendRequests"],
+        (old) => {
+          if (!old) return old;
+          return {
+            ...old,
+            pages: old.pages.map((page) => {
+              return {
+                ...page,
+                data: page.data.map((friend) =>
+                  friend.username === variables.targetUsername
+                    ? {
+                        ...friend,
+                        isRequestAccepted: variables.action === "ACCEPT",
+                        isRequestRejected: variables.action === "REJECT",
+                      }
+                    : friend
+                ),
+              };
+            }),
+          };
+        }
+      );
       return { prevFriendRequests };
     },
     onError: (error, variables, context) => {

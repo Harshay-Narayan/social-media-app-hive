@@ -3,7 +3,7 @@ import React from "react";
 import SkeletonCard from "./card-components/skeleton-card";
 import ConfirmFriendRequestCard from "./card-components/confirm-friend-request-card";
 import useFriendRequestQuery from "@/hooks/friends/request/use-friend-requests-query";
-import useRequestResponseMutation from "@/hooks/friends/request/use-request-response-mutattion";
+import useRequestResponseMutation from "@/hooks/friends/request/use-request-response-mutation";
 
 function FriendRequests() {
   const {

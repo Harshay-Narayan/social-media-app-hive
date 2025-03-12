@@ -1,7 +1,12 @@
 import {
   Notifications,
+  NotificationsApiResponse,
 } from "@/types/notifications-types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  InfiniteData,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import axios from "axios";
 
 async function readNotification({
@@ -21,24 +26,29 @@ function useReadnotificationsMutation() {
       const prevNotifications = queryClient.getQueryData([
         "fetchNotifications",
       ]);
-      queryClient.setQueryData(["fetchNotifications"], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          pages: old.pages.map((page: any) => {
-            return {
-              ...page,
-              meta: { ...page.meta, unread_count: page.meta.unread_count - 1 },
-              notifications: page.notifications.map(
-                (notification: Notifications) =>
+      queryClient.setQueryData<InfiniteData<NotificationsApiResponse>>(
+        ["fetchNotifications"],
+        (old) => {
+          if (!old) return old;
+          return {
+            ...old,
+            pages: old.pages.map((page) => {
+              return {
+                ...page,
+                meta: {
+                  ...page.meta,
+                  unread_count: page.meta.unread_count - 1,
+                },
+                notifications: page.notifications.map((notification) =>
                   notification.notificationId === variables.notificationId
                     ? { ...notification, isRead: true }
                     : notification
-              ),
-            };
-          }),
-        };
-      });
+                ),
+              };
+            }),
+          };
+        }
+      );
 
       return { prevNotifications };
     },

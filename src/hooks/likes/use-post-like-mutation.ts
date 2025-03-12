@@ -1,5 +1,9 @@
 import { GetPostsApiResponse } from "@/types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  InfiniteData,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import axios from "axios";
 
 async function likePost(postId: string) {
@@ -32,18 +36,30 @@ function usePostLikeMutation() {
         queryKey: ["getPosts"],
       });
       const prevPosts = queryClient.getQueryData(["getPosts"]);
-      queryClient.setQueryData(["getPosts"], (old: GetPostsApiResponse) => {
-        const updatedPosts = old.posts.map((post) =>
-          post.post_id === variables.postId
-            ? {
-                ...post,
-                isLiked: !post.isLiked,
-                likes_count: post.likes_count + (variables.isLiked ? -1 : 1),
-              }
-            : { ...post }
-        );
-        return { posts: updatedPosts };
-      });
+      queryClient.setQueryData<InfiniteData<GetPostsApiResponse>>(
+        ["getPosts"],
+        (old) => {
+          if (!old) return old;
+          return {
+            ...old,
+            pages: old.pages.map((page) => {
+              return {
+                ...page,
+                posts: page.posts.map((post) =>
+                  post.post_id === variables.postId
+                    ? {
+                        ...post,
+                        isLiked: !post.isLiked,
+                        likes_count:
+                          post.likes_count + (variables.isLiked ? 1 : -1),
+                      }
+                    : post
+                ),
+              };
+            }),
+          };
+        }
+      );
       return { prevPosts };
     },
     onError: (error, variables, context) => {

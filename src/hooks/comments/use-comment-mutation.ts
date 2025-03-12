@@ -1,6 +1,10 @@
 import { CommentsApiResponse } from "@/types";
-import { useUser } from "@clerk/nextjs";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UserProfile } from "@clerk/nextjs";
+import {
+  InfiniteData,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import axios from "axios";
 
 async function createComments({
@@ -14,11 +18,20 @@ async function createComments({
   return response.data;
 }
 
-function useCommentMutation() {
-  const { user } = useUser();
-  if (!user) {
-    throw new Error("User should be loggedin");
-  }
+function useCommentMutation({
+  user_id,
+  firstName,
+  lastName,
+  profileImageUrl,
+  username,
+}: {
+  user_id: string;
+  firstName: string;
+  lastName: string;
+  profileImageUrl: string;
+  username: string;
+}) {
+  if (!user_id) throw new Error("User must be logged in");
   const queryClient = useQueryClient();
   const commentMutaion = useMutation({
     mutationFn: createComments,
@@ -31,26 +44,38 @@ function useCommentMutation() {
         "fetchComments",
         newComment.postId,
       ]);
-      queryClient.setQueryData(
+      queryClient.setQueryData<InfiniteData<CommentsApiResponse>>(
         ["fetchComments", newComment.postId],
-        (old: CommentsApiResponse) => {
-          const updateComments = [
-            ...old.comments,
-            {
-              actor_id: user.id,
-              comment_id: Date.now().toString(),
-              comment_text: newComment.commentText,
-              createdDate: new Date().toISOString(),
-              first_name: user.firstName,
-              last_name: user.lastName,
-              post_id: newComment.postId,
-              replies: [],
-              user_avatar_url: user.imageUrl,
-              user_id: user.id,
-              username: user.username,
-            },
-          ];
-          return { comments: updateComments };
+        (old) => {
+          if (!old) return old;
+          const newCommentObject = {
+            actor_id: user_id,
+            comment_id: Date.now().toString(),
+            comment_text: newComment.commentText,
+            createdDate: new Date().toISOString(),
+            first_name: firstName,
+            last_name: lastName,
+            post_id: newComment.postId,
+            replies: [],
+            user_avatar_url: profileImageUrl,
+            user_id,
+            username: username,
+          };
+          return {
+            ...old,
+            pages:
+              old.pages.length > 0
+                ? old.pages.map((page, index) =>
+                    index === old.pages.length - 1
+                      ? {
+                          ...page,
+                          comments: [...page.comments, newCommentObject],
+                        }
+                      : page
+                  )
+                : [{ comments: [newCommentObject] }],
+            pageParams: old.pageParams ? [...old.pageParams, null] : [null],
+          };
         }
       );
 

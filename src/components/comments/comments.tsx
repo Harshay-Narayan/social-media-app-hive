@@ -8,6 +8,7 @@ import CommentInput from "./comment-input";
 import useCommentQuery from "@/hooks/comments/use-comment-query";
 import { CommentsApiResponse } from "@/types";
 import Spinner from "../UI/spinner";
+import { useUser } from "@clerk/nextjs";
 
 function Comments({
   toggleShowCommentHandler,
@@ -16,20 +17,21 @@ function Comments({
   toggleShowCommentHandler: () => void;
   postId: string;
 }) {
-  const {
-    data,
-    isLoading,
-  }: { data: CommentsApiResponse; isLoading: boolean } =
+  const { user } = useUser();
+  const { data, isLoading }: { data: CommentsApiResponse; isLoading: boolean } =
     useCommentQuery(postId);
-  const { commentMutaion } = useCommentMutation();
+  const { commentMutaion } = useCommentMutation({
+    firstName: user?.firstName ?? "",
+    lastName: user?.lastName ?? "",
+    profileImageUrl: user?.imageUrl ?? "",
+    user_id: user?.id ?? "",
+    username: user?.username ?? "",
+  });
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
 
   const commentInputHadler = () => {
     console.log("heyaa");
     if (!commentInputRef.current) return;
-    console.log(commentInputRef.current.value);
-    console.log(postId);
-
     commentMutaion.mutate({
       commentText: commentInputRef.current.value,
       postId: postId,

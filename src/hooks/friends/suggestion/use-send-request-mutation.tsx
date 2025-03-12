@@ -1,5 +1,9 @@
-import { SuggestionsFriendInfo } from "@/types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { FriendsSuggestionApiResponse, SuggestionsFriendInfo } from "@/types";
+import {
+  InfiniteData,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import axios from "axios";
 
 async function sendFriendRequest({
@@ -20,22 +24,25 @@ function useSendRequestMutation() {
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: ["friendsSuggestion"] });
       const prevSuggestions = queryClient.getQueryData(["friendsSuggestion"]);
-      queryClient.setQueryData(["friendsSuggestion"], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          pages: old.pages.map((page: any) => {
-            return {
-              ...page,
-              data: page.data.map((friend: SuggestionsFriendInfo) =>
-                friend.username === variables.targetUsername
-                  ? { ...friend, isRequestSent: true }
-                  : { ...friend }
-              ),
-            };
-          }),
-        };
-      });
+      queryClient.setQueryData<InfiniteData<FriendsSuggestionApiResponse>>(
+        ["friendsSuggestion"],
+        (old) => {
+          if (!old) return old;
+          return {
+            ...old,
+            pages: old.pages.map((page) => {
+              return {
+                ...page,
+                data: page.data.map((friend) =>
+                  friend.username === variables.targetUsername
+                    ? { ...friend, isRequestSent: true }
+                    : { ...friend }
+                ),
+              };
+            }),
+          };
+        }
+      );
       return { prevSuggestions };
     },
     onError: (error, variables, context) => {

@@ -7,7 +7,8 @@ import { useGlobalStore } from "@/store/useGlobalStore";
 import ChatSection from "./chat-section";
 import { socket } from "@/lib/socket";
 import { useUser } from "@clerk/nextjs";
-import { useQueryClient } from "@tanstack/react-query";
+import { InfiniteData, useQueryClient } from "@tanstack/react-query";
+import { GetMessagesApiRespnse, Messages } from "@/types/messages-types";
 
 function ChatPopup() {
   const { user } = useUser();
@@ -45,14 +46,15 @@ function ChatPopup() {
       setmessageFlag((prev) => !prev);
       console.log(data);
       if (data.senderId !== showPopupChatUser!.user_id) return;
-      queryClient.setQueryData(
+      queryClient.setQueryData<InfiniteData<GetMessagesApiRespnse>>(
         ["fetchMessages", showPopupChatUser!.user_id],
-        (old: any) => {
+        (old) => {
+          if (!old || !user?.id) return old;
           const updatedPages = [...old.pages];
           updatedPages[0].messages.unshift({
             status: "SENT",
             receiver_id: user?.id,
-            createdDate: new Date().toISOString(),
+            createdDate: new Date(),
             message_id: Math.random().toString(),
             message: data.message,
             sender_id: data.senderId,

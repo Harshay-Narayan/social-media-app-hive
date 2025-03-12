@@ -1,8 +1,14 @@
 import { GetMessagesApiRespnse } from "@/types/messages-types";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { QueryKey, useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-async function fetchMessages({ pageParam, queryKey }: any) {
+async function fetchMessages({
+  pageParam,
+  queryKey,
+}: {
+  pageParam?: unknown;
+  queryKey: QueryKey;
+}) {
   const [, recepientId] = queryKey;
   const response = await axios.get(
     `/api/messages?recepientId=${recepientId}&cursor=${pageParam}`

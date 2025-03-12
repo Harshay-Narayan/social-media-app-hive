@@ -1,7 +1,7 @@
 import { UserInfo } from "./user-types";
 
 export interface Comment extends UserInfo {
-  createdDate: Date;
+  createdDate: string;
   post_id: string;
   comment_id: string;
   comment_text: string;
