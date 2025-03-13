@@ -21,7 +21,7 @@ export async function DELETE(
     const commentId = (await params).commentId;
     if (!commentId) {
       return NextResponse.json(
-        { message: "CommentId is reuired" },
+        { message: "CommentId is required" },
         { status: 400 }
       );
     }

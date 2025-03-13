@@ -10,15 +10,18 @@ import ChatHead from "../chat/chat-head";
 import dynamic from "next/dynamic";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import ChatSidebar from "../sidebar/chat-sidebar";
+import PostsSkeletonLoader from "../UI/posts-skeleton-loader";
 const ChatPopup = dynamic(() => import("../chat/chat-popup"), { ssr: false });
 
 function Feed() {
   const { showCreatePostForm } = useCreatePost();
   const [hidden, setHidden] = useState<boolean>(true);
-  const { data } = useGetPostsQuery();
+  const { data, isLoading } = useGetPostsQuery();
   const showPopupChatUser = useGlobalStore((state) => state.showPopupChatUser);
   const showChatDrawer = useGlobalStore((state) => state.showChatDrawer);
-
+  if (isLoading || !data) {
+    return <PostsSkeletonLoader />;
+  }
   return (
     <div className="w-[34rem] mx-2 sm:mx-0" onClick={() => setHidden(!hidden)}>
       <PostActionHeader />

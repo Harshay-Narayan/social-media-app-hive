@@ -1,5 +1,5 @@
 import { GetPostsApiResponse } from "@/types";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery,useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 async function getPosts() {
@@ -9,7 +9,7 @@ async function getPosts() {
 
 function useGetPostsQuery() {
   const { data, isLoading, isError, error } =
-    useSuspenseQuery<GetPostsApiResponse>({
+    useQuery<GetPostsApiResponse>({
       queryKey: ["getPosts"],
       queryFn: getPosts,
     });

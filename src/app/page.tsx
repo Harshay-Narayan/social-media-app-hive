@@ -1,9 +1,7 @@
 import ChatHead from "@/components/chat/chat-head";
 import Feed from "@/components/home/feed";
 import ProfileSidebar from "@/components/sidebar/profile-sidebar";
-import PostsSkeletonLoader from "@/components/UI/posts-skeleton-loader";
 import { CreatePostProvider } from "@/context";
-import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 
 export default async function Home() {
@@ -18,9 +16,7 @@ export default async function Home() {
 
       <div className="flex justify-center">
         <CreatePostProvider>
-          <Suspense fallback={<PostsSkeletonLoader />}>
-            <Feed />
-          </Suspense>
+          <Feed />
         </CreatePostProvider>
       </div>
       <div>
