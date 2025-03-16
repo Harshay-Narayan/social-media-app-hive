@@ -20,13 +20,10 @@ function Feed() {
   const [hidden, setHidden] = useState<boolean>(true);
   const {
     data,
-    isFetching,
     isLoading,
-    error,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    status,
   } = useGetPostsQuery();
   const showPopupChatUser = useGlobalStore((state) => state.showPopupChatUser);
   const showChatDrawer = useGlobalStore((state) => state.showChatDrawer);

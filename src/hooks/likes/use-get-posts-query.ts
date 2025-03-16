@@ -21,7 +21,7 @@ function useGetPostsQuery() {
     queryKey: ["getPosts"],
     queryFn: getPosts,
     initialPageParam: null,
-    getNextPageParam: (lastPage, page) => lastPage.nextCursor,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
   return {
     isLoading,
