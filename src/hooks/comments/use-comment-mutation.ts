@@ -1,4 +1,4 @@
-import { Comment, CommentsApiResponse } from "@/types";
+import { CommentsApiResponse } from "@/types";
 import {
   InfiniteData,
   useMutation,
