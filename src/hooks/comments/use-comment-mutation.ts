@@ -1,4 +1,4 @@
-import { CommentsApiResponse } from "@/types";
+import { Comment, CommentsApiResponse } from "@/types";
 import {
   InfiniteData,
   useMutation,
@@ -31,58 +31,61 @@ function useCommentMutation({
   username: string;
 }) {
   if (!user_id) throw new Error("User must be logged in");
+  console.log("Indide comment mutation");
   const queryClient = useQueryClient();
   const commentMutaion = useMutation({
     mutationFn: createComments,
-    mutationKey: ["createComments"],
-    onMutate: async (newComment) => {
+    // mutationKey: ["createComments"],
+    onMutate: async (variables) => {
       await queryClient.cancelQueries({
-        queryKey: ["fetchComments", newComment.postId],
+        queryKey: ["fetchComments", variables.postId],
       });
       const prevComments = queryClient.getQueryData([
         "fetchComments",
-        newComment.postId,
+        variables.postId,
       ]);
       queryClient.setQueryData<InfiniteData<CommentsApiResponse>>(
-        ["fetchComments", newComment.postId],
+        ["fetchComments", variables.postId],
         (old) => {
           if (!old) return old;
-          const newCommentObject = {
+          const newComment = {
             actor_id: user_id,
             comment_id: Date.now().toString(),
-            comment_text: newComment.commentText,
+            comment_text: variables.commentText,
             createdDate: new Date().toISOString(),
             first_name: firstName,
             last_name: lastName,
-            post_id: newComment.postId,
+            post_id: variables.postId,
             replies: [],
             user_avatar_url: profileImageUrl,
             user_id,
             username: username,
           };
+          if (old.pages.length === 0) {
+            return {
+              pages: [{ comments: [newComment], nextCursor: null }],
+              pageParams: old.pageParams ? [...old.pageParams, null] : [null],
+            };
+          }
           return {
             ...old,
-            pages:
-              old.pages.length > 0
-                ? old.pages.map((page, index) =>
-                    index === old.pages.length - 1
-                      ? {
-                          ...page,
-                          comments: [...page.comments, newCommentObject],
-                        }
-                      : page
-                  )
-                : [{ comments: [newCommentObject] }],
-            pageParams: old.pageParams ? [...old.pageParams, null] : [null],
+            pages: old.pages.map((page, index) =>
+              index === 0
+                ? {
+                    ...page,
+                    comments: [newComment, ...page.comments],
+                  }
+                : page
+            ),
           };
         }
       );
 
       return { prevComments };
     },
-    onError: (err, newComment, context) => {
+    onError: (err, variables, context) => {
       queryClient.setQueryData(
-        ["fetchComments", newComment.postId],
+        ["fetchComments", variables.postId],
         context?.prevComments
       );
     },
