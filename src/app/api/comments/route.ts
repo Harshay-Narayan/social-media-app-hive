@@ -3,7 +3,6 @@ import { getUserInfo } from "@/lib/dbUtils";
 import { createComment, getAllComments } from "@/lib/dbUtils/commentsdbUtils";
 import { NextRequest, NextResponse } from "next/server";
 
-const PAGE_SIZE = 7;
 export async function GET(request: NextRequest) {
   try {
     const authInfo = await getAuthInfo();
@@ -21,17 +20,13 @@ export async function GET(request: NextRequest) {
         { status: 401 }
       );
     }
-    const cursor = searchParams.get("cursor");
-    const lastCursor =
-      cursor === "null" || cursor === "undefined" ? null : cursor;
-    const comments = await getAllComments(postId, PAGE_SIZE, lastCursor);
+    const comments = await getAllComments(postId);
     if (!comments.length) {
-      return NextResponse.json({ comments, nextCursor: null }, { status: 200 });
+      return NextResponse.json({ comments, success: true }, { status: 200 });
     }
-    const paginatedComments = comments.slice(0, PAGE_SIZE);
     const uniqueActorIds = [
       ...new Set(
-        paginatedComments.flatMap((comment) => [
+        comments.flatMap((comment) => [
           comment.actor_id,
           ...comment.replies.map((reply) => reply.actor_id),
         ])
@@ -49,7 +44,7 @@ export async function GET(request: NextRequest) {
     const actorIdsMap = new Map();
     userInformation.forEach((actor) => actorIdsMap.set(actor?.user_id, actor));
 
-    const commentsToReturn = paginatedComments.map((comment) => {
+    const commentsToBeReturned = comments.map((comment) => {
       return {
         ...comment,
         ...actorIdsMap.get(comment.actor_id),
@@ -58,12 +53,9 @@ export async function GET(request: NextRequest) {
         }),
       };
     });
-    const nextCursor =
-      comments.length > PAGE_SIZE
-        ? paginatedComments[paginatedComments.length - 1].comment_id
-        : null;
+
     return NextResponse.json(
-      { comments: commentsToReturn, nextCursor },
+      { comments: commentsToBeReturned },
       { status: 200 }
     );
   } catch (error) {

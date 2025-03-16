@@ -10,17 +10,10 @@ export async function createComment(
   });
 }
 
-export async function getAllComments(
-  postId: string,
-  limit: number,
-  lastCursor: string | null
-) {
+export async function getAllComments(postId: string) {
   const comments = await prisma.comments.findMany({
     where: { post_id: postId },
     include: { replies: true },
-    ...(lastCursor ? { cursor: { comment_id: lastCursor }, skip: 1 } : {}),
-    take: limit + 1,
-    orderBy: { createdDate: "desc" },
   });
   return comments;
 }

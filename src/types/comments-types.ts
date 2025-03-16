@@ -1,4 +1,5 @@
 import { UserInfo } from "./user-types";
+
 export interface Comment extends UserInfo {
   createdDate: string;
   post_id: string;
@@ -21,5 +22,4 @@ export interface CommentsWithUserInfoAndReplies extends Comment {
 
 export interface CommentsApiResponse {
   comments: CommentsWithUserInfoAndReplies[];
-  nextCursor: string | null;
 }
