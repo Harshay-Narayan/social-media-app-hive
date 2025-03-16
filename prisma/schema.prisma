@@ -76,6 +76,7 @@ model Post {
   post_id                 String   @id @default(cuid())
   post_content            String?  @db.Text
   post_image_location     String?
+  post_image_url          String?
   post_image_thumbnail    String?
   post_image_aspect_ratio String?
   createDate              DateTime @default(now())

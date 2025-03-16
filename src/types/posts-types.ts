@@ -5,6 +5,7 @@ export interface PostSchema {
   post_id: string;
   post_content: string | null;
   post_image_location: string | null;
+  post_image_url: string | null;
   post_image_thumbnail: string | null;
   post_image_aspect_ratio: string | null;
   createDate: Date;
@@ -12,21 +13,15 @@ export interface PostSchema {
   likes_count: number;
 }
 
-export interface PostWithUserAvatarAndLikes extends PostSchema {
+export interface Post extends PostSchema {
   user: Pick<User, "user_avatar_url" | "first_name" | "last_name" | "username">;
-  likes: Pick<Like, "id">[] | [];
-}
-export interface PostWithUserAvatar extends PostSchema {
-  user: Pick<User, "user_avatar_url" | "first_name" | "last_name" | "username">;
-}
-
-export interface Post extends PostWithUserAvatar {
+  likes: string[];
   isLiked: boolean;
-  post_image_url: string | null;
 }
 
 export interface GetPostsApiResponse {
   posts: Post[];
+  nextCursor: string | null;
 }
 
 export interface PostsProps {

@@ -2,7 +2,6 @@ import { Post, User } from "@prisma/client";
 import { prisma, supabase } from "./client";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
-import { PostWithUserAvatarAndLikes } from "@/types";
 
 // user features
 
@@ -84,6 +83,7 @@ export async function updateUserProfileImage(
 export async function createPost(
   post_content: string | null,
   post_image_location: string | null,
+  post_image_url: string | null,
   user_id: string,
   post_image_thumbnail: string | null,
   post_image_aspect_ratio: string | null
@@ -92,6 +92,7 @@ export async function createPost(
     data: {
       post_content,
       post_image_location,
+      post_image_url,
       updateDate: new Date(),
       createDate: new Date(),
       user_id,
@@ -110,11 +111,13 @@ export async function getUserIdFromPostId(postId: string) {
 }
 
 export async function getAllPosts(
-  userId: string
-): Promise<PostWithUserAvatarAndLikes[]> {
+  userId: string,
+  limit: number,
+  lastCursor: string | null
+) {
   const allPosts = await prisma.post.findMany({
     include: {
-      likes: { where: { user_id: userId }, select: { id: true } },
+      likes: { select: { user_id: true } },
       user: {
         select: {
           user_avatar_url: true,
@@ -124,15 +127,14 @@ export async function getAllPosts(
         },
       },
     },
+    ...(lastCursor ? { cursor: { post_id: lastCursor }, skip: 1 } : {}),
+    take: limit,
     orderBy: { updateDate: "desc" },
   });
   return allPosts;
 }
 
-export async function getPostsofUser(
-  userId: string,
-  currentUserId: string
-): Promise<PostWithUserAvatarAndLikes[]> {
+export async function getPostsofUser(userId: string, currentUserId: string) {
   const posts = await prisma.post.findMany({
     where: {
       user_id: userId,

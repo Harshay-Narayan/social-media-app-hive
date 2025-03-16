@@ -7,11 +7,13 @@ import {
 import axios from "axios";
 
 async function likePost(postId: string) {
+  console.log("like post");
   const response = await axios.post("/api/posts/like", { postId });
   return response.data;
 }
 
 async function removePostLike(postId: string) {
+  console.log("remove like post");
   const response = await axios.delete(
     `/api/posts/remove-like?postId=${postId}`
   );
@@ -26,8 +28,10 @@ function usePostLikeMutation() {
     postId: string;
     isLiked: boolean;
   }) {
+    console.log(`inside decisive function: ${postId} ${isLiked}`);
     return isLiked ? removePostLike(postId) : likePost(postId);
   }
+  console.log("indside use post like mutation");
   const queryClient = useQueryClient();
   const likeMutation = useMutation({
     mutationFn: mutateLike,
@@ -51,7 +55,7 @@ function usePostLikeMutation() {
                         ...post,
                         isLiked: !post.isLiked,
                         likes_count:
-                          post.likes_count + (variables.isLiked ? 1 : -1),
+                          post.likes_count + (variables.isLiked ? -1 : 1),
                       }
                     : post
                 ),

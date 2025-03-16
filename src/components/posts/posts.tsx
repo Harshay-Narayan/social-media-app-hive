@@ -28,7 +28,10 @@ function Posts({
   const [showComments, setShowComments] = useState<boolean>(false);
   const { likeMutation } = usePostLikeMutation();
   const toggleShowCommentsHandler = () => setShowComments(!showComments);
-  const likeClickHandler = () => likeMutation.mutate({ postId, isLiked });
+  const likeClickHandler = () => {
+   console.log("like click handler")
+    likeMutation.mutate({ postId, isLiked });
+  };
 
   return (
     <Container className="mb-2 p-4">

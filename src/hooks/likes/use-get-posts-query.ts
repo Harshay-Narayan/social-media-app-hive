@@ -1,19 +1,38 @@
 import { GetPostsApiResponse } from "@/types";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-async function getPosts() {
-  const response = await axios.get("/api/posts");
+async function getPosts({ pageParam }: { pageParam: unknown }) {
+  const response = await axios.get(`/api/posts?cursor=${pageParam}`);
   return response.data;
 }
 
 function useGetPostsQuery() {
-  const { data, isLoading, isError, error } =
-    useQuery<GetPostsApiResponse>({
-      queryKey: ["getPosts"],
-      queryFn: getPosts,
-    });
-  return { data, isLoading, isError, error };
+  const {
+    data,
+    error,
+    hasNextPage,
+    isFetchingNextPage,
+    isFetching,
+    fetchNextPage,
+    status,
+    isLoading
+  } = useInfiniteQuery<GetPostsApiResponse>({
+    queryKey: ["getPosts"],
+    queryFn: getPosts,
+    initialPageParam: null,
+    getNextPageParam: (lastPage, page) => lastPage.nextCursor,
+  });
+  return {
+    isLoading,
+    data,
+    error,
+    hasNextPage,
+    isFetchingNextPage,
+    isFetching,
+    fetchNextPage,
+    status,
+  };
 }
 
 export default useGetPostsQuery;

@@ -1,6 +1,5 @@
 import {
   createPost,
-  deletePost,
   generateUniqueNameforFiles,
   getAllPosts,
   getImageUrl,
@@ -9,7 +8,6 @@ import {
 import { NextRequest, NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { v4 as uuidv4 } from "uuid";
-import { Post, PostSchema } from "@/types";
 import { getAuthInfo } from "@/lib/authUtil";
 import { createBlurImagePlaceholder } from "@/lib/create-blur-image-placeholder";
 
@@ -54,24 +52,33 @@ export async function POST(request: NextRequest) {
     const blurImageData =
       postImage && (await createBlurImagePlaceholder(postImage));
 
-    const createdPost: PostSchema = await createPost(
-      postContent,
-      postImageLocation,
-      userId,
-      blurImageData?.base64DataUrl || null,
-      blurImageData?.aspectRatio || null
-    );
-
     if (postImage && postImageLocation) {
       const { data, error } = await uploadImage(
         BUCKET_NAME,
         postImageLocation,
         postImage
       );
+
       if (error || !data) {
-        await deletePost(createdPost.post_id);
-        throw new Error("Failed to upload Image " + error?.message);
+        return NextResponse.json(
+          {
+            message:
+              "Image Upload failed post cannot be created" + error?.message,
+          },
+          { status: 500 }
+        );
       }
+
+      const postImageUrl = getImageUrl(BUCKET_NAME, postImageLocation);
+
+      await createPost(
+        postContent,
+        postImageLocation,
+        postImageUrl,
+        userId,
+        blurImageData?.base64DataUrl || null,
+        blurImageData?.aspectRatio || null
+      );
     }
     return NextResponse.json({
       success: true,
@@ -89,7 +96,8 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+const PAGE_SIZE = 4;
+export async function GET(request: NextRequest) {
   try {
     const authInfo = await getAuthInfo();
     if (!authInfo) {
@@ -98,24 +106,23 @@ export async function GET() {
         { status: 401 }
       );
     }
-    const allPosts = await getAllPosts(authInfo.id);
-    const postsWithImageUrl: Post[] = allPosts.map((post) => {
-      try {
-        const { likes, ...rest } = post;
-        return {
-          ...rest,
-          post_image_url: post.post_image_location
-            ? getImageUrl(BUCKET_NAME, post.post_image_location)
-            : null,
-          isLiked: !!likes.length,
-        };
-      } catch (error) {
-        console.log(error);
-        const { likes, ...rest } = post;
-        return { ...rest, post_image_url: null, isLiked: !!likes.length };
-      }
-    });
-    return NextResponse.json({ posts: postsWithImageUrl }, { status: 200 });
+    const searchParams = request.nextUrl.searchParams;
+    const cursor = searchParams.get("cursor");
+    const lastCursor =
+      cursor === "null" || cursor === "undefined" ? null : cursor;
+    const posts = await getAllPosts(authInfo.id, PAGE_SIZE, lastCursor);
+    const postsWithisLikedFlag = posts.map((post) => ({
+      ...post,
+      likes: post.likes.map((likes) => likes.user_id),
+      isLiked:
+        post.likes.findIndex((like) => like.user_id === authInfo.id) !== -1,
+    }));
+
+    const nextCursor = posts.length ? posts[posts.length - 1].post_id : null;
+    return NextResponse.json(
+      { posts: postsWithisLikedFlag, nextCursor },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json(
       {
