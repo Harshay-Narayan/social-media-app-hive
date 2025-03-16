@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: "userId Required" }, { status: 401 });
     }
     const myPosts = await getPostsofUser(userId, authInfo.id);
-    const myPostsWithImageUrl: Post[] = myPosts.map((post) => {
+    const myPostsWithImageUrl = myPosts.map((post) => {
       const { likes, ...rest } = post;
       return {
         ...rest,
