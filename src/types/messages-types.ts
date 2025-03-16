@@ -8,5 +8,5 @@ export interface Messages {
 }
 export interface GetMessagesApiRespnse {
   messages: Messages[];
-  nextCursor: string;
+  nextCursor: string | null;
 }
