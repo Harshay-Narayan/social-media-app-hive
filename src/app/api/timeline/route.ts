@@ -1,6 +1,5 @@
 import { getAuthInfo } from "@/lib/authUtil";
 import { getImageUrl, getPostsofUser, getUserId } from "@/lib/dbUtils";
-import { Post } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 const BUCKET_NAME = "post-images";
 
