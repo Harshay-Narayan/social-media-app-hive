@@ -5,24 +5,19 @@ import { ImagePlus } from "lucide-react";
 import Image from "next/image";
 import CloseButton from "../UI/CloseButton";
 import Container from "../UI/container";
-import axios from "axios";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCreatePost } from "@/context";
 import { useUser } from "@clerk/nextjs";
+import useCreatePostMutation from "@/hooks/post/use-create-post-mutation";
+import Spinner from "../UI/spinner";
 
 interface FormInput {
   post_content: string | null;
   post_image: File | null;
 }
 
-const submitFormData = async (formData: FormData) => {
-  const { data } = await axios.post("/api/posts", formData);
-  return data;
-};
-
 function CreatePostForm() {
-  const queryClient = useQueryClient();
   const { toggleShowCreatePostFrom } = useCreatePost();
+  const { createPostMutation } = useCreatePostMutation();
   const { user } = useUser();
   const { register, handleSubmit, setValue, reset, watch } = useForm<FormInput>(
     {
@@ -31,25 +26,19 @@ function CreatePostForm() {
   );
   const [imagePreview, setImagePreview] = useState<string | null>();
   const postImageInputRef = useRef<HTMLInputElement | null>(null);
-
   const postContent = watch("post_content");
   const postImage = watch("post_image");
   const isPostButtonDisabled = !postContent?.trim() && !postImage;
 
-  const { mutate } = useMutation({
-    mutationFn: submitFormData,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["getPosts"] }),
-  });
-
   const onSubmit: SubmitHandler<FormInput> = (input) => {
     setImagePreview(null);
-
     const formData = new FormData();
     formData.append("post_content", input.post_content || "");
     formData.append("post_image", input.post_image || "");
-    mutate(formData);
+    createPostMutation.mutate(formData, {
+      onSuccess: () => toggleShowCreatePostFrom(),
+    });
     reset();
-    toggleShowCreatePostFrom();
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,8 +59,12 @@ function CreatePostForm() {
   };
 
   return (
-    <Container role="dialog" className="sm:w-[34rem]">
-      {/* <Loader /> */}
+    <Container role="dialog" className="sm:w-[34rem] relative">
+      {createPostMutation.isPending && (
+        <div className="absolute inset-0 bg-black/20 flex justify-center items-center">
+          <Spinner />
+        </div>
+      )}
       <div className="flex p-2">
         <div className="ml-auto font-extrabold">Create Post</div>
         <CloseButton

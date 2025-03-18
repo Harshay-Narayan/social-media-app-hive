@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, MouseEvent } from "react";
 import { Bell } from "lucide-react";
 import dynamic from "next/dynamic";
 
@@ -11,13 +11,17 @@ const NotificationsDropdown = dynamic(
 
 function Notification() {
   const notificationsDropdownRef = useRef<HTMLDivElement>(null);
+  const bellIconRef = useRef<HTMLDivElement>(null);
   const [showNotificationPopup, setShowNotificationPopup] =
     useState<boolean>(false);
   const [unredNotificationsCount, setunredNotificationsCount] = useState<
     number | null
   >(null);
 
-  const togglePopup = () => setShowNotificationPopup((prev) => !prev);
+  const togglePopup = (e: MouseEvent) => {
+    e.stopPropagation();
+    setShowNotificationPopup((prev) => !prev);
+  };
 
   const closeNotificationsDropdownHandler = () =>
     setShowNotificationPopup(false);
@@ -25,14 +29,16 @@ function Notification() {
   const setUnreadNotificationsCountHandler = (count: number) =>
     setunredNotificationsCount(count);
 
-  useClickOutside(notificationsDropdownRef, () =>
-    closeNotificationsDropdownHandler()
+  useClickOutside(
+    notificationsDropdownRef,
+    () => closeNotificationsDropdownHandler(),
+    [bellIconRef]
   );
 
   return (
     <div aria-label="notification">
       <div className="relative">
-        <div onClick={togglePopup} className="cursor-pointer">
+        <div onClick={togglePopup} className="cursor-pointer" ref={bellIconRef}>
           <Bell color="white" />
         </div>
 

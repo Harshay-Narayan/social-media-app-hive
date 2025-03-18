@@ -79,6 +79,8 @@ export async function POST(request: NextRequest) {
         blurImageData?.base64DataUrl || null,
         blurImageData?.aspectRatio || null
       );
+    } else {
+      await createPost(postContent, null, null, userId, null, null);
     }
     return NextResponse.json({
       success: true,

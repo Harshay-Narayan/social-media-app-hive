@@ -9,6 +9,7 @@ import { Ellipsis } from "lucide-react";
 import EditDeletePopover from "../UI/edit-delete-popover";
 import useDeleteCommentMutaion from "@/hooks/comments/use-delete-comment-mutation";
 import useReplyDeleteMutation from "@/hooks/replies/use-reply-delete-mutation";
+import useClickOutside from "@/hooks/useClickOutside";
 
 function CommentItem({
   isReply,
@@ -37,6 +38,7 @@ function CommentItem({
   const replyInputRef = useRef<HTMLTextAreaElement>(null);
   const { user } = useUser();
   const optionsPopoverRef = useRef<HTMLDivElement>(null);
+  const editDeletePopoverRef = useRef<HTMLDivElement>(null);
   const isOwner = actorId === user?.id;
   const { deleteCommentMutation } = useDeleteCommentMutaion();
   const { deleteReplyMutation } = useReplyDeleteMutation();
@@ -58,7 +60,9 @@ function CommentItem({
   const showEditDeletePopoverHandler = () => {
     setShowEditDeletePopover(!showEditDeletePopover);
   };
-  // useClickOutside(optionsPopoverRef, () => setShowEditDeletePopover(false));
+  useClickOutside(optionsPopoverRef, () => setShowEditDeletePopover(false), [
+    editDeletePopoverRef,
+  ]);
 
   const deleteCommentHandler = () => {
     if (isReply && isOwner && replyId) {
@@ -88,7 +92,9 @@ function CommentItem({
               <Ellipsis size={15} />
             </div>
             {showEditDeletePopover && isOwner ? (
-              <EditDeletePopover onDelete={deleteCommentHandler} />
+              <div ref={editDeletePopoverRef}>
+                <EditDeletePopover onDelete={deleteCommentHandler} />
+              </div>
             ) : null}
           </div>
         )}

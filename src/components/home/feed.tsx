@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import PostActionHeader from "./post-action-header";
 import Posts from "../posts/posts";
 import CreatePost from "./create-post";
-import { Post } from "@/types";
 import { useCreatePost } from "@/context";
 import useGetPostsQuery from "@/hooks/likes/use-get-posts-query";
 import ChatHead from "../chat/chat-head";
@@ -18,13 +17,8 @@ const ChatPopup = dynamic(() => import("../chat/chat-popup"), { ssr: false });
 function Feed() {
   const { showCreatePostForm } = useCreatePost();
   const [hidden, setHidden] = useState<boolean>(true);
-  const {
-    data,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useGetPostsQuery();
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useGetPostsQuery();
   const showPopupChatUser = useGlobalStore((state) => state.showPopupChatUser);
   const showChatDrawer = useGlobalStore((state) => state.showChatDrawer);
   const { targetRef } = useInfiniteScroll({ fetchNextPage, hasNextPage });
@@ -37,7 +31,7 @@ function Feed() {
       {data?.pages.map((group, i) => {
         return (
           <React.Fragment key={i}>
-            {group.posts?.map((post: Post) => {
+            {group.posts?.map((post) => {
               return (
                 <Posts
                   key={post.post_id}
@@ -60,10 +54,11 @@ function Feed() {
       })}
       <div ref={targetRef} className="h-1 w-full"></div>
       {isFetchingNextPage && (
-        <div className="flex justify-center">
+        <div className="flex justify-center p-4">
           <Spinner className="w-8 h-8 border-2" />
         </div>
       )}
+
       <div
         className="xl:bg-transparent bg-white p-2 h-full fixed w-80 right-0 top-14 sm:top-16 hover:overflow-scroll scroll-smooth hidden-scrollbar"
         tabIndex={showChatDrawer ? 0 : -1}
