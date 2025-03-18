@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import React from "react";
 
 const submitFormData = async (formData: FormData) => {
   const response = await axios.post("/api/posts", formData);
