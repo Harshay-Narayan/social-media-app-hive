@@ -1,11 +1,10 @@
+import { FRIENDS_API } from "@/lib/apiEndpoints";
 import { FriendRequestsApiResponse } from "@/types";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 async function getFriendRequests({ pageParam }: { pageParam?: unknown }) {
-  const response = await axios.get(
-    `/api/friends/requests/pending?cursor=${pageParam}`
-  );
+  const response = await axios.get(FRIENDS_API.GET_FRIEND_REQUESTS(pageParam));
   return response.data;
 }
 

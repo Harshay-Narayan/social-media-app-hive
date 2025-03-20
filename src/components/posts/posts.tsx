@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import { ThumbsUp, MessageCircle } from "lucide-react";
 import Container from "../UI/container";
 import { formatDate } from "@/lib/dateUtils";
@@ -12,7 +12,7 @@ import usePostLikeMutation from "@/hooks/likes/use-post-like-mutation";
 const DEFAULT_BLUR_IMAGE_DATA_URL =
   "data:image/jpeg;base64,/9j/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wAARCAFjAMgDASIAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAAAAECBv/EABYQAQEBAAAAAAAAAAAAAAAAAAABEf/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABYRAQEBAAAAAAAAAAAAAAAAAAABEf/aAAwDAQACEQMRAD8A58FAAQBQEFAQUAFAQUBBQERpAQUBBQEABBQEUFAFQAABQAFAFAQVQZGkBBQGRQGRQERQEAAAUUBBQAFABQAUUEFAQUBEUBEVAQAEBAAAABFABQBVVFAUAUAAAUAEQEAQARFQBAAEFFEVEFRQUAVVRQUAFAFAAAQBFQERpBERUBEUUQABUUQVFFUFQFRQUAFAAABAAEUFRGkERGkBlGkUQAQAAUUUVFBQUAAFAAAAAQABUFBGRRRlGkEZFAQABQBQUBUUBQAUUVBRBBQERQEABARQRUEAAZABQUBUUFEUFVFFVQRcBQXERQRlFqCCCAAioAgAAIACgAqooCooLGozFiNRqKzGhoARRKqVUrNSrUoylZVFQQBBAAABFRQFRQVUVFFRRVVlRY0rKo00ICqgCM1K1UozYyy1UqpjKNVFRAQQAAVFAUEVVRRRQRrBUVFURRVVAVoRQRK0gmM1mt1mqzYzWa1Uqs1lFRUABBUUFARpVRUaigI0AIqiKoqsqDSsqiqioglSrUqs1ms1qs1piso1UVlAFQVFFFRUWKqDLcUAUVBFUQUaEAa1dZ01Fa01NNASmoJSs1alaYqIqKygorKKgKqoI0qoI0oggogKogCrrJoNaus6aLrWms6aJrWogCoCs1AFZQUVGQUABGlARRAABAUQFUQBVQBRFAVAFEUQAVkAEYUFABFFQFAAEVBQAAAFEUAAFEUBUBFBRAARgQUUQRVEBVQAAQFEAURQAAFQBRFBRFEURVRRAGBAFEABAVRBBRAVRAFEAUQBRARVZVRVZURVZAaEBGRAUBAVBAUQFUQBRAFEAUQBRAFVlRFVkBo1AF0QEAQAEFAQAAAQBQAFQBUAAAFEAUQBoQBRARQQAEFAAQAAAAAAAAAAAAAFEAUAFEAaQBBAFEAAAAAAAAAAAAAAAAABQAAB/9k=";
 
-function Posts({
+const Posts = memo(function ({
   postId,
   postLikeCount,
   username,
@@ -29,10 +29,9 @@ function Posts({
   const { likeMutation } = usePostLikeMutation();
   const toggleShowCommentsHandler = () => setShowComments(!showComments);
   const likeClickHandler = () => {
-   console.log("like click handler")
+    console.log("like click handler");
     likeMutation.mutate({ postId, isLiked });
   };
-
   return (
     <Container className="mb-2 p-4">
       <div className="flex p-2 gap-2">
@@ -113,6 +112,6 @@ function Posts({
       )}
     </Container>
   );
-}
+});
 
 export default Posts;

@@ -1,4 +1,5 @@
-import {  CommentsApiResponse } from "@/types";
+import { REPLY_API } from "@/lib/apiEndpoints";
+import { CommentsApiResponse } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -9,7 +10,7 @@ async function deleteReply({
   postId: string;
   commentId: string;
 }) {
-  const response = await axios.delete(`/api/comments/reply/delete/${replyId}`);
+  const response = await axios.delete(REPLY_API.DELETE_REPLY(replyId));
   return response.data;
 }
 function useReplyDeleteMutation() {

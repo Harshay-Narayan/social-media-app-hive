@@ -59,7 +59,7 @@ function CreatePostForm() {
   };
 
   return (
-    <Container role="dialog" className="sm:w-[34rem] relative">
+    <Container role="dialog" className="sm:w-[34rem] relative mx-2 sm:mx-auto">
       {createPostMutation.isPending && (
         <div className="absolute inset-0 bg-black/20 flex justify-center items-center">
           <Spinner />

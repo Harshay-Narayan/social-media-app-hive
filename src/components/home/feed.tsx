@@ -1,11 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import PostActionHeader from "./post-action-header";
 import Posts from "../posts/posts";
 import CreatePost from "./create-post";
 import { useCreatePost } from "@/context";
 import useGetPostsQuery from "@/hooks/likes/use-get-posts-query";
-import ChatHead from "../chat/chat-head";
 import dynamic from "next/dynamic";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import ChatSidebar from "../sidebar/chat-sidebar";
@@ -13,20 +12,24 @@ import PostsSkeletonLoader from "../UI/posts-skeleton-loader";
 import useInfiniteScroll from "@/hooks/infinite-scroll/use-infinite-scroll";
 import Spinner from "../UI/spinner";
 const ChatPopup = dynamic(() => import("../chat/chat-popup"), { ssr: false });
+const ChatHead = dynamic(() => import("@/components/chat/chat-head"), {
+  ssr: false,
+});
 
 function Feed() {
   const { showCreatePostForm } = useCreatePost();
-  const [hidden, setHidden] = useState<boolean>(true);
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useGetPostsQuery();
   const showPopupChatUser = useGlobalStore((state) => state.showPopupChatUser);
   const showChatDrawer = useGlobalStore((state) => state.showChatDrawer);
   const { targetRef } = useInfiniteScroll({ fetchNextPage, hasNextPage });
+  console.log("Feed re-rendering");
+
   if (isLoading || !data) {
     return <PostsSkeletonLoader />;
   }
   return (
-    <div className="w-[34rem] mx-2 sm:mx-0" onClick={() => setHidden(!hidden)}>
+    <section role="feed" className="w-[34rem] mx-2 sm:mx-0">
       <PostActionHeader />
       {data?.pages.map((group, i) => {
         return (
@@ -73,7 +76,7 @@ function Feed() {
       {showCreatePostForm ? <CreatePost /> : null}
       <ChatHead />
       {showPopupChatUser && <ChatPopup />}
-    </div>
+    </section>
   );
 }
 

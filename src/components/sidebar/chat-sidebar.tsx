@@ -1,12 +1,12 @@
 "use client";
-import React, { useEffect} from "react";
+import React, { useEffect, memo } from "react";
 import useFriendListQuery from "@/hooks/friends/list/use-friend-list-query";
 import FriendsStatusList from "./friends-status-list";
 import { socket } from "@/lib/socket";
 import { useUser } from "@clerk/nextjs";
 import StatusUpdater from "@/components/status-update-component/status-update";
 
-function ChatSidebar() {
+const ChatSidebar = memo(function () {
   const { data: friends } = useFriendListQuery();
   const { user } = useUser();
 
@@ -20,7 +20,7 @@ function ChatSidebar() {
       });
     });
   }, [user?.id]);
-
+  console.log("Chat BAR");
   return (
     <div>
       <StatusUpdater />
@@ -28,6 +28,5 @@ function ChatSidebar() {
       <FriendsStatusList friends={friends?.data ?? []} />
     </div>
   );
-}
-
+});
 export default ChatSidebar;

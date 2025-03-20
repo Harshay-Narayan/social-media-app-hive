@@ -1,3 +1,4 @@
+import { POSTS_API } from "@/lib/apiEndpoints";
 import { GetPostsApiResponse } from "@/types";
 import {
   InfiniteData,
@@ -7,16 +8,12 @@ import {
 import axios from "axios";
 
 async function likePost(postId: string) {
-  console.log("like post");
-  const response = await axios.post("/api/posts/like", { postId });
+  const response = await axios.post(POSTS_API.LIKE_POST, { postId });
   return response.data;
 }
 
 async function removePostLike(postId: string) {
-  console.log("remove like post");
-  const response = await axios.delete(
-    `/api/posts/remove-like?postId=${postId}`
-  );
+  const response = await axios.delete(POSTS_API.REMOVE_POST_LIKE(postId));
   return response.data;
 }
 
@@ -28,10 +25,8 @@ function usePostLikeMutation() {
     postId: string;
     isLiked: boolean;
   }) {
-    console.log(`inside decisive function: ${postId} ${isLiked}`);
     return isLiked ? removePostLike(postId) : likePost(postId);
   }
-  console.log("indside use post like mutation");
   const queryClient = useQueryClient();
   const likeMutation = useMutation({
     mutationFn: mutateLike,

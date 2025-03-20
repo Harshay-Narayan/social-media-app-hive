@@ -1,3 +1,4 @@
+import { REPLY_API } from "@/lib/apiEndpoints";
 import { CommentsApiResponse } from "@/types";
 import { useUser } from "@clerk/nextjs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -11,7 +12,7 @@ async function createReply({
   replyText: string;
   postId: string;
 }) {
-  const response = await axios.post("/api/comments/reply", {
+  const response = await axios.post(REPLY_API.CREATE_REPLY, {
     commentId,
     replyText,
   });

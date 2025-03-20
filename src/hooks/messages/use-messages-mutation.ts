@@ -1,3 +1,4 @@
+import { MESSAGES_API } from "@/lib/apiEndpoints";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -8,7 +9,10 @@ async function sendMessage({
   message: string;
   targetUserId: string;
 }) {
-  const response = await axios.post("/api/messages", { message, targetUserId });
+  const response = await axios.post(MESSAGES_API.SEND_MESSAGE, {
+    message,
+    targetUserId,
+  });
   return response.data;
 }
 

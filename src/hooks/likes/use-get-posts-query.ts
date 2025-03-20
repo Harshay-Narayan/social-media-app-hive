@@ -1,9 +1,10 @@
+import { POSTS_API } from "@/lib/apiEndpoints";
 import { GetPostsApiResponse } from "@/types";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 async function getPosts({ pageParam }: { pageParam: unknown }) {
-  const response = await axios.get(`/api/posts?cursor=${pageParam}`);
+  const response = await axios.get(POSTS_API.GET_POSTS(pageParam));
   return response.data;
 }
 

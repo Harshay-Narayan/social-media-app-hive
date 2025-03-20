@@ -10,8 +10,8 @@ import Header from "@/components/header/header";
 import QueryProvider from "@/lib/providers";
 
 export const metadata: Metadata = {
-  title: "Chitter",
-  description: "Next generation social media",
+  title: "Hive",
+  description: "Social media Application",
 };
 
 export default function RootLayout({

@@ -25,6 +25,7 @@ function FriendsStatusListItem({
       setLastSeenDuration(formatDate(new Date(lastSeen)));
     }
   }, [lastSeen, isOnline]);
+
   return (
     <div>
       <div className="flex items-center gap-1 cursor-pointer">

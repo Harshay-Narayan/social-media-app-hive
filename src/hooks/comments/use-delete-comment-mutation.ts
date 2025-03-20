@@ -1,3 +1,4 @@
+import { COMMENT_API } from "@/lib/apiEndpoints";
 import { CommentsApiResponse } from "@/types";
 import {
   InfiniteData,
@@ -12,7 +13,7 @@ async function deleteComment({
   commentId: string;
   postId: string;
 }) {
-  const response = await axios.delete(`/api/comments/delete/${commentId}`);
+  const response = await axios.delete(COMMENT_API.DELETE_COMMENT(commentId));
   return response.data;
 }
 function useDeleteCommentMutaion() {

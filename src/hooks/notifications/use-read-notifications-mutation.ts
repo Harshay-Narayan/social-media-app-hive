@@ -1,3 +1,4 @@
+import { NOTIFICATIONS_API } from "@/lib/apiEndpoints";
 import {
   Notifications,
   NotificationsApiResponse,
@@ -14,7 +15,7 @@ async function readNotification({
 }: {
   notificationId: Notifications["notificationId"];
 }) {
-  const response = await axios.put(`/api/notifications/read/${notificationId}`);
+  const response = await axios.put(NOTIFICATIONS_API.READ_NOTIFICATION(notificationId));
   return response.data;
 }
 function useReadnotificationsMutation() {

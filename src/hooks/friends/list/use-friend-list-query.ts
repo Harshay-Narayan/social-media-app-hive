@@ -1,9 +1,10 @@
+import { FRIENDS_API } from "@/lib/apiEndpoints";
 import { FriendsListApiResponse } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 async function getFriendsList() {
-  const response = await axios.get("/api/friends/friend-list");
+  const response = await axios.get(FRIENDS_API.GET_FRIEND_LIST);
   return response.data;
 }
 function useFriendListQuery() {

@@ -1,9 +1,12 @@
+import { NOTIFICATIONS_API } from "@/lib/apiEndpoints";
 import { NotificationsApiResponse } from "@/types/notifications-types";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 async function fetchNotifications({ pageParam }: { pageParam?: unknown }) {
-  const response = await axios.get(`/api/notifications?cursor=${pageParam}`);
+  const response = await axios.get(
+    NOTIFICATIONS_API.GET_NOTIFICATIONS(pageParam)
+  );
   return response.data;
 }
 

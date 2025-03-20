@@ -1,8 +1,9 @@
+import { POSTS_API } from "@/lib/apiEndpoints";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 const submitFormData = async (formData: FormData) => {
-  const response = await axios.post("/api/posts", formData);
+  const response = await axios.post(POSTS_API.CREATE_POST, formData);
   return response.data;
 };
 

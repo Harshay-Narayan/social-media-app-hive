@@ -1,3 +1,4 @@
+import { COMMENT_API } from "@/lib/apiEndpoints";
 import { CommentsApiResponse } from "@/types";
 import { QueryKey, useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -11,7 +12,7 @@ async function fetchComments({
 }) {
   const [, postId] = queryKey;
   const response = await axios.get(
-    `/api/comments?postId=${postId}&cursor=${pageParam}`
+    COMMENT_API.GET_COMMENT(postId as string, pageParam)
   );
   return response.data;
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 type EditDeletePopoverProps = {
   onDelete?: () => void;
@@ -6,6 +6,7 @@ type EditDeletePopoverProps = {
 };
 
 function EditDeletePopover({ onDelete, onEdit }: EditDeletePopoverProps) {
+  console.log("edit delete pop over");
   return (
     <div className="p-1 absolute h-fit -left-1/2 -translate-x-6 top-10 text-xs border shadow-lg rounded-md w-24 bg-white">
       <div className="absolute z-10 bg-white -top-[0.4rem] left-1/2 -translate-x-1/2 w-3 h-3 border-t border-l rotate-45 "></div>

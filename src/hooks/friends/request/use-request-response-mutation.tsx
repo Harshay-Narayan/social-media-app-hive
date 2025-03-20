@@ -1,3 +1,4 @@
+import { FRIENDS_API } from "@/lib/apiEndpoints";
 import { FriendRequestsApiResponse } from "@/types";
 import {
   InfiniteData,
@@ -9,14 +10,14 @@ import axios from "axios";
 async function acceptFriendRequest(targetUsername: string) {
   console.log("accept put request" + targetUsername);
   const response = await axios.put(
-    `/api/friends/requests/accept/${targetUsername}`
+    FRIENDS_API.ACCEPT_FRIEND_REQUEST(targetUsername)
   );
   return response.data;
 }
 
 async function rejectFriendRequest(targetUsername: string) {
   const response = await axios.put(
-    `/api/friends/requests/reject/${targetUsername}`
+    FRIENDS_API.REJECT_FRIEND_REQUEST(targetUsername)
   );
   return response.data;
 }

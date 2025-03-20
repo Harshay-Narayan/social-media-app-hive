@@ -1,3 +1,4 @@
+import { COMMENT_API } from "@/lib/apiEndpoints";
 import { CommentsApiResponse } from "@/types";
 import {
   InfiniteData,
@@ -13,7 +14,10 @@ async function createComments({
   commentText: string;
   postId: string;
 }) {
-  const response = await axios.post("/api/comments", { commentText, postId });
+  const response = await axios.post(COMMENT_API.CREATE_COMMENT, {
+    commentText,
+    postId,
+  });
   return response.data;
 }
 

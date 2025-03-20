@@ -39,11 +39,7 @@ function FriendsStatusList({ friends }: { friends: FriendsInfo[] }) {
     const channel = pusher.subscribe("online-presence");
     channel.bind(
       "user-status",
-      (data: {
-        userId: string;
-        isOnline: boolean;
-        lastSeen: string ;
-      }) => {
+      (data: { userId: string; isOnline: boolean; lastSeen: string }) => {
         console.log("Binding event online-presence");
         console.log(data);
         setFriendsStatues((prev) => ({
@@ -54,7 +50,7 @@ function FriendsStatusList({ friends }: { friends: FriendsInfo[] }) {
     );
     return () => channel.unsubscribe();
   }, []);
-  // const test = useChatHeadStore((state) => state.addFriendToActiveChat);
+
   const setShowPopupChatUser = useGlobalStore(
     (state) => state.setShowPopupChatUser
   );
@@ -78,5 +74,4 @@ function FriendsStatusList({ friends }: { friends: FriendsInfo[] }) {
     </div>
   );
 }
-
 export default FriendsStatusList;

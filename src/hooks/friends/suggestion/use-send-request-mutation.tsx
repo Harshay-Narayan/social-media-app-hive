@@ -1,3 +1,4 @@
+import { FRIENDS_API } from "@/lib/apiEndpoints";
 import { FriendsSuggestionApiResponse } from "@/types";
 import {
   InfiniteData,
@@ -11,7 +12,7 @@ async function sendFriendRequest({
 }: {
   targetUsername: string;
 }) {
-  const respone = await axios.post("/api/friends/requests/send", {
+  const respone = await axios.post(FRIENDS_API.SEND_FRIEND_REQUEST, {
     username: targetUsername,
   });
   return respone.data;

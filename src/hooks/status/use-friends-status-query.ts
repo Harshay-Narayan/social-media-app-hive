@@ -1,3 +1,4 @@
+import { STATUS_API } from "@/lib/apiEndpoints";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -8,7 +9,7 @@ type UseFriendsStatus = {
 };
 
 async function fetchFriendsStatus() {
-  const response = await axios.get("/api/friends/status");
+  const response = await axios.get(STATUS_API.GET_STATUS);
   return response.data;
 }
 

@@ -36,7 +36,7 @@ function Notification() {
   );
 
   return (
-    <div aria-label="notification">
+    <div role="button" tabIndex={0} aria-label="notification">
       <div className="relative">
         <div onClick={togglePopup} className="cursor-pointer" ref={bellIconRef}>
           <Bell color="white" />

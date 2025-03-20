@@ -22,7 +22,7 @@ function useClickOutside(
         callback();
       }
     },
-    [ref, callback]
+    [ref, callback,ignoreRefs]
   );
 
   useEffect(() => {
