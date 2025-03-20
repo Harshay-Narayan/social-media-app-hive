@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import ProfileIcon from "../profile-icon/profile-icon";
 import CommentInput from "./comment-input";
 import { Replies } from "@/types";
