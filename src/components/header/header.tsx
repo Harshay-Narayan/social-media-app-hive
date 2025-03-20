@@ -34,17 +34,17 @@ function Header() {
           <div>
             <Notification />
           </div>
-          {/* <div className="sm:hidden h-8 w-8">
+          <div className="sm:hidden h-8 w-8">
             <SignedIn>
               <UserButton aria-label="User profile menu for smaller screens" />
             </SignedIn>
-          </div> */}
+          </div>
         </div>
-        {/* <div className="hidden sm:block absolute right-14">
+        <div className="hidden sm:block absolute right-14">
           <SignedIn>
             <UserButton aria-label="User profile menu for larger screens" />
           </SignedIn>
-        </div> */}
+        </div>
       </div>
     </header>
   );

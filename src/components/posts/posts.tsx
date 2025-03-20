@@ -113,5 +113,5 @@ const Posts = memo(function ({
     </Container>
   );
 });
-
+Posts.displayName="Posts"
 export default Posts;

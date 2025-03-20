@@ -1,5 +1,5 @@
 "use client";
-import React, { memo } from "react";
+import React from "react";
 import { useUser } from "@clerk/nextjs";
 import Container from "../UI/container";
 import { useCreatePost } from "@/context";

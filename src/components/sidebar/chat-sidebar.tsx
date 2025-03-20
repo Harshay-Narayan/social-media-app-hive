@@ -29,4 +29,5 @@ const ChatSidebar = memo(function () {
     </div>
   );
 });
+ChatSidebar.displayName="ChatSideBar"
 export default ChatSidebar;
