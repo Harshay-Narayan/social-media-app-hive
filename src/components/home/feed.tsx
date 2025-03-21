@@ -23,7 +23,6 @@ function Feed() {
   const showPopupChatUser = useGlobalStore((state) => state.showPopupChatUser);
   const showChatDrawer = useGlobalStore((state) => state.showChatDrawer);
   const { targetRef } = useInfiniteScroll({ fetchNextPage, hasNextPage });
-  console.log("Feed re-rendering");
 
   if (isLoading || !data) {
     return <PostsSkeletonLoader />;

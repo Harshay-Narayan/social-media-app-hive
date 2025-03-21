@@ -20,7 +20,6 @@ const ChatSidebar = memo(function () {
       });
     });
   }, [user?.id]);
-  console.log("Chat BAR");
   return (
     <div>
       <StatusUpdater />

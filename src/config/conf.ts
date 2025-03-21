@@ -8,5 +8,5 @@ export const redisConfig = {
 };
 
 export const socketConfig = {
-  socketUrl: String(process.env.EXT_PUBLIC_SOCKET_URL),
+  socketUrl: String(process.env.NEXT_PUBLIC_SOCKET_URL),
 };
