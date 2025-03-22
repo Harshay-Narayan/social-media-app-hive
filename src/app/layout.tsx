@@ -8,6 +8,9 @@ import {
 } from "@clerk/nextjs";
 import Header from "@/components/header/header";
 import QueryProvider from "@/lib/providers";
+import ChatSidebar from "@/components/sidebar/chat-sidebar";
+import ChatHead from "@/components/chat/chat-head";
+import ChatPopup from "@/components/chat/chat-popup";
 
 export const metadata: Metadata = {
   title: "Hive",
@@ -35,6 +38,9 @@ export default function RootLayout({
             </SignedOut>
             <SignedIn>
               <Header />
+              <ChatSidebar />
+              <ChatHead />
+              <ChatPopup />
               {children}
             </SignedIn>
           </body>

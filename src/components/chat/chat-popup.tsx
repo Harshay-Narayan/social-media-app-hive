@@ -23,7 +23,6 @@ function ChatPopup() {
   );
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  // const { messageMutation } = useMessagesMutation();
   function chatChangeHandler() {
     if (textAreaRef.current) {
       textAreaRef.current.style.height = "auto";
@@ -107,54 +106,54 @@ function ChatPopup() {
   };
   if (!showPopupChatUser) return null;
   return (
-    <div>
-      <Container className="fixed inset-0 flex flex-col z-[1002] rounded-none sm:rounded-lg sm:rounded-b-none sm:inset-auto sm:bottom-0 sm:right-36 sm:w-80 sm:h-96">
-        <div className="flex items-center gap-2 rounded-none sm:rounded-t-lg p-1 shadow-md">
-          <div>
-            <ProfileIcon imageUrl={showPopupChatUser.user_avatar_url} />
-          </div>
-          <div>{`${showPopupChatUser.first_name} ${showPopupChatUser.last_name}`}</div>
-          <div className="ml-auto flex gap-2">
-            <div
-              className="cursor-pointer"
-              onClick={() => {
-                addFriendToActiveChatList(showPopupChatUser);
-                setShowPopupChatUser(null);
-              }}
-            >
-              <Minus />
+    <>
+      {showPopupChatUser && (
+        <Container className="fixed inset-0 flex flex-col z-[1002] rounded-none sm:rounded-lg sm:rounded-b-none sm:inset-auto sm:bottom-0 sm:right-36 sm:w-80 sm:h-96">
+          <div className="flex items-center gap-2 rounded-none sm:rounded-t-lg p-1 shadow-md">
+            <div>
+              <ProfileIcon imageUrl={showPopupChatUser.user_avatar_url} />
             </div>
-            <div
-              className="cursor-pointer"
-              onClick={() => {
-                setShowPopupChatUser(null);
-              }}
-            >
-              <X />
+            <div>{`${showPopupChatUser.first_name} ${showPopupChatUser.last_name}`}</div>
+            <div className="ml-auto flex gap-2">
+              <div
+                className="cursor-pointer"
+                onClick={() => {
+                  addFriendToActiveChatList(showPopupChatUser);
+                  setShowPopupChatUser(null);
+                }}
+              >
+                <Minus />
+              </div>
+              <div
+                className="cursor-pointer"
+                onClick={() => {
+                  setShowPopupChatUser(null);
+                }}
+              >
+                <X />
+              </div>
             </div>
           </div>
-        </div>
 
-        <ChatSection />
-        <div className="p-2 border-t-2 border-gray-300">
-          <div className="flex items-center gap-2 ">
-            <div className="bg-zinc-200 rounded-lg w-full">
-              <textarea
-                ref={textAreaRef}
-                rows={1}
-                name=""
-                id=""
-                onChange={chatChangeHandler}
-                className="resize-none max-h-36 overflow-y-auto bg-transparent outline-none p-1 overflow-hidden w-full"
-              />
-            </div>
-            <div className="mb-1 cursor-pointer" onClick={handleSendMessage}>
-              <SendHorizonalIcon color="blue" fill="blue" />
+          <ChatSection />
+          <div className="p-2 border-t-2 border-gray-300">
+            <div className="flex items-center gap-2 ">
+              <div className="bg-zinc-200 rounded-lg w-full">
+                <textarea
+                  ref={textAreaRef}
+                  rows={1}
+                  onChange={chatChangeHandler}
+                  className="resize-none max-h-36 overflow-y-auto bg-transparent outline-none p-1 overflow-hidden w-full"
+                />
+              </div>
+              <div className="mb-1 cursor-pointer" onClick={handleSendMessage}>
+                <SendHorizonalIcon color="blue" fill="blue" />
+              </div>
             </div>
           </div>
-        </div>
-      </Container>
-    </div>
+        </Container>
+      )}
+    </>
   );
 }
 

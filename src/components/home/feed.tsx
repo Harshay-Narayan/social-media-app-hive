@@ -5,23 +5,14 @@ import Posts from "../posts/posts";
 import CreatePost from "./create-post";
 import { useCreatePost } from "@/context";
 import useGetPostsQuery from "@/hooks/likes/use-get-posts-query";
-import dynamic from "next/dynamic";
-import { useGlobalStore } from "@/store/useGlobalStore";
-import ChatSidebar from "../sidebar/chat-sidebar";
 import PostsSkeletonLoader from "../UI/posts-skeleton-loader";
 import useInfiniteScroll from "@/hooks/infinite-scroll/use-infinite-scroll";
 import Spinner from "../UI/spinner";
-const ChatPopup = dynamic(() => import("../chat/chat-popup"), { ssr: false });
-const ChatHead = dynamic(() => import("@/components/chat/chat-head"), {
-  ssr: false,
-});
 
 function Feed() {
   const { showCreatePostForm } = useCreatePost();
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useGetPostsQuery();
-  const showPopupChatUser = useGlobalStore((state) => state.showPopupChatUser);
-  const showChatDrawer = useGlobalStore((state) => state.showChatDrawer);
   const { targetRef } = useInfiniteScroll({ fetchNextPage, hasNextPage });
 
   if (isLoading || !data) {
@@ -61,20 +52,7 @@ function Feed() {
         </div>
       )}
 
-      <div
-        className="xl:bg-transparent bg-white p-2 h-full fixed w-80 right-0 top-14 sm:top-16 hover:overflow-scroll scroll-smooth hidden-scrollbar"
-        tabIndex={showChatDrawer ? 0 : -1}
-        style={{
-          pointerEvents: showChatDrawer ? "auto" : "none",
-          transform: `translateX(${showChatDrawer ? 0 : 100}%)`,
-          transition: "opacity,transform 0.5s ease-in",
-        }}
-      >
-        <ChatSidebar />
-      </div>
       {showCreatePostForm ? <CreatePost /> : null}
-      <ChatHead />
-      {showPopupChatUser && <ChatPopup />}
     </section>
   );
 }
