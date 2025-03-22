@@ -28,7 +28,7 @@ function Feed() {
     return <PostsSkeletonLoader />;
   }
   return (
-    <section role="feed" className="w-[34rem] mx-2 sm:mx-0">
+    <section role="feed" className="w-full sm:w-[34rem]">
       <PostActionHeader />
       {data?.pages.map((group, i) => {
         return (

@@ -8,7 +8,7 @@ export default async function Home() {
       <div className="hidden sm:block fixed w-80 bottom-0 top-16 hover:overflow-scroll scroll-smooth hidden-scrollbar">
         <ProfileSidebar />
       </div>
-      <div className="flex justify-center">
+      <div className="flex justify-center mx-2">
         <CreatePostProvider>
           <Feed />
         </CreatePostProvider>

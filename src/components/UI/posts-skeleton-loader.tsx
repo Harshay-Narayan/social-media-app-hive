@@ -23,7 +23,7 @@ function PlaceholderCards() {
 
 function PostsSkeletonLoader() {
   return (
-    <div className="flex flex-col w-full sm:w-auto mx-2 sm:mx-0">
+    <div className="flex flex-col w-full sm:w-auto">
       {[...Array(2)].map((_, index) => (
         <PlaceholderCards key={index} />
       ))}

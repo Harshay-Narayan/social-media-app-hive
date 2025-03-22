@@ -8,7 +8,7 @@ export default async function Page({
   const username = (await params).username;
   return (
     <div className="mt-16 flex justify-center">
-      <div className="w-[36rem]">
+      <div className="w-full sm:w-[34rem] px-2 sm:px-0">
         <TimelinePosts username={username} />
       </div>
     </div>

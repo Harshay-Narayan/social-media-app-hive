@@ -17,7 +17,7 @@ function TimelinePosts({ username }: { username: string }) {
     queryKey: ["timelinePosts", username],
     queryFn: getMyPosts,
   });
-  if (isLoading) {
+  if (isLoading || !data) {
     return <PostsSkeletonLoader />;
   }
   if (isError) {
