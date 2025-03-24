@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import Container from "../UI/container";
 import ProfileIcon from "../profile-icon/profile-icon";
 import { X, Minus, SendHorizonalIcon } from "lucide-react";
@@ -8,13 +8,14 @@ import ChatSection from "./chat-section";
 import { socket } from "@/lib/socket";
 import { useUser } from "@clerk/nextjs";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
-import { GetMessagesApiRespnse } from "@/types/messages-types";
+import { GetMessagesApiResponse, Messages } from "@/types/messages-types";
+import useChatSocket from "@/hooks/use-chat-socket";
 
 function ChatPopup() {
   const { user } = useUser();
-  const [messageFlag, setmessageFlag] = useState<boolean>();
   console.log("Rendering chat pop up");
   const showPopupChatUser = useGlobalStore((state) => state.showPopupChatUser);
+  const queryClient = useQueryClient();
   const setShowPopupChatUser = useGlobalStore(
     (state) => state.setShowPopupChatUser
   );
@@ -22,71 +23,36 @@ function ChatPopup() {
     (state) => state.addFriendToActiveChat
   );
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
+  const { lastMessageRef, typingStatus } = useChatSocket();
   function chatChangeHandler() {
     if (textAreaRef.current) {
       textAreaRef.current.style.height = "auto";
       textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
     }
   }
-  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (!socket.connected) {
-      socket.connect();
-    }
-    socket.on("connect", () => {
-      socket.emit("authenticate", {
-        userId: user?.id,
-      });
-    });
-
-    socket.on("private_chat", (data) => {
-      setmessageFlag((prev) => !prev);
-      console.log(data);
-      if (data.senderId !== showPopupChatUser!.user_id) return;
-      queryClient.setQueryData<InfiniteData<GetMessagesApiRespnse>>(
-        ["fetchMessages", showPopupChatUser!.user_id],
-        (old) => {
-          if (!old || !user?.id) return old;
-          const updatedPages = [...old.pages];
-          updatedPages[0].messages.unshift({
-            status: "SENT",
-            receiver_id: user?.id,
-            createdDate: new Date(),
-            message_id: Math.random().toString(),
-            message: data.message,
-            sender_id: data.senderId,
-          });
-          return { ...old, pages: updatedPages };
-        }
-      );
-    });
-    socket.on("connect_error", (err) => {
-      console.log(err.message);
-    });
-    return () => {
-      socket.off("private_chat");
-      socket.disconnect();
-    };
-  }, [messageFlag, queryClient, showPopupChatUser, user?.id]);
   const handleSendMessage = () => {
     if (!textAreaRef.current?.value || !showPopupChatUser || !user?.id) return;
-    setmessageFlag((prev) => !prev);
-    queryClient.setQueryData<InfiniteData<GetMessagesApiRespnse>>(
+    queryClient.setQueryData<InfiniteData<GetMessagesApiResponse>>(
       ["fetchMessages", showPopupChatUser.user_id],
       (old) => {
         if (!old) return old;
-        const updatedPages = [...old.pages];
-        updatedPages[0].messages.unshift({
+        const newMessage: Messages = {
           status: "SENT",
           receiver_id: showPopupChatUser.user_id,
           createdDate: new Date(),
           message_id: Math.random().toString(),
           message: textAreaRef.current?.value ?? "",
           sender_id: user?.id ?? null,
-        });
-        return { ...old, pages: updatedPages }; // Return updated data
+        };
+        return {
+          ...old,
+          pages: old.pages.map((page, index) =>
+            index === 0
+              ? { ...page, messages: [newMessage, ...page.messages] }
+              : page
+          ),
+        };
       }
     );
     if (!socket.connected) {
@@ -100,11 +66,22 @@ function ChatPopup() {
       receiverId: showPopupChatUser.user_id,
       message: textAreaRef.current.value,
     });
-
     textAreaRef.current.value = "";
     textAreaRef.current.style.height = "auto";
+
+    setTimeout(
+      () => lastMessageRef.current?.scrollIntoView({ behavior: "smooth" }),
+      0
+    );
   };
-  if (!showPopupChatUser) return null;
+
+  const handleTyping = () => {
+    socket.emit("typing", {
+      senderId: user?.id,
+      receiverId: showPopupChatUser?.user_id,
+    });
+  };
+
   return (
     <>
       {showPopupChatUser && (
@@ -135,7 +112,10 @@ function ChatPopup() {
             </div>
           </div>
 
-          <ChatSection />
+          <ChatSection
+            lastMessageRef={lastMessageRef}
+            typingStatus={typingStatus}
+          />
           <div className="p-2 border-t-2 border-gray-300">
             <div className="flex items-center gap-2 ">
               <div className="bg-zinc-200 rounded-lg w-full">
@@ -143,6 +123,7 @@ function ChatPopup() {
                   ref={textAreaRef}
                   rows={1}
                   onChange={chatChangeHandler}
+                  onKeyDown={handleTyping}
                   className="resize-none max-h-36 overflow-y-auto bg-transparent outline-none p-1 overflow-hidden w-full"
                 />
               </div>

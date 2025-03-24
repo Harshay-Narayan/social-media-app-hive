@@ -6,7 +6,7 @@ export interface Messages {
   message: string;
   sender_id: string;
 }
-export interface GetMessagesApiRespnse {
+export interface GetMessagesApiResponse {
   messages: Messages[];
   nextCursor: string | null;
 }

@@ -23,7 +23,7 @@ const ChatSidebar = memo(function () {
   }, [user?.id]);
   return (
     <div
-      className="xl:bg-transparent bg-white p-2 h-full fixed w-80 right-0 top-14 sm:top-16 hover:overflow-scroll scroll-smooth hidden-scrollbar"
+      className="xl:bg-transparent bg-white p-2 h-full fixed z-[998] w-80 right-0 top-14 sm:top-16 hover:overflow-scroll scroll-smooth hidden-scrollbar"
       tabIndex={showChatDrawer ? 0 : -1}
       style={{
         pointerEvents: showChatDrawer ? "auto" : "none",

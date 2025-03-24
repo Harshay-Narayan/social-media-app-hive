@@ -1,16 +1,22 @@
 import useMessagesQuery from "@/hooks/messages/use-messages-query";
 import { useGlobalStore } from "@/store/useGlobalStore";
-import React, { useEffect, useRef } from "react";
+import React, { RefObject, useEffect, useRef } from "react";
 import Spinner from "../UI/spinner";
 import ChatItem from "./chat-item";
 import ChatSkeleton from "./chat-skeleton";
 import useInfiniteScroll from "@/hooks/infinite-scroll/use-infinite-scroll";
 
-function ChatSection() {
+function ChatSection({
+  lastMessageRef,
+  typingStatus,
+}: {
+  lastMessageRef: RefObject<HTMLDivElement>;
+  typingStatus: string | null;
+}) {
   const messageContainerRef = useRef<HTMLDivElement>(null);
 
   const showPopupChatUser = useGlobalStore((state) => state.showPopupChatUser);
-  const { data, fetchNextPage, hasNextPage, isFetching, isLoading } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useMessagesQuery(showPopupChatUser!.user_id);
 
   const { targetRef } = useInfiniteScroll({
@@ -27,15 +33,23 @@ function ChatSection() {
     }
   }, [isLoading]);
 
+  useEffect(() => {
+    if (messageContainerRef.current && !isFetchingNextPage) {
+      messageContainerRef.current.scrollTop = 20;
+    }
+  }, [isFetchingNextPage]);
   if (isLoading) {
     return <ChatSkeleton />;
   }
   return (
     <div className="overflow-y-scroll flex-1 p-2" ref={messageContainerRef}>
-      <div className="bg-yellow-500" ref={targetRef}>
-        test
-      </div>
-      {isFetching && <Spinner />}
+      <div className="h-1" ref={targetRef}></div>
+      {isFetchingNextPage && (
+        <div className="flex justify-center">
+          <Spinner className="border-2 h-8 w-8" />
+        </div>
+      )}
+
       {data?.pages[0].messages.length ? (
         data?.pages
           .slice()
@@ -60,6 +74,8 @@ function ChatSection() {
           <div className="text-3xl">👋</div>
         </div>
       )}
+      <div className="h-4 text-xs">{typingStatus}</div>
+      <div className="h-0.5" ref={lastMessageRef}></div>
     </div>
   );
 }
