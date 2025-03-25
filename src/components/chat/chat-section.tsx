@@ -39,10 +39,14 @@ function ChatSection({
     }
   }, [isFetchingNextPage]);
   if (isLoading) {
-    return <ChatSkeleton />;
+    return (
+      <div className="flex flex-1 w-full">
+        <ChatSkeleton />
+      </div>
+    );
   }
   return (
-    <div className="overflow-y-scroll flex-1 p-2" ref={messageContainerRef}>
+    <div className="overflow-y-scroll flex-1 p-0" ref={messageContainerRef}>
       <div className="h-1" ref={targetRef}></div>
       {isFetchingNextPage && (
         <div className="flex justify-center">
@@ -50,30 +54,33 @@ function ChatSection({
         </div>
       )}
 
-      {data?.pages[0].messages.length ? (
-        data?.pages
-          .slice()
-          .reverse()
-          .map((group, i) => (
-            <React.Fragment key={i}>
-              {group?.messages
-                .slice()
-                .reverse()
-                .map((chat) => (
-                  <ChatItem
-                    message={chat.message}
-                    sender_id={chat.sender_id}
-                    key={chat.message_id}
-                  />
-                ))}
-            </React.Fragment>
-          ))
+      {data?.pages.some((item) => item.messages.length !== 0) ? (
+        <div className="min-h-full flex flex-col justify-end flex-nowrap">
+          {data?.pages
+            .slice()
+            .reverse()
+            .map((group, i) => (
+              <div className="w-full flex flex-col justify-end" key={i}>
+                {group?.messages
+                  .slice()
+                  .reverse()
+                  .map((chat) => (
+                    <ChatItem
+                      message={chat.message}
+                      sender_id={chat.sender_id}
+                      key={chat.message_id}
+                    />
+                  ))}
+              </div>
+            ))}
+        </div>
       ) : (
-        <div className="flex justify-center gap-4 flex-col items-center h-32">
+        <div className="flex justify-center gap-4 flex-col items-center h-full">
           <div>You are friends! Start a conversation.</div>
           <div className="text-3xl">👋</div>
         </div>
       )}
+
       <div className="h-4 text-xs">{typingStatus}</div>
       <div className="h-0.5" ref={lastMessageRef}></div>
     </div>

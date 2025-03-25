@@ -116,7 +116,7 @@ function ChatPopup() {
             lastMessageRef={lastMessageRef}
             typingStatus={typingStatus}
           />
-          <div className="p-2 border-t-2 border-gray-300">
+          <div className="p-2 border-t-2 border-gray-300 min-h-14">
             <div className="flex items-center gap-2 ">
               <div className="bg-zinc-200 rounded-lg w-full">
                 <textarea

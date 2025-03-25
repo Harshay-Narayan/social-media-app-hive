@@ -10,7 +10,7 @@ function ChatItem({
 }) {
   const isSender = sender_id === useUser().user?.id;
   return (
-    <div className={`m-2 flex ${isSender ? "justify-end" : ""}`}>
+    <div className={`m-1 flex ${isSender ? "justify-end" : ""}`}>
       <div className="rounded-xl p-2 w-fit bg-zinc-300">{message}</div>
     </div>
   );
