@@ -3,7 +3,7 @@ import redis from "../redis";
 
 export async function getFriendsStatuses(friendIds: string[]) {
   const pipeline = redis.multi();
-  friendIds.forEach((id) => pipeline.get(`online-${id}`));
+  friendIds.forEach((id) => pipeline.get(`user:${id}:status`));
   const results = await pipeline.exec();
   const onlineStatuses = friendIds.map((id, index) => ({
     userId: id,

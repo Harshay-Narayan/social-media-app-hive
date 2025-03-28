@@ -10,6 +10,7 @@ import { useUser } from "@clerk/nextjs";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { GetMessagesApiResponse, Messages } from "@/types/messages-types";
 import useChatSocket from "@/hooks/use-chat-socket";
+import useMessagesMutation from "@/hooks/messages/use-messages-mutation";
 
 function ChatPopup() {
   const { user } = useUser();
@@ -30,7 +31,7 @@ function ChatPopup() {
       textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
     }
   }
-
+  const { messageMutation } = useMessagesMutation();
   const handleSendMessage = () => {
     if (!textAreaRef.current?.value || !showPopupChatUser || !user?.id) return;
     queryClient.setQueryData<InfiniteData<GetMessagesApiResponse>>(
@@ -55,6 +56,10 @@ function ChatPopup() {
         };
       }
     );
+    messageMutation.mutate({
+      message: textAreaRef.current.value,
+      targetUserId: showPopupChatUser.user_id,
+    });
     if (!socket.connected) {
       socket.connect();
     }

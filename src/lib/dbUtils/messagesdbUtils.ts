@@ -1,12 +1,15 @@
 import { prisma } from "../client";
 
-export async function sendMessage(
-  message: string,
-  userId: string,
-  targetUserId: string
-) {
-  await prisma.messages.create({
-    data: { message, sender_id: userId, receiver_id: targetUserId },
+type Messages = {
+  message: string;
+  sender_id: string;
+  receiver_id: string;
+  createdDate: string;
+};
+
+export async function sendMessages(messages: Messages[]) {
+  await prisma.messages.createMany({
+    data: messages,
   });
 }
 

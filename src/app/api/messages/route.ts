@@ -1,5 +1,6 @@
 import { getAuthInfo } from "@/lib/authUtil";
-import { getMessages, sendMessage } from "@/lib/dbUtils/messagesdbUtils";
+import { getMessages } from "@/lib/dbUtils/messagesdbUtils";
+import redis from "@/lib/redis";
 import { NextRequest, NextResponse } from "next/server";
 
 const PAGE_SIZE = 7;
@@ -46,7 +47,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     const body = await request.json();
-    await sendMessage(body.message, authInfo.id, body.targetUserId);
+    console.log({
+      message: body.message,
+      sender_id: authInfo.id,
+      receiver_id: body.targetUserId,
+      createdDate: new Date().toISOString(),
+    });
+    redis.lpush(
+      "message_queue",
+      JSON.stringify({
+        message: body.message,
+        sender_id: authInfo.id,
+        receiver_id: body.targetUserId,
+        createdDate: new Date().toISOString(),
+      })
+    );
     return NextResponse.json({ message: "message sent" }, { status: 200 });
   } catch (error) {
     return NextResponse.json(

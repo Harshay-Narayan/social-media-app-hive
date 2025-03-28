@@ -3,7 +3,7 @@ import pusher from "../pusher";
 import redis from "../redis";
 
 export async function setStatusoffline(userId: string) {
-  await redis.del(`online-${userId}`);
+  await redis.del(`user:${userId}:status`);
   await updateUserStatusoffline(userId);
   await pusher.trigger("online-presence", "user-status", {
     userId,
@@ -14,7 +14,7 @@ export async function setStatusoffline(userId: string) {
 
 export async function setStatusOnline(userId: string) {
   await redis.set(
-    `online-${userId}`,
+    `user:${userId}:status`,
     JSON.stringify({ userId, status: "online" }),
     "EX",
     60
