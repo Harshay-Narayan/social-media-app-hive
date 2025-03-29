@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import {
-  ClerkProvider,
-  SignedIn,
-  SignedOut,
-  SignInButton,
-} from "@clerk/nextjs";
+import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
+import SignInPage from "@/components/signin/signin";
 import Header from "@/components/header/header";
 import QueryProvider from "@/lib/providers";
 import ChatComponentsWrapper from "@/components/UI/chat-components-wrapper";
@@ -26,13 +22,7 @@ export default function RootLayout({
         <html lang="en">
           <body className={` antialiased bg-[#F2F4F7]`}>
             <SignedOut>
-              <SignInButton>
-                <div className="flex justify-center mt-10">
-                  <button className="bg-blue-600 p-2 rounded text-white w-32">
-                    Sign in
-                  </button>
-                </div>
-              </SignInButton>
+              <SignInPage />
             </SignedOut>
             <SignedIn>
               <Header />
