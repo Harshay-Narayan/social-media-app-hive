@@ -5,9 +5,21 @@ import React from "react";
 import Notification from "./notifications/notification";
 import { Users, House, MessageSquareText } from "lucide-react";
 import { useGlobalStore } from "@/store/useGlobalStore";
+import useFriendRequestCountQuery from "@/hooks/friends/request/use-friend-requests-count";
+import useUnreadMessagesCountQuery from "@/hooks/messages/use-unread-messages-count";
 
 function Header() {
   const setShowChatDrawer = useGlobalStore((state) => state.setShowChatDrawer);
+  const {
+    data: friendRequestsCount,
+    isLoading: isFriendRequestsCountLoading,
+    isError: isFriendRequestsCountError,
+  } = useFriendRequestCountQuery();
+  const {
+    data: unreadMessagesCount,
+    isLoading: isUnreadMessagesCountLoading,
+    isError: isUnreadMessagesCountError,
+  } = useUnreadMessagesCountQuery();
   return (
     <header>
       <div className="fixed z-[999] top-0 right-0 left-0 bg-blue-500/80 h-14 backdrop-blur-sm flex items-center justify-center">
@@ -20,17 +32,34 @@ function Header() {
               <House color="#fff" />
             </Link>
           </div>
-          <div className="lg:hidden">
+          <div className="lg:hidden relative">
             <Link href="/friends" aria-label="Go to Friends Page">
               <Users color="#fff" />
             </Link>
+            {!isFriendRequestsCountLoading &&
+              !isFriendRequestsCountError &&
+              friendRequestsCount.count > 0 && (
+                <div className="absolute text-white text-xs font-semibold -top-2 -right-2 bg-red-500 rounded-full w-4 h-4 flex items-center justify-center">
+                  {friendRequestsCount.count}
+                </div>
+              )}
           </div>
-          <button
-            onClick={() => setShowChatDrawer()}
-            aria-label="Open online friends drawer"
-          >
-            <MessageSquareText color="#fff" />
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setShowChatDrawer()}
+              aria-label="Open online friends drawer"
+            >
+              <MessageSquareText color="#fff" />
+            </button>
+            {!isUnreadMessagesCountLoading &&
+              !isUnreadMessagesCountError &&
+              unreadMessagesCount.count > 0 && (
+                <div className="absolute text-white text-xs font-semibold -top-2 -right-2 bg-red-500 rounded-full w-4 h-4 flex items-center justify-center">
+                  {unreadMessagesCount.count}
+                </div>
+              )}
+          </div>
+
           <div>
             <Notification />
           </div>

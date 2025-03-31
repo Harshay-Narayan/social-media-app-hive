@@ -9,6 +9,7 @@ import { useCreatePost } from "@/context";
 import { useUser } from "@clerk/nextjs";
 import useCreatePostMutation from "@/hooks/post/use-create-post-mutation";
 import Spinner from "../UI/spinner";
+import toast from "react-hot-toast";
 
 interface FormInput {
   post_content: string | null;
@@ -36,7 +37,14 @@ function CreatePostForm() {
     formData.append("post_content", input.post_content || "");
     formData.append("post_image", input.post_image || "");
     createPostMutation.mutate(formData, {
-      onSuccess: () => toggleShowCreatePostFrom(),
+      onSuccess: () => {
+        toggleShowCreatePostFrom();
+        toast.success("Posted!");
+      },
+      onError: () => {
+        toast.error("something went wrong!", { duration: 5000 });
+        toggleShowCreatePostFrom();
+      },
     });
     reset();
   };

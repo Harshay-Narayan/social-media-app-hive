@@ -15,31 +15,19 @@ import CloseButton from "@/components/UI/CloseButton";
 
 type NotificationsDropdownProps = {
   closeNotificationsDropdownHandler: () => void;
-  setUnreadNotificationsCountHandler: (count: number) => void;
 };
 
 function NotificationsDropdown({
-  setUnreadNotificationsCountHandler,
   closeNotificationsDropdownHandler,
 }: NotificationsDropdownProps) {
   const { user } = useUser();
   const popupRef = useRef<HTMLDivElement>(null);
 
-  const {
-    data,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useNotificationsQuery();
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useNotificationsQuery();
   const { readNotificationMutation } = useReadnotificationsMutation();
 
   const queryClient = useQueryClient();
-  useEffect(() => {
-    if (data?.pages) {
-      setUnreadNotificationsCountHandler(data?.pages?.[0]?.meta.unread_count);
-    }
-  }, [data, setUnreadNotificationsCountHandler]);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -70,11 +58,11 @@ function NotificationsDropdown({
   });
   return (
     <Container
-      className="fixed inset-0 top-14 max-sm:rounded-none h-screen sm:absolute sm:top-5 sm:mt-1 sm:w-80 font-extrabold sm:max-h-96 overflow-y-scroll hidden-scrollbar"
+      className="fixed inset-0 top-14 max-sm:rounded-none h-screen sm:absolute sm:top-5 sm:mt-1 sm:w-80 sm:max-h-80 overflow-y-scroll hidden-scrollbar"
       ref={popupRef}
     >
       <div className="flex justify-between px-2 pt-2">
-        <div>Notifications</div>
+        <div className="font-bold">Notifications</div>
         <div className="sm:hidden">
           <CloseButton onClose={closeNotificationsDropdownHandler} />
         </div>

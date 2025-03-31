@@ -62,10 +62,9 @@ export async function POST(request: NextRequest) {
       if (error || !data) {
         return NextResponse.json(
           {
-            message:
-              "Image Upload failed post cannot be created" + error?.message,
+            error: { message: error?.message || "error in image upload" },
           },
-          { status: 500 }
+          { status: 400 }
         );
       }
 

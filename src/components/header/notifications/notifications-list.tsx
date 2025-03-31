@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { formatDate } from "@/lib/dateUtils";
 import { NotificationsListProps } from "@/types/notifications-types";
+import { cn } from "@/lib/utils";
 
 export default function NotificationsList({
   isRead,
@@ -12,9 +13,10 @@ export default function NotificationsList({
   const timeElapsed = formatDate(createdDate);
   return (
     <div
-      className={`flex items-center gap-2 rounded p-3 cursor-pointer active:bg-zinc-300 ${
-        !isRead ? "bg-zinc-200" : ""
-      }`}
+      className={cn(
+        "flex items-center gap-2 rounded p-3 cursor-pointer active:bg-zinc-300 hover:bg-zinc-200",
+        !isRead && "bg-zinc-200"
+      )}
     >
       <div className="w-10 h-10 rounded-full overflow-hidden">
         <Image
@@ -25,7 +27,7 @@ export default function NotificationsList({
         />
       </div>
       <div className="flex flex-col">
-        <div>{notificationContent}</div>
+        <div className="text-sm">{notificationContent}</div>
         <div className="text-xs text-blue-600">{timeElapsed}</div>
       </div>
 

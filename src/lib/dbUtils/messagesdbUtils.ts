@@ -31,3 +31,9 @@ export async function getMessages(
     ...(lastCursor ? { cursor: { message_id: lastCursor }, skip: 1 } : {}),
   });
 }
+
+export async function getUnreadMessagesCount(UserId: string) {
+  return await prisma.messages.count({
+    where: { AND: [{ receiver_id: UserId }, { status: "SENT" }] },
+  });
+}

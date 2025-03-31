@@ -474,6 +474,12 @@ export async function removeFriend(userId: string, targetUserId: string) {
   return removedFriendship;
 }
 
+export async function getfriendRequestsCount(userId: string) {
+  return await prisma.friendship.count({
+    where: { receiver_id: userId, status: "PENDING" },
+  });
+}
+
 // Post Like feature
 
 // export async function isPostLiked(
@@ -595,5 +601,11 @@ export async function readNotification(notificationId: string) {
   await prisma.notifications.update({
     where: { notification_id: notificationId },
     data: { is_read: true },
+  });
+}
+
+export async function getNotificationsCount(userId: string) {
+  return await prisma.notifications.count({
+    where: { user_id: userId, is_read: false },
   });
 }

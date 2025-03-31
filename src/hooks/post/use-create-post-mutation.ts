@@ -1,10 +1,17 @@
 import { POSTS_API } from "@/lib/apiEndpoints";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const submitFormData = async (formData: FormData) => {
-  const response = await axios.post(POSTS_API.CREATE_POST, formData);
-  return response.data;
+  try {
+    const response = await axios.post(POSTS_API.CREATE_POST, formData);
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(`Error in Post creation: ${error.response}`);
+    }
+    throw new Error("Error in Post creation");
+  }
 };
 
 function useCreatePostMutation() {

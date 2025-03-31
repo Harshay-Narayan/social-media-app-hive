@@ -19,6 +19,7 @@ export const FRIENDS_API = {
   GET_FRIEND_SUGGESTION: (pageParam: unknown) =>
     `${API_BASE_URL}/api/friends/suggestion?cursor=${pageParam}`,
   SEND_FRIEND_REQUEST: `${API_BASE_URL}/api/friends/requests/send`,
+  GET_FRIEND_REQUESTS_COUNT: `${API_BASE_URL}/api/friends/requests/pending/count`,
 };
 
 export const POSTS_API = {
@@ -34,6 +35,7 @@ export const MESSAGES_API = {
   GET_MESSAGES: (recepientId: unknown, pageParam: unknown) =>
     `${API_BASE_URL}/api/messages?recepientId=${recepientId}&cursor=${pageParam}`,
   SEND_MESSAGE: `${API_BASE_URL}/api/messages`,
+  GET_UNREAD_MESSAGES_COUNT:`${API_BASE_URL}/api/messages/unread/count`
 };
 
 export const NOTIFICATIONS_API = {

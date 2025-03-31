@@ -2,4 +2,4 @@
 import { socketConfig } from "@/config";
 import { io } from "socket.io-client";
 
-export const socket = io(socketConfig.socketUrl);
+export const socket = io(socketConfig.socketUrl, { retries: 3 });
