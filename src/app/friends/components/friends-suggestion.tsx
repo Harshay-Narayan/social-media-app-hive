@@ -6,14 +6,11 @@ import useSendRequestMutation from "@/hooks/friends/suggestion/use-send-request-
 import { SuggestionsFriendInfo } from "@/types";
 import useInfiniteScroll from "@/hooks/infinite-scroll/use-infinite-scroll";
 import Spinner from "@/components/UI/spinner";
+import SkeletonCard from "./card-components/skeleton-card";
 
 function FriendsSuggestion() {
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useFriendSuggestionQuery();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useFriendSuggestionQuery();
   const { sendFriendRequestMutation } = useSendRequestMutation();
   const sendFriendRequestHandler = (targetUsername: string) => {
     sendFriendRequestMutation.mutate({ targetUsername });
@@ -26,34 +23,47 @@ function FriendsSuggestion() {
   const isNoFriendsSuggestion = data?.pages.every(
     (page) => page.data.length === 0
   );
+  if (isLoading) {
+    return (
+      <div className="flex gap-2 max-w-[100%] p-1 overflow-x-scroll hidden-scrollbar-x">
+        {[...Array(7)].map((_, index) => (
+          <SkeletonCard key={index} />
+        ))}
+      </div>
+    );
+  }
   return (
     <>
-      {!isNoFriendsSuggestion ? (
-        <div className="m-2 flex gap-3 overflow-x-scroll max-w-full hidden-scrollbar">
-          {data?.pages.map((group, i) => (
-            <div key={i}>
-              {group?.data.map((user: SuggestionsFriendInfo) => {
-                return (
-                  <SendFriendRequestCard
-                    user_id={user.user_id}
-                    isRequestSent={user.isRequestSent ?? false}
-                    key={user.user_avatar_url}
-                    first_name={user.first_name}
-                    last_name={user.last_name}
-                    user_avatar_url={user.user_avatar_url}
-                    username={user.username}
-                    sendFriendRequestHandler={(targetUsername: string) =>
-                      sendFriendRequestHandler(targetUsername)
-                    }
-                  />
-                );
-              })}
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="m-2">No Friend Suggestion</div>
-      )}
+      <div className="flex items-center gap-3 min-h-60 overflow-x-scroll max-w-full hidden-scrollbar">
+        {!isNoFriendsSuggestion ? (
+          <React.Fragment>
+            {data?.pages.map((group, i) => (
+              <div key={i}>
+                {group?.data.map((user: SuggestionsFriendInfo) => {
+                  return (
+                    <SendFriendRequestCard
+                      user_id={user.user_id}
+                      isRequestSent={user.isRequestSent ?? false}
+                      key={user.user_avatar_url}
+                      first_name={user.first_name}
+                      last_name={user.last_name}
+                      user_avatar_url={user.user_avatar_url}
+                      username={user.username}
+                      sendFriendRequestHandler={(targetUsername: string) =>
+                        sendFriendRequestHandler(targetUsername)
+                      }
+                    />
+                  );
+                })}
+              </div>
+            ))}
+          </React.Fragment>
+        ) : (
+          <div className="sm:text-xl relative left-1/2 -translate-x-1/2 font-semibold">
+            No Friend Suggestion
+          </div>
+        )}
+      </div>
 
       {isFetchingNextPage && (
         <div className="flex justify-center">

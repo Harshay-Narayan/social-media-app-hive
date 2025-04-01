@@ -2,6 +2,7 @@ import Image from "next/image";
 import Container from "@/components/UI/container";
 import Link from "next/link";
 import { ConfirmFriendRequestCardProps } from "@/types";
+import { cn } from "@/lib/utils";
 
 function ConfirmFriendRequestCard({
   first_name,
@@ -35,7 +36,7 @@ function ConfirmFriendRequestCard({
         } ${isRequestRejected ? "invisible" : ""}`}
       >
         <button
-          className="bg-[#0866FF] rounded p-1 w-full font-bold text-white"
+          className="bg-[#0866FF] rounded p-1 w-full font-semibold text-white"
           onClick={() => acceptFriendRequestHandler(username)}
         >
           {isRequestAccepted ? "Friends" : "Confirm"}
@@ -44,9 +45,11 @@ function ConfirmFriendRequestCard({
 
       <div className="p-2 pt-0 w-full">
         <button
-          className={`bg-zinc-300 rounded p-1 w-full font-bold ${
-            isRequestRejected ? "bg-zinc-400 cursor-not-allowed" : ""
-          } ${isRequestAccepted ? "invisible" : ""}`}
+          className={cn(
+            "bg-zinc-300 rounded p-1 w-full font-semibold",
+            isRequestRejected && "bg-zinc-400 cursor-not-allowed",
+            isRequestAccepted && "invisible"
+          )}
           onClick={() => rejectFriendRequestHandler(username)}
         >
           {isRequestRejected ? "Request Deleted" : "Delete"}

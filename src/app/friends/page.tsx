@@ -4,17 +4,17 @@ import FriendsSuggestion from "./components/friends-suggestion";
 
 function Friends() {
   return (
-    <div className="mt-16">
-      <div className="font-extrabold m-2">Friend Requests</div>
-      <div>
+    <div className="mt-16 mx-2">
+      <div className="font-extrabold">Friend Requests</div>
+      <div className="my-2">
         <FriendRequests />
       </div>
-      <div className="font-extrabold m-2">Friends</div>
-      <div>
+      <div className="font-extrabold">Friends</div>
+      <div className="my-2">
         <FriendsList />
       </div>
-      <div className="font-extrabold m-2">People You May Know</div>
-      <div>
+      <div className="font-extrabold">People You May Know</div>
+      <div className="my-2">
         <FriendsSuggestion />
       </div>
     </div>

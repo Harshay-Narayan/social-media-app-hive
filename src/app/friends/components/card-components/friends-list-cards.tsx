@@ -31,7 +31,7 @@ function FriendsListCards({
       </div>
       <div className="p-2 w-full">
         <button
-          className="bg-[#0866FF] rounded p-1 w-full font-bold text-white"
+          className="bg-[#0866FF] rounded p-1 w-full font-semibold text-white"
           onClick={() => onRemoveFrined(username)}
         >
           Remove Friend

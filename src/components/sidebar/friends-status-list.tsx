@@ -40,8 +40,6 @@ function FriendsStatusList({ friends }: { friends: FriendsInfo[] }) {
     channel.bind(
       "user-status",
       (data: { userId: string; isOnline: boolean; lastSeen: string }) => {
-        // console.log("Binding event online-presence");
-        // console.log(data);
         setFriendsStatues((prev) => ({
           ...prev,
           [data.userId]: { isOnline: data.isOnline, lastSeen: data.lastSeen },

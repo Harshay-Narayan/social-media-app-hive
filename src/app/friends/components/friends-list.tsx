@@ -23,10 +23,16 @@ function FriendsList() {
   };
   console.log(data);
   if (isLoading) {
-    return <SkeletonCard />;
+    return (
+      <div className="flex gap-2 max-w-[100%] p-1 overflow-x-scroll hidden-scrollbar-x">
+        {[...Array(7)].map((_, index) => (
+          <SkeletonCard key={index} />
+        ))}
+      </div>
+    );
   }
   return (
-    <div className="m-2 flex gap-3 overflow-x-scroll hidden-scrollbar-x">
+    <div className="flex items-center gap-3 min-h-60 overflow-x-scroll hidden-scrollbar-x">
       {data?.data.length ? (
         data?.data.map((user) => {
           return (
@@ -43,7 +49,9 @@ function FriendsList() {
           );
         })
       ) : (
-        <div>Your fiend list is empty!</div>
+        <div className="sm:text-xl relative left-1/2 -translate-x-1/2 font-semibold">
+          Your fiend list is empty!
+        </div>
       )}
     </div>
   );

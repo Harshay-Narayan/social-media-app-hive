@@ -2,6 +2,7 @@ import Image from "next/image";
 import Container from "@/components/UI/container";
 import Link from "next/link";
 import { SendFriendRequestCardProps } from "@/types";
+import { cn } from "@/lib/utils";
 
 function SendFriendRequestCard({
   first_name,
@@ -32,9 +33,10 @@ function SendFriendRequestCard({
       </div>
       <div className="p-2 w-full">
         <button
-          className={`bg-[#0866FF] rounded disabled:cursor-not-allowed p-1 w-full font-bold text-white ${
+          className={cn(
+            "bg-[#0866FF] rounded disabled:cursor-not-allowed p-1 w-full font-semibold text-white",
             isRequestSent && "bg-zinc-400"
-          }`}
+          )}
           onClick={() => onAddFriendClick(username)}
           disabled={isRequestSent}
         >
