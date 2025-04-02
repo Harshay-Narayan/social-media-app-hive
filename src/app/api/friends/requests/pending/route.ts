@@ -11,10 +11,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: "UserId required" }, { status: 400 });
     }
     if (!authInfo.id) {
-      return NextResponse.json(
-        { message: "User not found with the provided username" },
-        { status: 404 }
-      );
+      return NextResponse.json({ message: "unauthorized" }, { status: 401 });
     }
 
     const searchParams = request.nextUrl.searchParams;

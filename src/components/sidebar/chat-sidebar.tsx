@@ -11,6 +11,7 @@ const ChatSidebar = memo(function () {
   const { data: friends } = useFriendListQuery();
   const { user } = useUser();
   const showChatDrawer = useGlobalStore((state) => state.showChatDrawer);
+
   useEffect(() => {
     if (!socket.connected) {
       socket.connect();

@@ -9,12 +9,14 @@ function FriendsStatusListItem({
   imageUrl,
   lastSeen,
   isOnline,
+  unreadMessageCount,
 }: {
   firstName: string;
   lastName: string;
   imageUrl: string;
   isOnline?: boolean;
   lastSeen?: string;
+  unreadMessageCount: number;
 }) {
   const [lastSeenDuration, setLastSeenDuration] = useState<string>();
 
@@ -45,6 +47,11 @@ function FriendsStatusListItem({
             <div className="text-xs text-gray-400">{lastSeenDuration}</div>
           )}
         </div>
+        {unreadMessageCount > 0 && (
+          <div className="ml-auto mr-5 rounded-full w-4 h-4 flex items-center justify-center font-semibold text-white bg-red-500 text-[11px]">
+            {unreadMessageCount}
+          </div>
+        )}
       </div>
     </div>
   );

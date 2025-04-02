@@ -1,11 +1,12 @@
-import { currentUser } from "@clerk/nextjs/server";
+"use client"
 import { validateUserName } from "@/lib/userUtils";
 import Image from "next/image";
 import { UsersRound } from "lucide-react";
 import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
 
-export default async function ProfileSidebar() {
-  const user = await currentUser();
+export default function ProfileSidebar() {
+  const { user } = useUser();
   const fullName = validateUserName(user?.firstName, user?.lastName);
 
   return (

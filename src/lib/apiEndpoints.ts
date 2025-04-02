@@ -35,7 +35,9 @@ export const MESSAGES_API = {
   GET_MESSAGES: (recepientId: unknown, pageParam: unknown) =>
     `${API_BASE_URL}/api/messages?recepientId=${recepientId}&cursor=${pageParam}`,
   SEND_MESSAGE: `${API_BASE_URL}/api/messages`,
-  GET_UNREAD_MESSAGES_COUNT:`${API_BASE_URL}/api/messages/unread/count`
+  GET_UNREAD_MESSAGES_COUNT: `${API_BASE_URL}/api/messages/unread/count`,
+  GET_UNREAD_FRIEND_MESSAGES_COUNT: `${API_BASE_URL}/api/messages/unread/friends/count`,
+  READ_UNREAD_FRIEND_MESSAGES: `${API_BASE_URL}/api/messages/unread/friends/read`,
 };
 
 export const NOTIFICATIONS_API = {

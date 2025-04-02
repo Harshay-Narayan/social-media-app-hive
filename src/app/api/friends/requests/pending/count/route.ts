@@ -7,7 +7,7 @@ export async function GET() {
     const authInfo = await getAuthInfo();
     if (!authInfo) {
       return NextResponse.json(
-        { message: "Unauthorized: Please log in to send a friend request." },
+        { message: "Unauthorized" },
         { status: 401 }
       );
     }
