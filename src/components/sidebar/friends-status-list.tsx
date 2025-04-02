@@ -91,7 +91,7 @@ function FriendsStatusList({ friends }: { friends: FriendsInfo[] }) {
             imageUrl={friend.user_avatar_url}
             isOnline={friendsStatues[friend.user_id]?.isOnline}
             lastSeen={friendsStatues[friend.user_id]?.lastSeen}
-            unreadMessageCount={unreadCounts.messageCounts[friend.user_id]}
+            unreadMessageCount={unreadCounts?.messageCounts[friend.user_id]}
           />
         </div>
       ))}
