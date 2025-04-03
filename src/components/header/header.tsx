@@ -38,9 +38,9 @@ function Header() {
             </Link>
             {!isFriendRequestsCountLoading &&
               !isFriendRequestsCountError &&
-              friendRequestsCount.count > 0 && (
+              friendRequestsCount?.count > 0 && (
                 <div className="absolute text-white text-xs font-semibold -top-2 -right-2 bg-red-500 rounded-full w-4 h-4 flex items-center justify-center">
-                  {friendRequestsCount.count}
+                  {friendRequestsCount?.count}
                 </div>
               )}
           </div>
@@ -53,9 +53,9 @@ function Header() {
             </button>
             {!isUnreadMessagesCountLoading &&
               !isUnreadMessagesCountError &&
-              unreadMessagesCount.count > 0 && (
+              unreadMessagesCount?.count > 0 && (
                 <div className="absolute text-white text-xs font-semibold -top-2 -right-2 bg-red-500 rounded-full w-4 h-4 flex items-center justify-center">
-                  {unreadMessagesCount.count}
+                  {unreadMessagesCount?.count}
                 </div>
               )}
           </div>

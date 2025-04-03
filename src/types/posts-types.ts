@@ -36,4 +36,5 @@ export interface PostsProps {
   createdDate: Date;
   isLiked: boolean;
   blurPostImageDataUrl?: string | null;
+  postOwnerId:string
 }

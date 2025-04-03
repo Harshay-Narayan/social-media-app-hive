@@ -5,9 +5,10 @@ export async function createComment(
   commentText: string,
   postId: string
 ) {
-  await prisma.comments.create({
+  const comment = await prisma.comments.create({
     data: { actor_id: actorId, comment_text: commentText, post_id: postId },
   });
+  return comment.comment_id;
 }
 
 export async function getAllComments(

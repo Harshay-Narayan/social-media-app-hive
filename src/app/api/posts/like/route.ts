@@ -24,22 +24,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await likePost(postId, authInfo.id);
+    const postLikedId = await likePost(postId, authInfo.id);
     const postOwnerId = (await getUserIdFromPostId(postId))?.user_id;
-    await createNotification({
-      userId: postOwnerId || "",
-      actorId: authInfo.id,
-      postId,
-    });
-    await pusher.trigger(
-      `notifications-${postOwnerId}`,
-      "new-notification",
-      {}
-    );
+    if (postLikedId && postOwnerId) {
+      await createNotification({
+        userId: postOwnerId,
+        actorId: authInfo.id,
+        postId,
+      });
+      await pusher.trigger(
+        `notifications-${postOwnerId}`,
+        "new-notification",
+        {}
+      );
+    }
+
     return NextResponse.json({ message: "Post liked" }, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { message: "Failed to like the post"+error },
+      { message: "Failed to like the post" + error },
       { status: 500 }
     );
   }

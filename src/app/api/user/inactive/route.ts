@@ -7,7 +7,7 @@ export async function POST() {
     if (!authInfo) {
       return new Response("Unauthorized", { status: 401 });
     }
-    console.log("beforeload, visiblity POST " + authInfo.id);
+    console.log("Inactive api route | " + authInfo.id);
     await setStatusoffline(authInfo.id);
     return new Response("user makred offline", { status: 200 });
   } catch (error) {

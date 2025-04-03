@@ -4,7 +4,7 @@ import { formatDate } from "@/lib/dateUtils";
 import { NotificationsListProps } from "@/types/notifications-types";
 import { cn } from "@/lib/utils";
 
-export default function NotificationsList({
+export default function NotificationsListItem({
   isRead,
   createdDate,
   user_avatar_url,
@@ -14,7 +14,7 @@ export default function NotificationsList({
   return (
     <div
       className={cn(
-        "flex items-center gap-2 rounded p-3 cursor-pointer active:bg-zinc-300 hover:bg-zinc-200",
+        "flex items-center gap-2 rounded p-3 cursor-pointer active:bg-zinc-300",
         !isRead && "bg-zinc-200"
       )}
     >
@@ -31,7 +31,9 @@ export default function NotificationsList({
         <div className="text-xs text-blue-600">{timeElapsed}</div>
       </div>
 
-      {!isRead && <div className="w-3 h-3 bg-blue-600 rounded-full"></div>}
+      {!isRead && (
+        <div className="w-3 h-3 bg-blue-600 rounded-full ml-auto"></div>
+      )}
     </div>
   );
 }

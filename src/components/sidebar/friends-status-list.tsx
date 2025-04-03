@@ -64,7 +64,7 @@ function FriendsStatusList({ friends }: { friends: FriendsInfo[] }) {
     return "...loading";
   }
   return (
-    <div className="">
+    <div className="w-full">
       {friends.map((friend) => (
         <div
           onClick={() => {

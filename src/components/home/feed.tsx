@@ -39,6 +39,7 @@ function Feed() {
                   createdDate={post.updateDate}
                   blurPostImageDataUrl={post.post_image_thumbnail}
                   postImageAspectRatio={post.post_image_aspect_ratio}
+                  postOwnerId={post.user_id}
                 />
               );
             })}

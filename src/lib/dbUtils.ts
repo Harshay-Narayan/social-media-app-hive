@@ -284,28 +284,28 @@ export async function searchFriends(userId: string, query: string | null) {
   return users;
 }
 
-export async function isFriendRequestPending(
-  userId: string,
-  targetUserId: string
-): Promise<boolean> {
-  const friendship = await prisma.friendship.findFirst({
-    where: {
-      AND: [
-        {
-          OR: [
-            { requester_id: userId, receiver_id: targetUserId },
-            { requester_id: targetUserId, receiver_id: userId },
-          ],
-        },
-        { status: "PENDING" },
-      ],
-    },
-  });
-  if (friendship) {
-    return true;
-  }
-  return false;
-}
+// export async function isFriendRequestPending(
+//   userId: string,
+//   targetUserId: string
+// ): Promise<boolean> {
+//   const friendship = await prisma.friendship.findFirst({
+//     where: {
+//       AND: [
+//         {
+//           OR: [
+//             { requester_id: userId, receiver_id: targetUserId },
+//             { requester_id: targetUserId, receiver_id: userId },
+//           ],
+//         },
+//         { status: "PENDING" },
+//       ],
+//     },
+//   });
+//   if (friendship) {
+//     return true;
+//   }
+//   return false;
+// }
 
 export async function sendFriendRequest(userId: string, targetUserId: string) {
   const friendshipRecordAlreadyExists = await prisma.friendship.findFirst({
@@ -331,7 +331,7 @@ export async function sendFriendRequest(userId: string, targetUserId: string) {
         createdDate: new Date(),
       },
     });
-    return friendship;
+    return friendship.friendship_id;
   }
   const friendship = await prisma.friendship.create({
     data: {
@@ -340,7 +340,7 @@ export async function sendFriendRequest(userId: string, targetUserId: string) {
       createdDate: new Date(),
     },
   });
-  return friendship;
+  return friendship.friendship_id;
 }
 
 export async function acceptFriendRequest(
@@ -506,7 +506,7 @@ export async function likePost(postId: string, userId: string) {
     }),
   ]);
 
-  return postLiked;
+  return postLiked.id;
 }
 
 export async function removePostLike(postId: string, userId: string) {

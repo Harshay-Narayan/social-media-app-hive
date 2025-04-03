@@ -18,6 +18,10 @@ export interface NotificationsApiResponse {
   };
 }
 
+export interface NotificationsCount {
+  notificationsCount: number;
+}
+
 export interface NotificationsListProps extends Notifications {
   notificationContent: string;
 }

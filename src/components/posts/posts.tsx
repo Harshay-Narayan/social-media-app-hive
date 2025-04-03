@@ -8,6 +8,8 @@ import Link from "next/link";
 import { PostsProps } from "@/types";
 import CommentsModal from "../comments/comments-modal";
 import usePostLikeMutation from "@/hooks/likes/use-post-like-mutation";
+import { socket } from "@/lib/socket";
+import { useUser } from "@clerk/nextjs";
 
 const DEFAULT_BLUR_IMAGE_DATA_URL =
   "data:image/jpeg;base64,/9j/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wAARCAFjAMgDASIAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAAAAECBv/EABYQAQEBAAAAAAAAAAAAAAAAAAABEf/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABYRAQEBAAAAAAAAAAAAAAAAAAABEf/aAAwDAQACEQMRAD8A58FAAQBQEFAQUAFAQUBBQERpAQUBBQEABBQEUFAFQAABQAFAFAQVQZGkBBQGRQGRQERQEAAAUUBBQAFABQAUUEFAQUBEUBEVAQAEBAAAABFABQBVVFAUAUAAAUAEQEAQARFQBAAEFFEVEFRQUAVVRQUAFAFAAAQBFQERpBERUBEUUQABUUQVFFUFQFRQUAFAAABAAEUFRGkERGkBlGkUQAQAAUUUVFBQUAAFAAAAAQABUFBGRRRlGkEZFAQABQBQUBUUBQAUUVBRBBQERQEABARQRUEAAZABQUBUUFEUFVFFVQRcBQXERQRlFqCCCAAioAgAAIACgAqooCooLGozFiNRqKzGhoARRKqVUrNSrUoylZVFQQBBAAABFRQFRQVUVFFRRVVlRY0rKo00ICqgCM1K1UozYyy1UqpjKNVFRAQQAAVFAUEVVRRRQRrBUVFURRVVAVoRQRK0gmM1mt1mqzYzWa1Uqs1lFRUABBUUFARpVRUaigI0AIqiKoqsqDSsqiqioglSrUqs1ms1qs1piso1UVlAFQVFFFRUWKqDLcUAUVBFUQUaEAa1dZ01Fa01NNASmoJSs1alaYqIqKygorKKgKqoI0qoI0oggogKogCrrJoNaus6aLrWms6aJrWogCoCs1AFZQUVGQUABGlARRAABAUQFUQBVQBRFAVAFEUQAVkAEYUFABFFQFAAEVBQAAAFEUAAFEUBUBFBRAARgQUUQRVEBVQAAQFEAURQAAFQBRFBRFEURVRRAGBAFEABAVRBBRAVRAFEAUQBRARVZVRVZURVZAaEBGRAUBAVBAUQFUQBRAFEAUQBRAFVlRFVkBo1AF0QEAQAEFAQAAAQBQAFQBUAAAFEAUQBoQBRARQQAEFAAQAAAAAAAAAAAAAFEAUAFEAaQBBAFEAAAAAAAAAAAAAAAAABQAAB/9k=";
@@ -24,12 +26,25 @@ const Posts = memo(function ({
   isLiked,
   blurPostImageDataUrl,
   postImageAspectRatio,
+  postOwnerId,
 }: PostsProps) {
   const [showComments, setShowComments] = useState<boolean>(false);
   const { likeMutation } = usePostLikeMutation();
   const toggleShowCommentsHandler = () => setShowComments(!showComments);
+  const { user } = useUser();
   const likeClickHandler = () => {
     likeMutation.mutate({ postId, isLiked });
+    if (!isLiked) {
+      socket.emit("notification", {
+        type: "LIKE",
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        imageUrl: user?.imageUrl,
+        username: user?.username,
+        userId: postOwnerId,
+        actorId: user?.id,
+      });
+    }
   };
   return (
     <Container className="mb-2 p-4">
@@ -112,5 +127,5 @@ const Posts = memo(function ({
     </Container>
   );
 });
-Posts.displayName="Posts"
+Posts.displayName = "Posts";
 export default Posts;

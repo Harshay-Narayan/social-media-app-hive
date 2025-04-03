@@ -1,5 +1,9 @@
 import { getAuthInfo } from "@/lib/authUtil";
-import { getUserInfo } from "@/lib/dbUtils";
+import {
+  createNotification,
+  getUserIdFromPostId,
+  getUserInfo,
+} from "@/lib/dbUtils";
 import { createComment, getAllComments } from "@/lib/dbUtils/commentsdbUtils";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -84,7 +88,15 @@ export async function POST(request: NextRequest) {
       );
     }
     const { commentText, postId } = await request.json();
-    await createComment(authInfo.id, commentText, postId);
+    const commentId = await createComment(authInfo.id, commentText, postId);
+    const postOwnerId = (await getUserIdFromPostId(postId))?.user_id;
+    if (postOwnerId && commentId) {
+      await createNotification({
+        actorId: authInfo.id,
+        commentId,
+        userId: postOwnerId,
+      });
+    }
     return NextResponse.json({ message: "Comment created" }, { status: 201 });
   } catch (error) {
     return NextResponse.json(

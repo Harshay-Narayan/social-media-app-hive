@@ -3,6 +3,7 @@ import pusher from "../pusher";
 import redis from "../redis";
 
 export async function setStatusoffline(userId: string) {
+  console.log("det offline status triggered" + userId);
   await redis.del(`user:${userId}:status`);
   await updateUserStatusoffline(userId);
   await pusher.trigger("online-presence", "user-status", {

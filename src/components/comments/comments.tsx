@@ -29,7 +29,6 @@ function Comments({
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
 
   const commentInputHadler = () => {
-    console.log("heyaa");
     if (!commentInputRef.current?.value.trim()) return;
     commentMutaion.mutate({
       commentText: commentInputRef.current.value,
