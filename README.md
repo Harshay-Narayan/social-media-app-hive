@@ -12,7 +12,8 @@ This project showcases advanced full-stack development, featuring a responsive U
 > _📽️ [![Watch the video](https://img.youtube.com/vi/fH8B8cKXJmE/0.jpg)](https://www.youtube.com/watch?v=fH8B8cKXJmE)
 
 > **📱 Mobile View:**  
-> _📽️ Insert screen recording or screenshot here_
+> _📽️ [![Watch the video](https://img.youtube.com/vi/KFTmLL7LZGI/0.jpg)](https://youtube.com/shorts/KFTmLL7LZGI)
+
 
 ---
 
