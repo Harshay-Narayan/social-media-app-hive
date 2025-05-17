@@ -112,5 +112,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 ### **Follow along on social media or stay updated with project progress**:
-- [Twitter](https://twitter.com/yourhandle)
-- [LinkedIn](https://linkedin.com/in/yourhandle)
+- [LinkedIn](https://linkedin.com/in/harshay-narayan)
